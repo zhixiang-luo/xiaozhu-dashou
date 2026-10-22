@@ -19,6 +19,7 @@ ADR 记录重要、长期且不容易逆转的决策。它们保存当时的上�
 | [0004](0004-shizuku-with-accessibility-fallback.md) | Shizuku 优先、无障碍降级 | Accepted |
 | [0005](0005-risk-based-confirmation.md) | 风险分级确认 | Accepted |
 | [0006](0006-developer-appliance-mode.md) | 开发者专用设备模式 | Accepted |
+| [0007](0007-default-model-routing.md) | 默认模型路由 | Accepted |
 
 ## 模板
 

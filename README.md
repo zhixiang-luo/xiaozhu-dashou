@@ -69,7 +69,7 @@ personal-jarvis/
 ## 当前已验证
 
 - 共享合约通过 5 项 Vitest 测试和 TypeScript 严格类型检查。
-- 云端编排骨架通过 5 项 Vitest 测试和 TypeScript 严格类型检查。
+- 云端编排骨架通过 8 项 Vitest 测试和 TypeScript 严格类型检查。
 - 文档、链接和 YAML 结构检查通过。
 - Android 构建尚未验证：本机当前没有 Java Runtime 和 Android SDK。
 

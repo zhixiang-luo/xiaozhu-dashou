@@ -22,7 +22,7 @@
 ## Verified
 
 - 共享合约：5 项 Vitest 测试通过，TypeScript 严格类型检查通过。
-- 云端编排：5 项 Vitest 测试通过，TypeScript 严格类型检查通过。
+- 云端编排：8 项 Vitest 测试通过，TypeScript 严格类型检查通过。
 - `node scripts/check-docs.mjs` 通过：相对链接可解析、代码块闭合、无空文档和尾随空格。
 - GitHub Actions 和 Issue 模板的 3 个 YAML 文件解析通过。
 - 未发现常见密钥格式内容。

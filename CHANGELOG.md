@@ -9,6 +9,8 @@
 - 建立产品、架构、Agent 协议、模型接入、安全、测试和开源协作文档。
 - 建立根目录与模块级 `AGENTS.md`。
 - 建立 ADR、GitHub Issue 和 Pull Request 模板。
+- 建立共享 Zod/TypeScript 协议包和契约测试。
+- 建立 Fastify 编排服务、模型路由、OpenAI adapter、设备认证和任务取消接口。
 
 ### Changed
 
