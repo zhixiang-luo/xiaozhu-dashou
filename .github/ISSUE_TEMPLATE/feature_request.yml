@@ -1,0 +1,45 @@
+name: Feature request
+description: 提议新能力、模型或 App 技能
+title: "[feature] "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: 用户在什么真实场景下遇到什么问题？
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: 如何判断任务成功或失败？
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Android execution
+        - Agent runtime
+        - Model provider
+        - App skill
+        - Security
+        - Documentation / release
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risk and permissions
+      description: 是否涉及消息、支付、敏感数据、新权限或不可逆动作？
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: 是否已有官方 API、Deep Link 或确定性技能可用？

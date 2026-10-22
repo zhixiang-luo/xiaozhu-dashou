@@ -1,0 +1,20 @@
+{
+  "name": "personal-jarvis",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22.6"
+  },
+  "scripts": {
+    "check:docs": "node scripts/check-docs.mjs",
+    "check": "pnpm check:docs && pnpm typecheck && pnpm test",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5",
+    "zod": "^4.6.7"
+  }
+}

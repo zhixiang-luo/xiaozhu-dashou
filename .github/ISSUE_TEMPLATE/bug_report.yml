@@ -1,0 +1,45 @@
+name: Bug report
+description: 报告可复现的问题
+title: "[bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: "请勿在公开 Issue 中粘贴密钥、真实聊天、截图、手机号或支付信息。安全漏洞请使用 SECURITY.md 指定的私密渠道。"
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: App、服务和模型 adapter 版本
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and OS
+      description: 设备型号、Android/HyperOS、Shizuku 版本
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction
+      description: 使用脱敏测试数据描述步骤
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Safe logs
+      description: 只提供经过脱敏的错误码和最小日志

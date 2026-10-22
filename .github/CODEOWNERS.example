@@ -1,0 +1,12 @@
+# 复制为 .github/CODEOWNERS，替换为真实 GitHub 用户或团队后启用。
+
+/AGENTS.md                    @repo-maintainer
+/README.md                    @repo-maintainer
+/docs/                        @docs-owner
+/docs/01-prd.md               @product-owner @architecture-owner
+/docs/02-system-architecture.md @architecture-owner
+/docs/05-security-privacy.md  @security-owner @architecture-owner
+/android/                     @android-owner
+/services/                    @backend-owner
+/packages/contracts/          @architecture-owner @android-owner @backend-owner
+/skills/                      @android-owner @product-owner
