@@ -28,3 +28,4 @@ coverage/
 artifacts/
 debug-captures/
 local-data/
+.superpowers/
