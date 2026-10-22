@@ -25,6 +25,7 @@
 | [08-documentation-process.md](08-documentation-process.md) | 文档状态、ADR 和变更流程 | 文档负责人 |
 | [09-open-source-readiness.md](09-open-source-readiness.md) | 许可证、治理和安全发布清单 | 维护者 |
 | [10-acceptance-record.md](10-acceptance-record.md) | 真机、App 版本和发布验收记录 | QA |
+| [11-device-setup.md](11-device-setup.md) | 专用手机、ADB 和 Shizuku 配置 | Android |
 | [HANDOFF.md](HANDOFF.md) | 最近交付、验证和下一步 | 当次主 Agent/开发者 |
 | [model-compatibility.md](model-compatibility.md) | 已接入模型、能力和评测状态 | 模型负责人 |
 
@@ -32,6 +33,7 @@
 
 - `adr/`：不可轻易推翻的架构与产品决策。
 - `guides/`：新增模型、App 技能、团队协作和发布流程。
+- `superpowers/plans/`：按子系统拆分的可执行开发计划。
 - [agents/](agents/README.md)：按角色拆分的 Agent 任务说明；实际启动时仍需引用本页和模块规则。
 
 ## 文档状态

@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@fastify/websocket": "^11.3.4",
     "@personal-jarvis/contracts": "workspace:*",
     "fastify": "^5.12.7",
     "zod": "^4.6.7"

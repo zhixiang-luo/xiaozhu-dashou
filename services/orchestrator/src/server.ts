@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import fastifyWebsocket from "@fastify/websocket";
 import { z } from "zod";
 import { TaskCoordinator } from "./tasks/coordinator.js";
 
@@ -11,11 +12,17 @@ const CreateTaskBodySchema = z.object({
   instruction: z.string().trim().min(1).max(4_000)
 });
 
+const ConfirmationBodySchema = z.object({
+  actionId: z.string().min(1),
+  decision: z.enum(["approve", "reject"])
+});
+
 export function buildServer(options: BuildServerOptions = {}) {
   const app = Fastify({ logger: false });
   const coordinator = options.coordinator ?? new TaskCoordinator();
   const deviceToken = options.deviceToken ?? "dev-token";
 
+  app.register(fastifyWebsocket);
   app.get("/health", async () => ({ status: "ok" }));
 
   app.addHook("onRequest", async (request, reply) => {
@@ -24,7 +31,7 @@ export function buildServer(options: BuildServerOptions = {}) {
     }
 
     if (request.headers.authorization !== `Bearer ${deviceToken}`) {
-      await reply.code(401).send({ error: "unauthorized" });
+      return reply.code(401).send({ error: "unauthorized" });
     }
   });
 
@@ -45,6 +52,53 @@ export function buildServer(options: BuildServerOptions = {}) {
         return coordinator.cancel(request.params.id);
       } catch {
         return reply.code(404).send({ error: "task_not_found" });
+      }
+    }
+  );
+
+  app.register(async (scope) => {
+    scope.get<{ Params: { id: string } }>(
+      "/v1/tasks/:id/events",
+      { websocket: true },
+      (socket, request) => {
+        let unsubscribe: (() => void) | undefined;
+
+        try {
+          unsubscribe = coordinator.subscribe(request.params.id, (event) => {
+            socket.send(JSON.stringify(event));
+          });
+        } catch {
+          socket.close(1008, "task_not_found");
+          return;
+        }
+
+        socket.on("close", () => unsubscribe?.());
+      }
+    );
+  });
+
+  app.post<{ Params: { id: string } }>(
+    "/v1/tasks/:id/confirmation",
+    async (request, reply) => {
+      try {
+        coordinator.get(request.params.id);
+      } catch {
+        return reply.code(404).send({ error: "task_not_found" });
+      }
+
+      const parsed = ConfirmationBodySchema.safeParse(request.body);
+      if (!parsed.success) {
+        return reply.code(400).send({ error: "invalid_confirmation" });
+      }
+
+      try {
+        return coordinator.confirm(
+          request.params.id,
+          parsed.data.actionId,
+          parsed.data.decision
+        );
+      } catch {
+        return reply.code(409).send({ error: "confirmation_not_pending" });
       }
     }
   );

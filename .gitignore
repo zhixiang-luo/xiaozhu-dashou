@@ -20,6 +20,8 @@ coverage/
 .gradle/
 **/build/
 **/.cxx/
+android/local.properties
+.kotlin/
 
 *.log
 *.heapsnapshot

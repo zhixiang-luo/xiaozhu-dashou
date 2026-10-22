@@ -1,5 +1,9 @@
 import { randomUUID } from "node:crypto";
-import type { AssistantAction, TaskState } from "@personal-jarvis/contracts";
+import type {
+  AssistantAction,
+  TaskEvent,
+  TaskState
+} from "@personal-jarvis/contracts";
 
 export interface TaskRecord {
   id: string;
@@ -11,6 +15,11 @@ export interface TaskRecord {
 
 export class TaskCoordinator {
   private readonly tasks = new Map<string, TaskRecord>();
+  private readonly listeners = new Map<
+    string,
+    Set<(event: TaskEvent) => void>
+  >();
+  private readonly pendingConfirmations = new Map<string, Set<string>>();
 
   create(input: { instruction: string }): TaskRecord {
     const task: TaskRecord = {
@@ -21,6 +30,7 @@ export class TaskCoordinator {
       createdAt: Date.now()
     };
     this.tasks.set(task.id, task);
+    this.emitState(task);
     return task;
   }
 
@@ -32,7 +42,59 @@ export class TaskCoordinator {
       generation: task.generation + 1
     };
     this.tasks.set(taskId, cancelled);
+    this.emitState(cancelled);
     return cancelled;
+  }
+
+  get(taskId: string): TaskRecord {
+    return this.requireTask(taskId);
+  }
+
+  requestConfirmation(taskId: string, actionId: string): void {
+    const task = this.requireTask(taskId);
+    const actions = this.pendingConfirmations.get(taskId) ?? new Set();
+    actions.add(actionId);
+    this.pendingConfirmations.set(taskId, actions);
+
+    const updated: TaskRecord = {
+      ...task,
+      state: "awaiting_confirmation"
+    };
+    this.tasks.set(taskId, updated);
+    this.emitState(updated);
+  }
+
+  confirm(
+    taskId: string,
+    actionId: string,
+    decision: "approve" | "reject"
+  ): { actionId: string; decision: "approve" | "reject" } {
+    this.requireTask(taskId);
+    const actions = this.pendingConfirmations.get(taskId);
+    if (!actions?.delete(actionId)) {
+      throw new Error("confirmation_not_pending");
+    }
+    if (actions.size === 0) {
+      this.pendingConfirmations.delete(taskId);
+    }
+    return { actionId, decision };
+  }
+
+  subscribe(
+    taskId: string,
+    listener: (event: TaskEvent) => void
+  ): () => void {
+    this.requireTask(taskId);
+    const taskListeners = this.listeners.get(taskId) ?? new Set();
+    taskListeners.add(listener);
+    this.listeners.set(taskId, taskListeners);
+
+    return () => {
+      taskListeners.delete(listener);
+      if (taskListeners.size === 0) {
+        this.listeners.delete(taskId);
+      }
+    };
   }
 
   async acceptAction(
@@ -58,5 +120,19 @@ export class TaskCoordinator {
       throw new Error("task_not_found");
     }
     return task;
+  }
+
+  private emitState(task: TaskRecord): void {
+    const event: TaskEvent = {
+      eventId: randomUUID(),
+      taskId: task.id,
+      taskGeneration: task.generation,
+      type: "state",
+      state: task.state
+    };
+
+    for (const listener of this.listeners.get(task.id) ?? []) {
+      listener(event);
+    }
   }
 }

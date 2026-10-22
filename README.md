@@ -6,7 +6,7 @@ Personal Jarvis 是一个运行在开发者专用 Android 手机上的个人 Age
 
 ## 当前状态
 
-项目已正式成立，当前进入 **工程基础设施与首个垂直切片阶段**。规划、架构、模型选择、测试和协作规范已经建立；产品代码会按实施计划逐步加入，任何计划中的能力只有在实现并验证后才能标记为可用。
+项目已正式成立，当前进入 **首个 Android 垂直切片阶段**。共享协议、云端编排和可编译 Android App 已经建立；尚未连接专用真机验证系统权限和真实 App 操作。
 
 当前可以运行共享合约和云端编排测试：
 
@@ -14,6 +14,15 @@ Personal Jarvis 是一个运行在开发者专用 Android 手机上的个人 Age
 nvm use
 pnpm install
 pnpm check
+```
+
+Android 构建：
+
+```bash
+cd android
+JAVA_HOME=/opt/homebrew/opt/openjdk@17 \
+ANDROID_HOME=/opt/homebrew/share/android-commandlinetools \
+./gradlew :app:testDebugUnitTest :app:assembleDebug
 ```
 
 ## Personal Jarvis 1.0 目标
@@ -42,6 +51,7 @@ pnpm check
 - [文档治理](docs/08-documentation-process.md)
 - [开源准备](docs/09-open-source-readiness.md)
 - [验收记录](docs/10-acceptance-record.md)
+- [专用设备配置](docs/11-device-setup.md)
 - [当前交接状态](docs/HANDOFF.md)
 - [Agent 角色说明](docs/agents/README.md)
 
@@ -69,9 +79,11 @@ personal-jarvis/
 ## 当前已验证
 
 - 共享合约通过 5 项 Vitest 测试和 TypeScript 严格类型检查。
-- 云端编排骨架通过 8 项 Vitest 测试和 TypeScript 严格类型检查。
+- 云端编排通过 12 项 Vitest 测试和 TypeScript 严格类型检查，包含 WebSocket 事件流和确认绑定。
+- 技能 manifest 包通过 4 项测试和 TypeScript 严格类型检查。
+- Android Debug APK 已构建，路径为 `android/app/build/outputs/apk/debug/app-debug.apk`。
 - 文档、链接和 YAML 结构检查通过。
-- Android 构建尚未验证：本机当前没有 Java Runtime 和 Android SDK。
+- 当前没有连接 Android 真机，尚未验证安装、无障碍、Shizuku 或真实 App。
 
 ## 许可证
 

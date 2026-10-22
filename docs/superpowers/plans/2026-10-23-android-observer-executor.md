@@ -10,7 +10,7 @@
 
 **Spec:** `docs/04-android-execution.md`, `docs/05-security-privacy.md`
 
-> Implementation status: Not started. Local Java Runtime and Android SDK are missing.
+> Implementation status: Task 1 completed and APK built. Runtime observation and execution tasks remain pending.
 
 ## Global Constraints
 

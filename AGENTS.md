@@ -58,7 +58,7 @@ docs/                       产品、架构、安全、测试和交付文档
 
 ## 5. 命令与当前状态
 
-当前已有共享合约包和云端编排服务骨架，尚无 Android App 或真机验证。文档中可以使用后续脚手架命令，但必须明确标记“计划中”，不能写成已经验证。
+当前已有共享合约、云端编排、技能 schema 和可编译 Android App，尚无真机验证。文档中可以使用后续设备命令，但必须明确标记“未验证”，不能写成已经验证。
 
 当前可运行的仓库检查：
 
@@ -69,6 +69,15 @@ pnpm check
 ```
 
 `pnpm check` 包含文档检查、全仓类型检查和测试。Android 工程加入后，必须补充 Java、Android SDK、Gradle 和真机命令。
+
+Android 构建命令：
+
+```bash
+cd android
+JAVA_HOME=/opt/homebrew/opt/openjdk@17 \
+ANDROID_HOME=/opt/homebrew/share/android-commandlinetools \
+./gradlew :app:testDebugUnitTest :app:assembleDebug
+```
 
 ## 6. 模型与 Agent 规则
 

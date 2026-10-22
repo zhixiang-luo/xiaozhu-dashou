@@ -10,7 +10,7 @@
 
 **Spec:** `docs/02-system-architecture.md`, `docs/03-agent-and-model-integration.md`, `docs/model-compatibility.md`
 
-> Implementation status: Tasks 1–3 and the REST/cancellation portion of Task 4 are implemented and verified. WebSocket event streaming remains pending.
+> Implementation status: Completed and verified on 2026-10-23.
 
 ## Global Constraints
 

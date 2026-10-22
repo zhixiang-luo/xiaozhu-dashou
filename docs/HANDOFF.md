@@ -4,7 +4,7 @@
 
 ## Current State
 
-项目已正式命名为 Personal Jarvis，定位为开发者专用 Android Agent 设备。产品范围、模型路由、ADR 和四份子系统实施计划已建立；共享合约与云端编排骨架已开始实现。
+项目已正式命名为 Personal Jarvis，定位为开发者专用 Android Agent 设备。共享合约、云端编排、技能 schema 和可编译 Android App 已落地；当前进入无障碍观察与执行驱动开发。
 
 ## Completed
 
@@ -18,15 +18,21 @@
 - 将项目从 Mobile Agent 重命名为 Personal Jarvis，并加入 Developer Appliance Mode。
 - 决定默认模型路由为 `gpt-6-luna`、`gpt-6.1-sol`、`gpt-6-astra`。
 - 建立 pnpm workspace、共享合约、云端编排服务和统一 CI 检查。
+- 增加 WebSocket 任务事件、确认接口和 Android CI。
+- 建立技能 manifest 的 JSON Schema 与 Zod 校验包。
+- 建立 Compose App 骨架并生成 Debug APK。
 
 ## Verified
 
 - 共享合约：5 项 Vitest 测试通过，TypeScript 严格类型检查通过。
-- 云端编排：8 项 Vitest 测试通过，TypeScript 严格类型检查通过。
+- 云端编排：12 项 Vitest 测试通过，TypeScript 严格类型检查通过。
+- 技能 schema：4 项 Vitest 测试通过，TypeScript 严格类型检查通过。
+- Android：2 项 JVM 单元测试通过，`assembleDebug` 成功。
 - `node scripts/check-docs.mjs` 通过：相对链接可解析、代码块闭合、无空文档和尾随空格。
 - GitHub Actions 和 Issue 模板的 3 个 YAML 文件解析通过。
 - 未发现常见密钥格式内容。
-- 尚未构建 Android APK，尚未连接目标手机，尚未调用真实模型 API。
+- Debug APK 位于 `android/app/build/outputs/apk/debug/app-debug.apk`。
+- 尚未连接目标手机，尚未调用真实模型 API，尚未验证无障碍、Shizuku 或第三方 App。
 
 ## Open Decisions
 
@@ -36,7 +42,7 @@
 
 ## Open Risks
 
-- 本机缺少 Java Runtime 和 Android SDK，Android 构建暂时阻塞。
+- 当前没有连接专用 Redmi/HyperOS 真机。
 - HyperOS 后台限制和 Shizuku 重启失效可能导致执行不稳定。
 - 微信界面、输入控件和搜索结果会随版本变化。
 - 消息自动发送必须实现严格的唯一收件人和敏感内容判断。
@@ -44,4 +50,4 @@
 
 ## Next Smallest Task
 
-安装 JDK 17 和 Android SDK，建立可编译的 Compose App 骨架，完成“启动 App → 观察屏幕 → 取消任务”首个真机垂直切片。
+实现 AccessibilityObserver、ExecutionDriver 和 PolicyGate，完成“启动 App → 读取前台 UI → 安全取消”的下一个 Kotlin 测试切片；再连接专用真机进行安装和权限验收。

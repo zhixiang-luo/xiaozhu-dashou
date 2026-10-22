@@ -7,3 +7,8 @@
 - [安全与隐私](../docs/05-security-privacy.md)
 
 技能不是对第三方 App 的私有 API 声明。每个技能必须使用用户授权的界面、官方 Deep Link 或公开能力，并遵守应用条款与平台安全边界。
+
+机器可读 schema：
+
+- [JSON Schema](schema/skill-manifest.schema.json)
+- `@personal-jarvis/skills`：Zod 校验器和 TypeScript 类型

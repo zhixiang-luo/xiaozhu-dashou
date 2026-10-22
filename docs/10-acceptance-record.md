@@ -4,7 +4,30 @@
 > Owner: QA
 > Last reviewed: 2026-10-23
 
-当前没有可运行的 Android App，因此尚无真机验收结果。
+## 2026-10-23 / build 0.1.0
+
+- Tester: controller agent
+- Commit: workspace before final integration commit
+- Device: not connected
+- Android / HyperOS: unavailable
+- Shizuku: not tested
+- WeChat: not tested
+- NetEase Cloud Music: not tested
+- Driver mode: not implemented
+
+### Passed
+
+- `:app:testDebugUnitTest`
+- `:app:assembleDebug`
+- Debug APK produced at `android/app/build/outputs/apk/debug/app-debug.apk`.
+
+### Failed
+
+- No attached ADB device; installation and runtime checks were not possible.
+
+### Release decision
+
+Not eligible for device testing until a dedicated Redmi/HyperOS phone is connected.
 
 ## 记录模板
 

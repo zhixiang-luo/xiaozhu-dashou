@@ -11,6 +11,7 @@
 - 建立 ADR、GitHub Issue 和 Pull Request 模板。
 - 建立共享 Zod/TypeScript 协议包和契约测试。
 - 建立 Fastify 编排服务、模型路由、OpenAI adapter、设备认证和任务取消接口。
+- 增加 WebSocket 任务事件流、确认接口、技能 manifest 校验和 Android Compose App 骨架。
 
 ### Changed
 

@@ -10,7 +10,7 @@
 
 **Spec:** `docs/01-prd.md`, `docs/guides/adding-app-skill.md`, `docs/06-testing-and-evaluation.md`
 
-> Implementation status: Not started.
+> Implementation status: Platform-neutral manifest schema and validator completed. Android loader and App skills remain pending.
 
 ## Global Constraints
 
