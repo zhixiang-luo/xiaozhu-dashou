@@ -4,7 +4,7 @@
 
 ## Current State
 
-项目已正式命名为 Personal Jarvis，定位为开发者专用 Android Agent 设备。共享合约、云端编排、技能 schema、UI 观察、风险门禁和 Shizuku UserService 已落地；当前进入真机权限验证与语音/悬浮入口开发。
+项目已正式命名为 Personal Jarvis，定位为开发者专用 Android Agent 设备。Redmi K60 真机已完成安装、无障碍观察和 Shizuku UserService 授权；当前进入语音/悬浮入口和首批真实 App 技能开发。
 
 ## Completed
 
@@ -23,6 +23,8 @@
 - 建立 Compose App 骨架并生成 Debug APK。
 - 接入 AccessibilityService、页面风险分类、取消代次门禁和无障碍执行驱动。
 - 接入 Shizuku Provider、AIDL UserService 和 Shizuku/无障碍自动回退。
+- 在 Redmi K60 / Android 15 / HyperOS OS3.0 上完成安装与权限验收。
+- 修复 HyperOS 下 Shizuku UserService 缺少进程名导致的启动崩溃。
 
 ## Verified
 
@@ -34,7 +36,9 @@
 - GitHub Actions 和 Issue 模板的 3 个 YAML 文件解析通过。
 - 未发现常见密钥格式内容。
 - Debug APK 位于 `android/app/build/outputs/apk/debug/app-debug.apk`。
-- 尚未连接目标手机，尚未调用真实模型 API，尚未验证无障碍、Shizuku 或第三方 App。
+- 真机屏幕读取返回 `com.personaljarvis: NORMAL, 4 nodes`。
+- Shizuku 服务端以 shell UID 运行，Personal Jarvis UserService 进程 `com.personaljarvis:jarvis-actions` 已启动。
+- 尚未调用真实模型 API，尚未执行第三方 App 任务。
 
 ## Open Decisions
 
@@ -52,4 +56,4 @@
 
 ## Next Smallest Task
 
-连接专用 Redmi/HyperOS 真机，安装 APK，开启无障碍和 Shizuku，验证页面读取、点击、输入、授权拒绝和取消屏障；真机可用后实现悬浮入口与按住说话。
+实现悬浮入口与按住说话，并将 UI 观察、Shizuku 执行器和 SafeExecutionRunner 串成一个可取消的前台任务闭环。

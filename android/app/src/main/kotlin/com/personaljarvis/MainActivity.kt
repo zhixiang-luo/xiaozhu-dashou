@@ -44,7 +44,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shizukuBridge = ShizukuUserServiceBridge(this)
+        shizukuBridge = ShizukuUserServiceBridge(this) { available ->
+            shizukuStatus = if (available) {
+                "Shizuku authorized"
+            } else {
+                "Shizuku disconnected"
+            }
+        }
         Shizuku.addRequestPermissionResultListener(
             permissionListener,
             Handler(Looper.getMainLooper())
@@ -59,6 +65,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        if (Shizuku.pingBinder() && hasShizukuPermission()) {
+            shizukuBridge.connect()
+        }
     }
 
     override fun onDestroy() {
@@ -71,7 +80,11 @@ class MainActivity : ComponentActivity() {
             !Shizuku.pingBinder() -> "Shizuku is not running"
             hasShizukuPermission() -> {
                 shizukuBridge.connect()
-                "Shizuku authorized"
+                if (shizukuBridge.isAvailable) {
+                    "Shizuku authorized"
+                } else {
+                    "Shizuku connecting"
+                }
             }
             else -> {
                 Shizuku.requestPermission(1001)

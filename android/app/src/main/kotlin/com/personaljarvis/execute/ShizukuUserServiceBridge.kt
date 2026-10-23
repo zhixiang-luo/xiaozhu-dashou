@@ -14,17 +14,20 @@ import rikka.shizuku.Shizuku
 import rikka.shizuku.Shizuku.UserServiceArgs
 
 class ShizukuUserServiceBridge(
-    private val context: Context
+    private val context: Context,
+    private val onConnectionChanged: (Boolean) -> Unit = {}
 ) : ShizukuBridge {
     private var service: IShizukuActionService? = null
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             service = binder?.let(IShizukuActionService.Stub::asInterface)
+            onConnectionChanged(service != null)
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             service = null
+            onConnectionChanged(false)
         }
     }
 
@@ -34,6 +37,7 @@ class ShizukuUserServiceBridge(
         .daemon(false)
         .version(1)
         .tag("personal-jarvis-actions")
+        .processNameSuffix("jarvis-actions")
 
     override val isAvailable: Boolean
         get() =
@@ -49,7 +53,9 @@ class ShizukuUserServiceBridge(
         ) {
             return
         }
-        Shizuku.bindUserService(userServiceArgs, connection)
+        runCatching {
+            Shizuku.bindUserService(userServiceArgs, connection)
+        }
     }
 
     override fun execute(action: RuntimeAction): DriverResult {

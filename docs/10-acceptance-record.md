@@ -6,30 +6,36 @@
 
 ## 2026-10-23 / build 0.1.0
 
-- Tester: controller agent
-- Commit: workspace before final integration commit
-- Device: not connected
-- Android / HyperOS: unavailable
-- Shizuku: API and UserService compiled; permission flow not device-tested
+- Tester: controller agent + device owner
+- Device: Redmi K60 (`23013RK75C`)
+- Android / HyperOS: Android 15 / HyperOS OS3.0
+- Shizuku: 13.6.0 app, server reported version 13.5/adb
 - WeChat: not tested
 - NetEase Cloud Music: not tested
-- Driver mode: accessibility and Shizuku abstractions implemented
+- Driver mode: Accessibility bound, Shizuku UserService bound
 
 ### Passed
 
 - `:app:testDebugUnitTest`
 - `:app:assembleDebug`
 - 14 JVM tests passed, including UI compaction, page classification, policy blocking, cancellation, and driver fallback.
+- APK installed successfully through ADB.
+- Accessibility service bound successfully.
+- “Read current screen” returned `com.personaljarvis: NORMAL, 4 nodes`.
+- Shizuku permission was granted with “始终允许”.
+- Shizuku UserService process `com.personaljarvis:jarvis-actions` is running.
+- APK SHA-256: `03f25b6ed2254e8385ef8b2f4c4063b3da61e1e266700b30cff6f3ba75ef44d9`.
 - Debug APK produced at `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 ### Failed
 
-- No attached ADB device; installation and runtime checks were not possible.
-- Shizuku UserService cannot be validated without a running Shizuku server.
+- Initial USB ADB did not expose an interface; wireless debugging pairing succeeded.
+- Initial Shizuku UserService binding crashed on HyperOS because `processNameSuffix` was missing; fixed with the explicit `jarvis-actions` suffix and rebuild.
+- Accessibility must be re-enabled after APK reinstall in the current prototype.
 
 ### Release decision
 
-Not eligible for device testing until a dedicated Redmi/HyperOS phone is connected.
+Eligible for the next vertical slice: floating entry, push-to-talk, and real app actions. Payment and credential flows remain blocked.
 
 ## 记录模板
 

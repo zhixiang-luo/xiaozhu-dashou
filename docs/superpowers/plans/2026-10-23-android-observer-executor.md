@@ -10,7 +10,7 @@
 
 **Spec:** `docs/04-android-execution.md`, `docs/05-security-privacy.md`
 
-> Implementation status: Tasks 1–3 implemented and unit verified. Physical-device validation and Task 4 remain pending.
+> Implementation status: Tasks 1–3 implemented, unit verified, and physically validated. Task 4 remains pending.
 
 ## Global Constraints
 
