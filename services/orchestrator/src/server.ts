@@ -2,10 +2,15 @@ import Fastify from "fastify";
 import fastifyWebsocket from "@fastify/websocket";
 import { z } from "zod";
 import { TaskCoordinator } from "./tasks/coordinator.js";
+import {
+  DevTaskPlanner,
+  type TaskPlanner
+} from "./tasks/planner.js";
 
 interface BuildServerOptions {
   deviceToken?: string;
   coordinator?: TaskCoordinator;
+  planner?: TaskPlanner;
 }
 
 const CreateTaskBodySchema = z.object({
@@ -20,6 +25,7 @@ const ConfirmationBodySchema = z.object({
 export function buildServer(options: BuildServerOptions = {}) {
   const app = Fastify({ logger: false });
   const coordinator = options.coordinator ?? new TaskCoordinator();
+  const planner = options.planner ?? new DevTaskPlanner();
   const deviceToken = options.deviceToken ?? "dev-token";
 
   app.register(fastifyWebsocket);
@@ -42,7 +48,10 @@ export function buildServer(options: BuildServerOptions = {}) {
     }
 
     const task = coordinator.create(parsed.data);
-    return reply.code(201).send(task);
+    return reply.code(201).send({
+      task,
+      actions: planner.plan(task)
+    });
   });
 
   app.post<{ Params: { id: string } }>(

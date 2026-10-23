@@ -12,7 +12,9 @@ import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -27,6 +29,20 @@ import android.widget.TextView
 import android.widget.Toast
 import com.personaljarvis.MainActivity
 import com.personaljarvis.R
+import com.personaljarvis.execute.AccessibilityDriver
+import com.personaljarvis.execute.FallbackExecutionDriver
+import com.personaljarvis.execute.ShizukuDriver
+import com.personaljarvis.execute.ShizukuUserServiceBridge
+import com.personaljarvis.observe.AccessibilityObserver
+import com.personaljarvis.policy.ActionResult
+import com.personaljarvis.policy.ObservationSnapshot
+import com.personaljarvis.policy.PageKind
+import com.personaljarvis.policy.RecipientResolution
+import com.personaljarvis.policy.RuntimeAction
+import com.personaljarvis.policy.RuntimeActionType
+import com.personaljarvis.policy.SafeExecutionRunner
+import com.personaljarvis.voice.PlannerResult
+import com.personaljarvis.voice.TaskPlannerClient
 import com.personaljarvis.voice.VoiceSessionController
 import com.personaljarvis.voice.VoiceErrorAction
 import com.personaljarvis.voice.VoiceRecognitionPolicy
@@ -35,6 +51,9 @@ import kotlin.math.abs
 
 class FloatingBubbleService : Service() {
     private lateinit var windowManager: WindowManager
+    private lateinit var shizukuBridge: ShizukuUserServiceBridge
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val taskPlannerClient = TaskPlannerClient()
     private var bubble: TextView? = null
     private var layoutParams: WindowManager.LayoutParams? = null
     private var speechRecognizer: SpeechRecognizer? = null
@@ -74,6 +93,8 @@ class FloatingBubbleService : Service() {
     override fun onCreate() {
         super.onCreate()
         windowManager = getSystemService(WindowManager::class.java)
+        shizukuBridge = ShizukuUserServiceBridge(this)
+        shizukuBridge.connect()
         createNotificationChannel()
     }
 
@@ -287,7 +308,76 @@ class FloatingBubbleService : Service() {
                 getString(R.string.voice_result_prefix) + submitted,
                 Toast.LENGTH_LONG
             ).show()
+            submitToPlanner(submitted)
         }
+    }
+
+    private fun submitToPlanner(instruction: String) {
+        Toast.makeText(this, "正在理解任务…", Toast.LENGTH_SHORT).show()
+        Thread {
+            val result = taskPlannerClient.submit(instruction)
+            mainHandler.post {
+                when (result) {
+                    is PlannerResult.Action -> executePlannedAction(result)
+                    is PlannerResult.Message -> {
+                        Toast.makeText(
+                            this,
+                            result.text,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    is PlannerResult.Failure -> {
+                        Toast.makeText(
+                            this,
+                            "任务服务不可用：${result.reason}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+        }.start()
+    }
+
+    private fun executePlannedAction(result: PlannerResult.Action) {
+        val planned = result.action
+        if (planned.type != "open_app") {
+            Toast.makeText(this, "暂不支持该动作", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val runtimeAction = RuntimeAction(
+            actionId = planned.actionId,
+            taskId = planned.taskId,
+            taskGeneration = planned.taskGeneration,
+            type = RuntimeActionType.OPEN_APP,
+            text = null,
+            targetPackage = planned.targetPackage
+        )
+        val observation = AccessibilityObserver.instance?.snapshot()
+            ?: ObservationSnapshot(
+                foregroundPackage = "unknown",
+                pageTitle = null,
+                pageKind = PageKind.NORMAL,
+                recipientResolution = RecipientResolution.NONE,
+                nodes = emptyList()
+            )
+        val driver = FallbackExecutionDriver(
+            ShizukuDriver(shizukuBridge),
+            AccessibilityDriver(this)
+        )
+        val runner = SafeExecutionRunner(
+            driver = driver,
+            initialGeneration = planned.taskGeneration
+        )
+        val actionResult = runner.execute(runtimeAction, observation)
+        val message = when (actionResult) {
+            ActionResult.Completed -> "已打开应用"
+            is ActionResult.Rejected -> "任务已取消或过期"
+            is ActionResult.NeedsConfirmation -> "需要你确认后继续"
+            is ActionResult.Blocked -> "当前页面需要你本人处理"
+            is ActionResult.Failed -> "执行失败：${actionResult.reason}"
+        }
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     private fun showEmptyResult() {

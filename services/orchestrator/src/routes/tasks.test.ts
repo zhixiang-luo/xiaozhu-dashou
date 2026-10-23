@@ -25,8 +25,43 @@ it("creates a queued task for an authorized device", async () => {
 
   expect(response.statusCode).toBe(201);
   expect(response.json()).toMatchObject({
-    instruction: "play music",
-    state: "queued"
+    task: {
+      instruction: "play music",
+      state: "queued"
+    }
+  });
+  await app.close();
+});
+
+it("plans opening Android settings", async () => {
+  const app = buildServer({ deviceToken: "secret" });
+  const response = await app.inject({
+    method: "POST",
+    url: "/v1/tasks",
+    headers: { authorization: "Bearer secret" },
+    payload: { instruction: "打开设置" }
+  });
+
+  expect(response.statusCode).toBe(201);
+  expect(response.json().actions[0]).toMatchObject({
+    type: "open_app",
+    packageName: "com.android.settings"
+  });
+  await app.close();
+});
+
+it("asks the user when the development planner does not support a task", async () => {
+  const app = buildServer({ deviceToken: "secret" });
+  const response = await app.inject({
+    method: "POST",
+    url: "/v1/tasks",
+    headers: { authorization: "Bearer secret" },
+    payload: { instruction: "帮我做一件还没接入的事情" }
+  });
+
+  expect(response.statusCode).toBe(201);
+  expect(response.json().actions[0]).toMatchObject({
+    type: "ask_user"
   });
   await app.close();
 });

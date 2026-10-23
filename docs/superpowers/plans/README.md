@@ -19,5 +19,5 @@
 | --- | --- |
 | Contracts Foundation | Implemented and verified |
 | Orchestrator and Model Gateway | Core, model adapter, REST and WebSocket implemented |
-| Android Observer and Executor | Tasks 1–3 and floating/voice verified; cloud task submission pending |
+| Android Observer and Executor | Completed; floating voice submission and local open-app execution verified |
 | First App Skills | Platform-neutral manifest schema implemented; Android loader pending |

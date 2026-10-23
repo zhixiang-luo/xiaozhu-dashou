@@ -4,9 +4,10 @@ import com.personaljarvis.execute.ExecutionDriver
 
 class SafeExecutionRunner(
     private val driver: ExecutionDriver,
-    private val policy: PolicyGate = PolicyGate()
+    private val policy: PolicyGate = PolicyGate(),
+    initialGeneration: Int = 1
 ) {
-    private var generation = 1
+    private var generation = initialGeneration
 
     fun execute(
         action: RuntimeAction,

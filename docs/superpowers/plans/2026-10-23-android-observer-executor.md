@@ -10,7 +10,7 @@
 
 **Spec:** `docs/04-android-execution.md`, `docs/05-security-privacy.md`
 
-> Implementation status: Tasks 1–3 and the floating/voice portion of Task 4 are implemented and physically validated. `TaskPlannerClient` remains pending.
+> Implementation status: Completed. Voice, floating entry, task submission, policy gate, and local action execution are implemented; real third-party App skills remain in the next plan.
 
 ## Global Constraints
 

@@ -4,7 +4,7 @@
 
 ## Current State
 
-项目已正式命名为小猪搭手，定位为开发者专用 Android Agent 设备。Redmi K60 真机已完成安装、无障碍观察、Shizuku UserService 授权和悬浮语音入口；当前进入任务提交与真实 App 技能开发。
+项目已正式命名为小猪搭手，定位为开发者专用 Android Agent 设备。Redmi K60 真机已完成安装、无障碍观察、Shizuku UserService、悬浮语音和开发版任务规划链路；当前进入首批真实 App 技能开发。
 
 ## Completed
 
@@ -27,13 +27,14 @@
 - 修复 HyperOS 下 Shizuku UserService 缺少进程名导致的启动崩溃。
 - 将 App 可见按钮和状态切换为中文，并在真机验证页面读取显示中文结果。
 - 建立中文悬浮球：短按回到主界面，长按启动系统语音识别并显示临时转写结果。
+- 接入 `TaskPlannerClient` 和开发版任务规划器，支持把“打开设置/微信/网易云/高德”转换为本机动作。
 
 ## Verified
 
 - 共享合约：5 项 Vitest 测试通过，TypeScript 严格类型检查通过。
 - 云端编排：12 项 Vitest 测试通过，TypeScript 严格类型检查通过。
 - 技能 schema：4 项 Vitest 测试通过，TypeScript 严格类型检查通过。
-- Android：21 项 JVM 单元测试通过，`assembleDebug` 成功。
+- Android：24 项 JVM 单元测试通过，`assembleDebug` 成功。
 - `node scripts/check-docs.mjs` 通过：相对链接可解析、代码块闭合、无空文档和尾随空格。
 - GitHub Actions 和 Issue 模板的 3 个 YAML 文件解析通过。
 - 未发现常见密钥格式内容。
@@ -44,6 +45,8 @@
 - 悬浮球前台服务已运行，系统窗口层确认 168×168 的悬浮控件存在。
 - 短按悬浮球已在真机验证可以打开小猪搭手；长按手势能启动语音会话且进程不崩溃。
 - 录音状态增加“正在听…”展开、触感、脉冲和实时部分文字；按住等待期间不会提前提示未听清。
+- 本地任务服务已验证为“打开设置”返回 `open_app / com.android.settings` 动作。
+- `adb reverse tcp:4100 tcp:4100` 已建立，手机通过回环地址访问任务服务。
 - 设备所有者已完成新一轮真机体验测试，确认录音状态反馈与中文转写效果可接受。
 - 尚未调用真实模型 API，尚未执行第三方 App 任务。
 
@@ -64,4 +67,4 @@
 
 ## Next Smallest Task
 
-实现 `TaskPlannerClient`，把悬浮球产生的中文任务提交到 `/v1/tasks`，并将服务端动作交给本地 `SafeExecutionRunner`。
+在真机上长按悬浮球说“打开设置”，验证任务提交、动作返回和 Shizuku/无障碍打开 App，然后开始微信与网易云技能。
