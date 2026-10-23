@@ -4,6 +4,7 @@
 
 ## 阅读顺序
 
+0. [项目故事与终极愿景](../STORY.md)
 1. [产品宪章](00-product-charter.md)
 2. [V1 产品需求](01-prd.md)
 3. [系统架构](02-system-architecture.md)
