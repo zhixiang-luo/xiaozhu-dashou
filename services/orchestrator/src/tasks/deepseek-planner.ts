@@ -43,7 +43,8 @@ export class DeepSeekTaskPlanner implements TaskPlanner {
       const timeZone = this.options.timeZone ?? "Asia/Shanghai";
       const context = {
         now: new Date(nowMillis).toISOString(),
-        timeZone
+        timeZone,
+        appContext: task.context
       };
       const intent = await this.client.infer(
         task.instruction,

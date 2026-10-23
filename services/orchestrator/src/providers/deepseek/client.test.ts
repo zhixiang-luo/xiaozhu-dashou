@@ -46,7 +46,23 @@ describe("DeepSeekIntentClient", () => {
       ],
       {
         now: "2026-10-23T05:00:00.000Z",
-        timeZone: "Asia/Shanghai"
+        timeZone: "Asia/Shanghai",
+        appContext: {
+          currentTime: "2026-10-23T05:00:00.000Z",
+          timeZone: "Asia/Shanghai",
+          upcomingEvents: [
+            {
+              title: "和猪哥开会",
+              startTime: "2026-10-24T15:00:00+08:00",
+              endTime: "2026-10-24T16:00:00+08:00",
+              timeZone: "Asia/Shanghai"
+            }
+          ],
+          recentTasks: [],
+          relevantMemory: [],
+          contacts: [],
+          preferences: []
+        }
       }
     );
 
@@ -70,6 +86,10 @@ describe("DeepSeekIntentClient", () => {
       "2026-10-23T05:00:00.000Z"
     );
     expect(body.messages[0].content).toContain("Asia/Shanghai");
+    expect(body.messages[0].content).toContain("和猪哥开会");
+    expect(body.messages[0].content).toContain(
+      "titleQuery 使用上下文里的实际标题"
+    );
   });
 
   it("rejects malformed model JSON", async () => {

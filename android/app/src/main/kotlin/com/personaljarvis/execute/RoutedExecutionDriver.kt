@@ -12,7 +12,7 @@ class RoutedExecutionDriver(
         get() = calendar.isAvailable || general.isAvailable
 
     override fun execute(action: RuntimeAction): DriverResult {
-        return if (action.type == RuntimeActionType.CALENDAR_CREATE_EVENT) {
+        return if (action.type.name.startsWith("CALENDAR_")) {
             calendar.execute(action)
         } else {
             general.execute(action)

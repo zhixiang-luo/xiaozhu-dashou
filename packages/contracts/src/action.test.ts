@@ -48,6 +48,44 @@ describe("ActionSchema", () => {
     expect(result.type).toBe("calendar_create_event");
   });
 
+  it("accepts calendar list, update and delete actions", () => {
+    const base = {
+      actionId: "a1",
+      taskId: "t1",
+      taskGeneration: 1,
+      expectedState: "calendar.done",
+      timeoutMs: 10000,
+      timeZone: "Asia/Shanghai",
+      rangeStartMillis: 1792771200000,
+      rangeEndMillis: 1792857599000
+    };
+
+    expect(
+      ActionSchema.parse({
+        ...base,
+        type: "calendar_list_events",
+        titleQuery: "朱哥"
+      }).type
+    ).toBe("calendar_list_events");
+    expect(
+      ActionSchema.parse({
+        ...base,
+        type: "calendar_update_event",
+        titleQuery: "朱哥开会",
+        newTitle: "和朱哥改期会议",
+        newStartTimeMillis: 1792832400000,
+        newDurationMinutes: 90
+      }).type
+    ).toBe("calendar_update_event");
+    expect(
+      ActionSchema.parse({
+        ...base,
+        type: "calendar_delete_event",
+        titleQuery: "朱哥开会"
+      }).type
+    ).toBe("calendar_delete_event");
+  });
+
   it("rejects unsupported tools", () => {
     expect(() =>
       ActionSchema.parse({

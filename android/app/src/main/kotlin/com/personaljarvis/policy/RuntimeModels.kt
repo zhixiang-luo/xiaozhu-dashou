@@ -8,6 +8,9 @@ enum class RuntimeActionType {
     TAP,
     INPUT_TEXT,
     CALENDAR_CREATE_EVENT,
+    CALENDAR_LIST_EVENTS,
+    CALENDAR_UPDATE_EVENT,
+    CALENDAR_DELETE_EVENT,
     SEND_MESSAGE,
     MEDIA_CONTROL
 }
@@ -43,7 +46,13 @@ data class RuntimeAction(
     val eventTitle: String? = null,
     val startTimeMillis: Long? = null,
     val endTimeMillis: Long? = null,
-    val timeZone: String? = null
+    val timeZone: String? = null,
+    val titleQuery: String? = null,
+    val rangeStartMillis: Long? = null,
+    val rangeEndMillis: Long? = null,
+    val newTitle: String? = null,
+    val newStartTimeMillis: Long? = null,
+    val newDurationMinutes: Int? = null
 )
 
 data class ObservationSnapshot(
@@ -63,12 +72,13 @@ sealed interface RiskDecision {
 
 sealed interface DriverResult {
     data object Success : DriverResult
+    data class SuccessWithMessage(val message: String) : DriverResult
     data class Failure(val reason: String) : DriverResult
     data class Unsupported(val reason: String) : DriverResult
 }
 
 sealed interface ActionResult {
-    data object Completed : ActionResult
+    data class Completed(val message: String? = null) : ActionResult
     data class Rejected(val reason: String) : ActionResult
     data class NeedsConfirmation(val reason: String) : ActionResult
     data class Blocked(val reason: String) : ActionResult

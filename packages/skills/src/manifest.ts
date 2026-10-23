@@ -92,6 +92,27 @@ const SkillStepSchema = z.discriminatedUnion("action", [
     timeZoneKey: z.string().min(1).optional()
   }).strict(),
   StepEnvelope.extend({
+    action: z.literal("list_calendar_events"),
+    rangeStartKey: z.string().min(1),
+    rangeEndKey: z.string().min(1),
+    titleQueryKey: z.string().min(1).optional()
+  }).strict(),
+  StepEnvelope.extend({
+    action: z.literal("update_calendar_event"),
+    titleQueryKey: z.string().min(1),
+    rangeStartKey: z.string().min(1),
+    rangeEndKey: z.string().min(1),
+    newTitleKey: z.string().min(1).optional(),
+    newStartTimeKey: z.string().min(1).optional(),
+    newDurationKey: z.string().min(1).optional()
+  }).strict(),
+  StepEnvelope.extend({
+    action: z.literal("delete_calendar_event"),
+    titleQueryKey: z.string().min(1),
+    rangeStartKey: z.string().min(1),
+    rangeEndKey: z.string().min(1)
+  }).strict(),
+  StepEnvelope.extend({
     action: z.literal("invoke_skill"),
     skill: z.string().min(1),
     inputs: z.record(z.string(), z.string()).default({})

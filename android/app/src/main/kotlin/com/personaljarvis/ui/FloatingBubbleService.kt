@@ -32,6 +32,8 @@ import com.personaljarvis.execute.FallbackExecutionDriver
 import com.personaljarvis.execute.RoutedExecutionDriver
 import com.personaljarvis.execute.ShizukuDriver
 import com.personaljarvis.execute.ShizukuUserServiceBridge
+import com.personaljarvis.memory.ContextBuilder
+import com.personaljarvis.memory.MemoryStore
 import com.personaljarvis.observe.AccessibilityObserver
 import com.personaljarvis.policy.ActionResult
 import com.personaljarvis.policy.ObservationSnapshot
@@ -55,6 +57,8 @@ class FloatingBubbleService : Service() {
     private lateinit var shizukuBridge: ShizukuUserServiceBridge
     private val mainHandler = Handler(Looper.getMainLooper())
     private val taskPlannerClient = TaskPlannerClient()
+    private lateinit var memoryStore: MemoryStore
+    private lateinit var contextBuilder: ContextBuilder
     private var bubble: TextView? = null
     private var layoutParams: WindowManager.LayoutParams? = null
     private var realtimeSession: RealtimeVoiceSession? = null
@@ -103,6 +107,8 @@ class FloatingBubbleService : Service() {
     override fun onCreate() {
         super.onCreate()
         windowManager = getSystemService(WindowManager::class.java)
+        memoryStore = MemoryStore(this)
+        contextBuilder = ContextBuilder(this, memoryStore)
         shizukuBridge = ShizukuUserServiceBridge(this)
         shizukuBridge.connect()
         createNotificationChannel()
@@ -117,6 +123,17 @@ class FloatingBubbleService : Service() {
         if (bubble == null) {
             addBubble()
         }
+        if (
+            BuildConfig.DEBUG &&
+            intent?.action == ACTION_RUN_INSTRUCTION
+        ) {
+            intent.getStringExtra(EXTRA_INSTRUCTION)
+                ?.trim()
+                ?.takeIf(String::isNotEmpty)
+                ?.let { instruction ->
+                    mainHandler.post { submitToPlanner(instruction) }
+                }
+        }
         return START_STICKY
     }
 
@@ -130,6 +147,7 @@ class FloatingBubbleService : Service() {
         bubble = null
         realtimeSession?.cancel()
         realtimeSession = null
+        memoryStore.close()
         super.onDestroy()
     }
 
@@ -309,7 +327,17 @@ class FloatingBubbleService : Service() {
     private fun submitToPlanner(instruction: String) {
         Toast.makeText(this, "正在理解任务…", Toast.LENGTH_SHORT).show()
         Thread {
-            val result = taskPlannerClient.submit(instruction)
+            val context = runCatching { contextBuilder.build() }.getOrNull()
+            val result = taskPlannerClient.submit(instruction, context)
+            if (result is PlannerResult.Plan) {
+                runCatching {
+                    memoryStore.recordEvent(
+                        kind = "task",
+                        source = "agent",
+                        summary = instruction
+                    )
+                }
+            }
             mainHandler.post {
                 when (result) {
                     is PlannerResult.Plan -> executePlannedActions(result)
@@ -349,12 +377,13 @@ class FloatingBubbleService : Service() {
             driver = driver,
             initialGeneration = plan.actions.first().taskGeneration
         )
+        var completionMessage: String? = null
 
         fun executeAt(index: Int) {
             if (index >= plan.actions.size) {
                 Toast.makeText(
                     this,
-                    "任务执行完成，请核对最终页面",
+                    completionMessage ?: "任务执行完成，请核对最终页面",
                     Toast.LENGTH_LONG
                 ).show()
                 return
@@ -407,6 +436,42 @@ class FloatingBubbleService : Service() {
                     endTimeMillis = planned.endTimeMillis,
                     timeZone = planned.timeZone
                 )
+                "calendar_list_events" -> RuntimeAction(
+                    actionId = planned.actionId,
+                    taskId = planned.taskId,
+                    taskGeneration = planned.taskGeneration,
+                    type = RuntimeActionType.CALENDAR_LIST_EVENTS,
+                    text = null,
+                    timeZone = planned.timeZone,
+                    titleQuery = planned.titleQuery,
+                    rangeStartMillis = planned.rangeStartMillis,
+                    rangeEndMillis = planned.rangeEndMillis
+                )
+                "calendar_update_event" -> RuntimeAction(
+                    actionId = planned.actionId,
+                    taskId = planned.taskId,
+                    taskGeneration = planned.taskGeneration,
+                    type = RuntimeActionType.CALENDAR_UPDATE_EVENT,
+                    text = null,
+                    timeZone = planned.timeZone,
+                    titleQuery = planned.titleQuery,
+                    rangeStartMillis = planned.rangeStartMillis,
+                    rangeEndMillis = planned.rangeEndMillis,
+                    newTitle = planned.newTitle,
+                    newStartTimeMillis = planned.newStartTimeMillis,
+                    newDurationMinutes = planned.newDurationMinutes
+                )
+                "calendar_delete_event" -> RuntimeAction(
+                    actionId = planned.actionId,
+                    taskId = planned.taskId,
+                    taskGeneration = planned.taskGeneration,
+                    type = RuntimeActionType.CALENDAR_DELETE_EVENT,
+                    text = null,
+                    timeZone = planned.timeZone,
+                    titleQuery = planned.titleQuery,
+                    rangeStartMillis = planned.rangeStartMillis,
+                    rangeEndMillis = planned.rangeEndMillis
+                )
                 else -> null
             }
 
@@ -428,7 +493,10 @@ class FloatingBubbleService : Service() {
                     nodes = emptyList()
                 )
             when (val result = runner.execute(runtimeAction, observation)) {
-                ActionResult.Completed -> {
+                is ActionResult.Completed -> {
+                    if (!result.message.isNullOrBlank()) {
+                        completionMessage = result.message
+                    }
                     bubble?.postDelayed(
                         { executeAt(index + 1) },
                         if (runtimeAction.type == RuntimeActionType.OPEN_APP) {
@@ -588,6 +656,9 @@ class FloatingBubbleService : Service() {
     }
 
     companion object {
+        const val ACTION_RUN_INSTRUCTION =
+            "com.personaljarvis.DEBUG_RUN_INSTRUCTION"
+        const val EXTRA_INSTRUCTION = "instruction"
         private const val CHANNEL_ID = "xiaozhu_dashou_bubble"
         private const val NOTIFICATION_ID = 2026
         private const val LONG_PRESS_MS = 450L

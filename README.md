@@ -72,7 +72,8 @@ App、几百个按钮。
 | 火山双向流式 ASR | 可用 | 16 kHz PCM，边听边识别，松手后提交累计文本 |
 | DeepSeek 意图拆解 | 可用 | 把自然语言转成受 Schema 约束的技能调用 |
 | 系统设置 | 可用 | 语音打开设置已在 Redmi K60 真机验证 |
-| 系统日历创建 | Beta | 已接入 CalendarContract，等待目标设备最终写入验收 |
+| 系统日历 | 可用 | 查询、创建、修改和删除个人日程；唯一匹配并回读验证 |
+| 本地背景记忆 | Beta | SQLite 保存近期任务、联系人别名和偏好，规划前注入未来日历与近期上下文 |
 | 微信文件传输助手 | Beta | 已录制坐标和验证点，支持自然语言指定消息正文 |
 | 微信任意联系人 | 计划中 | 需要唯一收件人、搜索页和视觉验证校准 |
 | 网易云音乐 / 高德 | 计划中 | 已有技能清单，等待真机回放 |
@@ -98,6 +99,8 @@ flowchart LR
 - **语音与意图分离**：ASR 只负责听清，DeepSeek 只负责拆解意图。
 - **模型不能直接点屏幕**：模型只能选择已注册技能并填写参数。
 - **技能版本化**：每个 App 流程由 `skills/**/manifest.yaml` 描述。
+- **先补背景再规划**：`ContextBuilder` 在本机汇总前台页面、未来日历、近期任务、
+  联系人别名和偏好，只把紧凑结构化上下文交给规划模型。
 - **手机负责最终授权**：所有动作经过本地风险策略、任务代次和页面检查。
 - **可替换模型**：语音、意图和视觉能力使用独立适配器，不绑定单一供应商。
 
@@ -122,7 +125,9 @@ flowchart LR
 - 因此微信发送仍标记为 Beta，只应在专用测试设备启用。
 - 设备 Token 是本地开发认证，不是面向互联网的产品级账号体系。
 - DeepSeek 会接收用户文字，火山会接收语音；默认部署仅监听本机回环地址。
-- 日历创建需要 `READ_CALENDAR` / `WRITE_CALENDAR`，首版只创建个人日程，不邀请他人。
+- 日历需要 `READ_CALENDAR` / `WRITE_CALENDAR`。重复日程、零个匹配或多个匹配都会停止，
+  首版不邀请他人，也不批量修改或删除。
+- 联系人别名和偏好已有本地存储接口，但首版还没有独立的查看、编辑和删除界面。
 
 ## 5 分钟开始
 
@@ -191,6 +196,17 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
 设备配置和权限步骤见 [专用设备配置](docs/11-device-setup.md)。
+
+Debug APK 还包含一个受 `android.permission.DUMP` 保护、只用于真机回归的文本入口。它会
+跳过语音转写，但仍经过同一套 `ContextBuilder`、DeepSeek、动作校验和本地执行器；正式
+发布包不包含该入口：
+
+```bash
+adb shell am broadcast \
+  -a com.personaljarvis.DEBUG_RUN_TASK \
+  -n com.personaljarvis/.debug.SkillTraceReceiver \
+  --es instruction 我明天下午有什么安排
+```
 
 ## 仓库结构
 

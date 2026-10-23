@@ -54,6 +54,30 @@ export const ActionSchema = z.discriminatedUnion("type", [
     description: z.string().max(4_000).optional()
   }),
   ActionEnvelope.extend({
+    type: z.literal("calendar_list_events"),
+    rangeStartMillis: z.number().int().positive(),
+    rangeEndMillis: z.number().int().positive(),
+    titleQuery: z.string().trim().min(1).max(200).optional(),
+    timeZone: z.string().min(1).max(64)
+  }),
+  ActionEnvelope.extend({
+    type: z.literal("calendar_update_event"),
+    rangeStartMillis: z.number().int().positive(),
+    rangeEndMillis: z.number().int().positive(),
+    titleQuery: z.string().trim().min(1).max(200),
+    newTitle: z.string().trim().min(1).max(200).optional(),
+    newStartTimeMillis: z.number().int().positive().optional(),
+    newDurationMinutes: z.number().int().min(1).max(1_440).optional(),
+    timeZone: z.string().min(1).max(64)
+  }),
+  ActionEnvelope.extend({
+    type: z.literal("calendar_delete_event"),
+    rangeStartMillis: z.number().int().positive(),
+    rangeEndMillis: z.number().int().positive(),
+    titleQuery: z.string().trim().min(1).max(200),
+    timeZone: z.string().min(1).max(64)
+  }),
+  ActionEnvelope.extend({
     type: z.literal("ask_user"),
     question: z.string().min(1)
   }),

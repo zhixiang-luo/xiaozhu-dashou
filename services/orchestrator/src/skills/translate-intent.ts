@@ -51,8 +51,13 @@ export async function translateIntent(
     ];
   }
 
-  if (intent.skillId === "calendar.create-event") {
-    return translateCalendarEvent(task, argumentsValue, options);
+  if (intent.skillId.startsWith("calendar.")) {
+    return translateCalendarIntent(
+      task,
+      intent.skillId,
+      argumentsValue,
+      options
+    );
   }
 
   if (intent.skillId !== "wechat.send-message") {
@@ -131,7 +136,76 @@ export async function translateIntent(
   ];
 }
 
-function translateCalendarEvent(
+function translateCalendarIntent(
+  task: TaskRecord,
+  skillId: string,
+  argumentsValue: Record<string, string | number | boolean>,
+  options: IntentTranslationOptions
+): AssistantAction[] {
+  if (skillId === "calendar.create-event") {
+    return createCalendarEvent(task, argumentsValue, options);
+  }
+
+  const range = parseCalendarRange(argumentsValue, options);
+  if (!range) {
+    return [
+      askUser(
+        task,
+        "我没能确定查询日期范围，请再说一次具体是哪一天。"
+      )
+    ];
+  }
+
+  if (skillId === "calendar.list-events") {
+    const titleQuery = stringArgument(
+      argumentsValue.titleQuery
+    ).trim();
+    return [
+      action(task, {
+        type: "calendar_list_events",
+        expectedState: "calendar.events_listed",
+        timeoutMs: 10_000,
+        rangeStartMillis: range.start,
+        rangeEndMillis: range.end,
+        ...(titleQuery ? { titleQuery } : {}),
+        timeZone: range.timeZone
+      })
+    ];
+  }
+
+  const titleQuery = stringArgument(argumentsValue.titleQuery).trim();
+  if (!titleQuery || titleQuery.length > 200) {
+    return [askUser(task, "请告诉我需要修改或删除的日程标题。")];
+  }
+
+  if (skillId === "calendar.delete-event") {
+    return [
+      action(task, {
+        type: "calendar_delete_event",
+        expectedState: "calendar.event_deleted",
+        timeoutMs: 10_000,
+        rangeStartMillis: range.start,
+        rangeEndMillis: range.end,
+        titleQuery,
+        timeZone: range.timeZone
+      })
+    ];
+  }
+
+  if (skillId === "calendar.update-event") {
+    return updateCalendarEvent(
+      task,
+      argumentsValue,
+      range,
+      titleQuery,
+      options
+    );
+  }
+
+  return [askUser(task, "这个日历操作暂时不可用。")];
+}
+
+function createCalendarEvent(
   task: TaskRecord,
   argumentsValue: Record<string, string | number | boolean>,
   options: IntentTranslationOptions
@@ -183,6 +257,100 @@ function translateCalendarEvent(
       timeZone
     })
   ];
+}
+
+function updateCalendarEvent(
+  task: TaskRecord,
+  argumentsValue: Record<string, string | number | boolean>,
+  range: CalendarRange,
+  titleQuery: string,
+  options: IntentTranslationOptions
+): AssistantAction[] {
+  const newTitle = stringArgument(argumentsValue.newTitle).trim();
+  const newStartTime = stringArgument(
+    argumentsValue.newStartTime
+  ).trim();
+  const newDurationMinutes =
+    numberArgument(argumentsValue.newDurationMinutes);
+  const newStartTimeMillis = newStartTime
+    ? parseOffsetDateTime(newStartTime)
+    : undefined;
+  const nowMillis = options.nowMillis ?? Date.now();
+
+  if (!newTitle && !newStartTime && newDurationMinutes === undefined) {
+    return [askUser(task, "请告诉我这次要修改标题、时间还是时长。")];
+  }
+  if (newTitle.length > 200) {
+    return [askUser(task, "新标题需要在 200 字以内。")];
+  }
+  if (newStartTime && newStartTimeMillis === null) {
+    return [askUser(task, "新的开始时间需要包含明确时区。")];
+  }
+  if (
+    typeof newStartTimeMillis === "number" &&
+    newStartTimeMillis <= nowMillis
+  ) {
+    return [askUser(task, "新的开始时间已经过去了，请给出未来时间。")];
+  }
+  if (
+    newDurationMinutes !== undefined &&
+    (!Number.isInteger(newDurationMinutes) ||
+      newDurationMinutes < 1 ||
+      newDurationMinutes > 1_440)
+  ) {
+    return [askUser(task, "日程时长需要在 1 分钟到 24 小时之间。")];
+  }
+
+  return [
+    action(task, {
+      type: "calendar_update_event",
+      expectedState: "calendar.event_updated",
+      timeoutMs: 10_000,
+      rangeStartMillis: range.start,
+      rangeEndMillis: range.end,
+      titleQuery,
+      ...(newTitle ? { newTitle } : {}),
+      ...(newStartTimeMillis !== null && newStartTimeMillis !== undefined
+        ? { newStartTimeMillis }
+        : {}),
+      ...(newDurationMinutes !== undefined
+        ? { newDurationMinutes }
+        : {}),
+      timeZone: range.timeZone
+    })
+  ];
+}
+
+interface CalendarRange {
+  start: number;
+  end: number;
+  timeZone: string;
+}
+
+function parseCalendarRange(
+  argumentsValue: Record<string, string | number | boolean>,
+  options: IntentTranslationOptions
+): CalendarRange | null {
+  const start = parseOffsetDateTime(
+    stringArgument(argumentsValue.rangeStart).trim()
+  );
+  const end = parseOffsetDateTime(
+    stringArgument(argumentsValue.rangeEnd).trim()
+  );
+  const timeZone =
+    stringArgument(argumentsValue.timeZone).trim() ||
+    options.timeZone ||
+    "Asia/Shanghai";
+  if (
+    start === null ||
+    end === null ||
+    end <= start ||
+    end - start > 366 * 24 * 60 * 60 * 1_000 ||
+    !isValidTimeZone(timeZone)
+  ) {
+    return null;
+  }
+  return { start, end, timeZone };
 }
 
 function stringArgument(value: string | number | boolean | undefined): string {

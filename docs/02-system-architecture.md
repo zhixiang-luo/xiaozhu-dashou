@@ -15,6 +15,8 @@ Android App ── HTTP/WSS ──> Orchestrator ──> DeepSeek / Volcano / fu
         │                         └─ Task store / model routing / prompts
         │
         ├─ Observation (UI tree, metadata, redacted screenshot)
+        ├─ ContextBuilder + MemoryStore
+        │    (calendar / tasks / aliases / preferences)
         ├─ Local PolicyGate
         ├─ ExecutionDriver
         │    ├─ ShizukuDriver
@@ -35,6 +37,8 @@ Android App ── HTTP/WSS ──> Orchestrator ──> DeepSeek / Volcano / fu
 - `ShizukuDriver` 提供增强输入；不可用时切换 `AccessibilityDriver`。
 - `PolicyGate` 和 `Redactor` 完全位于本机，决定什么可上传、可执行和必须停止。
 - `MemoryStore` 维护屏幕时间线、任务历史、联系人别名、技能和偏好，但排除密码、验证码与支付凭据。
+- `ContextBuilder` 在每次规划前读取未来 14 天日历、最近 24 小时任务、最近 7 天相关摘要、
+  联系人别名、偏好和当前前台页面，生成有长度上限的 `TaskContext`。
 
 ### Orchestrator
 
@@ -61,12 +65,13 @@ Android App ── HTTP/WSS ──> Orchestrator ──> DeepSeek / Volcano / fu
 ## 任务数据流
 
 1. App 将语音转为文字，生成本地 `TaskSession`。
-2. App 采集前台包名、紧凑 UI 树和必要截图，并在本地脱敏。
-3. Orchestrator 选择规划模型，返回下一步动作或确认请求。
-4. App 对动作做 schema、能力、风险和时效校验。
-5. 合法动作交给当前 `ExecutionDriver` 执行。
-6. App 重新观察并对预期状态做验证，将最小结果回传。
-7. 循环直到完成、失败、取消或需要人工处理。
+2. `ContextBuilder` 汇总前台页面、未来日历、近期任务、相关摘要、别名和偏好。
+3. App 把指令与紧凑 `TaskContext` 发送给 Orchestrator；服务端不持久化该上下文。
+4. Orchestrator 选择规划模型，返回下一步动作或确认请求。
+5. App 对动作做 schema、能力、风险和时效校验。
+6. 合法动作交给当前 `ExecutionDriver` 执行；日历修改和删除先实时重查，执行后回读。
+7. App 重新观察并对预期状态做验证，将最小结果回传。
+8. 循环直到完成、失败、取消或需要人工处理。
 
 ## 状态机
 

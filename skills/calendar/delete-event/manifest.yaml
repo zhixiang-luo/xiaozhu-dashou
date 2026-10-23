@@ -1,0 +1,38 @@
+id: calendar.delete-event
+version: 0.1.0
+displayName: 删除系统日历日程
+appPackages:
+  - com.android.providers.calendar
+supportedVersions:
+  - Android 11+
+prerequisites:
+  - calendar.permission_granted
+capabilities:
+  - system_provider
+risk:
+  sideEffect: none
+  handoffOn:
+    - ambiguous_event
+    - recurring_event
+inputs:
+  titleQuery:
+    type: text
+    required: true
+    description: 用于唯一匹配日程的标题
+  rangeStart:
+    type: text
+    required: true
+    description: 带时区的查询范围开始
+  rangeEnd:
+    type: text
+    required: true
+    description: 带时区的查询范围结束
+verification:
+  - calendar_event_unique
+  - calendar_event_absent
+steps:
+  - id: delete-event
+    action: delete_calendar_event
+    titleQueryKey: titleQuery
+    rangeStartKey: rangeStart
+    rangeEndKey: rangeEnd

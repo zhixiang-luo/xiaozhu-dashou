@@ -80,6 +80,32 @@ steps:
     expect(manifest.capabilities).toContain("system_provider");
   });
 
+  it("accepts a system-provider delete workflow", () => {
+    const manifest = parseSkillYaml(`
+id: calendar.delete-event
+version: 0.1.0
+appPackages: [com.android.providers.calendar]
+prerequisites: [calendar.permission]
+capabilities: [system_provider]
+risk: { sideEffect: none }
+verification: [event_absent]
+inputs:
+  titleQuery: { type: text, required: true }
+  rangeStart: { type: text, required: true }
+  rangeEnd: { type: text, required: true }
+steps:
+  - id: delete
+    action: delete_calendar_event
+    titleQueryKey: titleQuery
+    rangeStartKey: rangeStart
+    rangeEndKey: rangeEnd
+`);
+
+    expect(manifest.steps[0]).toMatchObject({
+      action: "delete_calendar_event"
+    });
+  });
+
   it("rejects unknown step actions", () => {
     expect(() =>
       parseSkillYaml(

@@ -68,6 +68,64 @@
 
 Eligible for the next vertical slice: floating entry, push-to-talk, and real app actions. Payment and credential flows remain blocked.
 
+## 2026-10-23 / calendar-crud-context
+
+- Tester: controller agent + device owner
+- Commit: feature commit on `main` containing calendar CRUD and local context
+- Device: Redmi K60 (`23013RK75C`)
+- Android / HyperOS: Android 15 / HyperOS OS3.0
+- Shizuku: installed; calendar acceptance does not depend on Shizuku UserService
+- WeChat: not tested in this run
+- NetEase Cloud Music: not tested
+- Driver mode: CalendarContract + Accessibility observation
+- Build: Debug APK `0.1.0`
+
+### Passed
+
+- `pnpm check` passed: contracts 10 tests, skills 11 tests,
+  orchestrator 38 tests, typecheck and documentation links all passed.
+- Android `:app:testDebugUnitTest --rerun-tasks` passed: 38 tests.
+- Android `:app:assembleDebug --rerun-tasks` passed.
+- Latest Debug APK SHA-256:
+  `148616e71ed3ea9054dceb939e47e8ee7811a7d124f527f9e57c5e1b2ef7867f`.
+- Debug-only text acceptance route passed through `ContextBuilder`, DeepSeek,
+  action validation and the local calendar executor.
+- “我明天下午有什么安排” produced a plan and wrote a local task record.
+- “把明天下午和朱哥开会的日程改到下午四点” used the actual context title
+  “和猪哥开会” and updated event 22 from 15:00 to 16:00.
+- Read-back verified `dtstart=1792828800000`, `dtend=1792832400000`,
+  `eventTimezone=Asia/Shanghai`.
+- “删除明天下午跟猪哥开会的日程” deleted event 22; a second provider query
+  confirmed it was absent.
+- App process restart preserved five local task records in `xiaozhu-memory.db`.
+
+### Failed
+
+- The first update attempt after reinstalling the Debug APK did not modify the
+  calendar because Android cleared `READ_CALENDAR` / `WRITE_CALENDAR`. After an
+  explicit re-grant, the same request updated and verified the event.
+
+### Manual interventions
+
+- Re-enabled the accessibility service and granted both calendar permissions
+  after each debug reinstall.
+- Used the DUMP-protected Debug text route because synthetic ADB touch could not
+  reliably hold the floating microphone control while speech was supplied.
+
+### Security observations
+
+- The debug text route is absent from non-debug behavior and guarded by
+  `android.permission.DUMP`; it still uses the production planning and local
+  execution path.
+- No API key, token, password or verification code was read, logged or committed.
+
+### Release decision
+
+Calendar CRUD and local structured context are accepted for this Developer
+Edition. Proceed to the WeChat explicit-reply milestone; keep auto-send disabled
+outside the dedicated test device until recipient and session-title verification
+are implemented.
+
 ## 记录模板
 
 每个版本或目标 App 更新后新增一条记录：

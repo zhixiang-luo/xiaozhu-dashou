@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type {
   AssistantAction,
+  TaskContext,
   TaskEvent,
   TaskState
 } from "@personal-jarvis/contracts";
@@ -11,6 +12,7 @@ export interface TaskRecord {
   state: TaskState;
   generation: number;
   createdAt: number;
+  context?: TaskContext | undefined;
 }
 
 export class TaskCoordinator {
@@ -21,13 +23,17 @@ export class TaskCoordinator {
   >();
   private readonly pendingConfirmations = new Map<string, Set<string>>();
 
-  create(input: { instruction: string }): TaskRecord {
+  create(input: {
+    instruction: string;
+    context?: TaskContext | undefined;
+  }): TaskRecord {
     const task: TaskRecord = {
       id: randomUUID(),
       instruction: input.instruction,
       state: "queued",
       generation: 0,
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      ...(input.context ? { context: input.context } : {})
     };
     this.tasks.set(task.id, task);
     this.emitState(task);

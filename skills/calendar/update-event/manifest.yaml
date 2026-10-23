@@ -1,0 +1,51 @@
+id: calendar.update-event
+version: 0.1.0
+displayName: 修改系统日历日程
+appPackages:
+  - com.android.providers.calendar
+supportedVersions:
+  - Android 11+
+prerequisites:
+  - calendar.permission_granted
+capabilities:
+  - system_provider
+risk:
+  sideEffect: none
+  handoffOn:
+    - ambiguous_event
+    - recurring_event
+inputs:
+  titleQuery:
+    type: text
+    required: true
+    description: 用于唯一匹配旧日程的标题
+  rangeStart:
+    type: text
+    required: true
+    description: 带时区的查询范围开始
+  rangeEnd:
+    type: text
+    required: true
+    description: 带时区的查询范围结束
+  newTitle:
+    type: text
+    required: false
+  newStartTime:
+    type: text
+    required: false
+    description: 带时区的新开始时间
+  newDurationMinutes:
+    type: number
+    required: false
+verification:
+  - calendar_event_unique
+  - calendar_event_read_back
+steps:
+  - id: update-event
+    action: update_calendar_event
+    titleQueryKey: titleQuery
+    rangeStartKey: rangeStart
+    rangeEndKey: rangeEnd
+    newTitleKey: newTitle
+    newStartTimeKey: newStartTime
+    newDurationKey: newDurationMinutes

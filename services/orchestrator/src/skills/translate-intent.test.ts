@@ -148,4 +148,87 @@ describe("translateIntent", () => {
 
     expect(actions[0]).toMatchObject({ type: "ask_user" });
   });
+
+  it("builds a calendar list action", async () => {
+    const actions = await translateIntent(
+      task,
+      {
+        kind: "execute",
+        skillId: "calendar.list-events",
+        arguments: {
+          rangeStart: "2026-10-24T00:00:00+08:00",
+          rangeEnd: "2026-10-25T00:00:00+08:00",
+          titleQuery: "朱哥"
+        }
+      },
+      loadDefaultSkillCatalog(),
+      {
+        allowWechatAutoSend: false,
+        nowMillis: Date.parse("2026-10-23T08:00:00+08:00")
+      }
+    );
+
+    expect(actions[0]).toMatchObject({
+      type: "calendar_list_events",
+      rangeStartMillis: Date.parse("2026-10-24T00:00:00+08:00"),
+      rangeEndMillis: Date.parse("2026-10-25T00:00:00+08:00"),
+      titleQuery: "朱哥"
+    });
+  });
+
+  it("builds a calendar update action", async () => {
+    const actions = await translateIntent(
+      task,
+      {
+        kind: "execute",
+        skillId: "calendar.update-event",
+        arguments: {
+          titleQuery: "朱哥开会",
+          rangeStart: "2026-10-24T00:00:00+08:00",
+          rangeEnd: "2026-10-25T00:00:00+08:00",
+          newTitle: "和朱哥改期会议",
+          newStartTime: "2026-10-24T16:00:00+08:00",
+          newDurationMinutes: 90
+        }
+      },
+      loadDefaultSkillCatalog(),
+      {
+        allowWechatAutoSend: false,
+        nowMillis: Date.parse("2026-10-23T08:00:00+08:00")
+      }
+    );
+
+    expect(actions[0]).toMatchObject({
+      type: "calendar_update_event",
+      titleQuery: "朱哥开会",
+      newTitle: "和朱哥改期会议",
+      newStartTimeMillis: Date.parse("2026-10-24T16:00:00+08:00"),
+      newDurationMinutes: 90
+    });
+  });
+
+  it("builds a calendar delete action", async () => {
+    const actions = await translateIntent(
+      task,
+      {
+        kind: "execute",
+        skillId: "calendar.delete-event",
+        arguments: {
+          titleQuery: "朱哥开会",
+          rangeStart: "2026-10-24T00:00:00+08:00",
+          rangeEnd: "2026-10-25T00:00:00+08:00"
+        }
+      },
+      loadDefaultSkillCatalog(),
+      {
+        allowWechatAutoSend: false,
+        nowMillis: Date.parse("2026-10-23T08:00:00+08:00")
+      }
+    );
+
+    expect(actions[0]).toMatchObject({
+      type: "calendar_delete_event",
+      titleQuery: "朱哥开会"
+    });
+  });
 });

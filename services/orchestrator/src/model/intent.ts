@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { TaskContext } from "@personal-jarvis/contracts";
 
 const ArgumentsSchema = z.record(
   z.string(),
@@ -46,4 +47,5 @@ export interface SkillPromptEntry {
 export interface IntentPlanningContext {
   now: string;
   timeZone: string;
+  appContext?: TaskContext | undefined;
 }

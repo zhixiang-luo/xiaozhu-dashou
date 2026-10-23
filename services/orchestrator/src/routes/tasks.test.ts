@@ -1,6 +1,7 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { TaskCoordinator } from "../tasks/coordinator.js";
 import { buildServer } from "../server.js";
+import type { TaskPlanner } from "../tasks/planner.js";
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -29,6 +30,59 @@ it("uses DEVICE_TOKEN from the environment when no option is supplied", async ()
   });
 
   expect(response.statusCode).toBe(201);
+  await app.close();
+});
+
+it("passes task context to the planner", async () => {
+  let receivedContext: unknown;
+  const planner: TaskPlanner = {
+    plan: async (task) => {
+      receivedContext = task.context;
+      return [
+        {
+          type: "ask_user",
+          actionId: "context-action",
+          taskId: task.id,
+          taskGeneration: task.generation,
+          expectedState: "user_input",
+          timeoutMs: 30_000,
+          question: "ok"
+        }
+      ];
+    }
+  };
+  const app = buildServer({ deviceToken: "secret", planner });
+  const response = await app.inject({
+    method: "POST",
+    url: "/v1/tasks",
+    headers: { authorization: "Bearer secret" },
+    payload: {
+      instruction: "那个会怎么安排",
+      context: {
+        currentTime: "2026-10-23T05:00:00.000Z",
+        timeZone: "Asia/Shanghai",
+        upcomingEvents: [],
+        recentTasks: [
+          {
+            summary: "创建和猪哥开会的日程",
+            occurredAt: "2026-10-23T04:50:00.000Z"
+          }
+        ],
+        relevantMemory: [],
+        contacts: [],
+        preferences: []
+      }
+    }
+  });
+
+  expect(response.statusCode).toBe(201);
+  expect(receivedContext).toMatchObject({
+    recentTasks: [
+      {
+        summary: "创建和猪哥开会的日程"
+      }
+    ]
+  });
   await app.close();
 });
 

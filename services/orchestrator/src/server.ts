@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import fastifyWebsocket from "@fastify/websocket";
 import { z } from "zod";
+import { TaskContextSchema } from "@personal-jarvis/contracts";
 import { TaskCoordinator } from "./tasks/coordinator.js";
 import {
   DevTaskPlanner,
@@ -37,7 +38,8 @@ interface BuildServerOptions {
 }
 
 const CreateTaskBodySchema = z.object({
-  instruction: z.string().trim().min(1).max(4_000)
+  instruction: z.string().trim().min(1).max(4_000),
+  context: TaskContextSchema.optional()
 });
 
 const ConfirmationBodySchema = z.object({

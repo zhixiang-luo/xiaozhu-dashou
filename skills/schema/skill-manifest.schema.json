@@ -138,6 +138,9 @@
                   "verify",
                   "media_control",
                   "create_calendar_event",
+                  "list_calendar_events",
+                  "update_calendar_event",
+                  "delete_calendar_event",
                   "invoke_skill",
                   "wait"
                 ]
@@ -195,6 +198,30 @@
                 "minLength": 1
               },
               "timeZoneKey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "rangeStartKey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "rangeEndKey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "titleQueryKey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "newTitleKey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "newStartTimeKey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "newDurationKey": {
                 "type": "string",
                 "minLength": 1
               }

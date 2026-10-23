@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import type { AssistantIntent } from "../model/intent.js";
+import type {
+  AssistantIntent,
+  IntentPlanningContext
+} from "../model/intent.js";
 import { loadDefaultSkillCatalog } from "../skills/catalog.js";
 import type { TaskRecord } from "./coordinator.js";
 import { DeepSeekTaskPlanner } from "./deepseek-planner.js";
@@ -73,9 +76,7 @@ describe("DeepSeekTaskPlanner", () => {
   });
 
   it("passes the current date and timezone to the intent model", async () => {
-    let context:
-      | { now: string; timeZone: string }
-      | undefined;
+    let context: IntentPlanningContext | undefined;
     const planner = new DeepSeekTaskPlanner({
       infer: async (_instruction, _catalog, received) => {
         context = received;
@@ -86,9 +87,28 @@ describe("DeepSeekTaskPlanner", () => {
       }
     }, loadDefaultSkillCatalog());
 
-    await planner.plan(task("创建一个会议"));
+    await planner.plan({
+      ...task("创建一个会议"),
+      context: {
+        currentTime: "2026-10-23T05:00:00.000Z",
+        timeZone: "Asia/Shanghai",
+        upcomingEvents: [],
+        recentTasks: [
+          {
+            summary: "创建和猪哥开会的日程",
+            occurredAt: "2026-10-23T04:50:00.000Z"
+          }
+        ],
+        relevantMemory: [],
+        contacts: [],
+        preferences: []
+      }
+    });
 
     expect(context?.timeZone).toBe("Asia/Shanghai");
     expect(Date.parse(context?.now ?? "")).not.toBeNaN();
+    expect(context?.appContext?.recentTasks[0]?.summary).toBe(
+      "创建和猪哥开会的日程"
+    );
   });
 });

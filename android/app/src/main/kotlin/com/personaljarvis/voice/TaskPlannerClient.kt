@@ -1,6 +1,7 @@
 package com.personaljarvis.voice
 
 import com.personaljarvis.BuildConfig
+import com.personaljarvis.memory.TaskContextPayload
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -20,7 +21,13 @@ data class PlannedAction(
     val eventTitle: String? = null,
     val startTimeMillis: Long? = null,
     val endTimeMillis: Long? = null,
-    val timeZone: String? = null
+    val timeZone: String? = null,
+    val titleQuery: String? = null,
+    val rangeStartMillis: Long? = null,
+    val rangeEndMillis: Long? = null,
+    val newTitle: String? = null,
+    val newStartTimeMillis: Long? = null,
+    val newDurationMinutes: Int? = null
 )
 
 sealed interface PlannerResult {
@@ -30,18 +37,40 @@ sealed interface PlannerResult {
 }
 
 fun interface TaskTransport {
-    fun createTask(instruction: String): String
+    fun createTask(
+        instruction: String,
+        context: TaskContextPayload?
+    ): String
 }
 
-class TaskPlannerClient(
-    private val transport: TaskTransport = HttpTaskTransport(
-        baseUrl = BuildConfig.ORCHESTRATOR_URL,
-        deviceToken = BuildConfig.DEVICE_TOKEN
-    )
+class TaskPlannerClient private constructor(
+    private val transport: TaskTransport
 ) {
-    fun submit(instruction: String): PlannerResult {
+    constructor() : this(
+        HttpTaskTransport(
+            baseUrl = BuildConfig.ORCHESTRATOR_URL,
+            deviceToken = BuildConfig.DEVICE_TOKEN
+        )
+    )
+
+    constructor(transport: (String) -> String) : this(
+        TaskTransport { instruction, _ -> transport(instruction) }
+    )
+
+    constructor(transport: (String, TaskContextPayload?) -> String) : this(
+        TaskTransport { instruction, context ->
+            transport(instruction, context)
+        }
+    )
+
+    fun submit(
+        instruction: String,
+        context: TaskContextPayload? = null
+    ): PlannerResult {
         return runCatching {
-            parseResponse(transport.createTask(instruction.trim()))
+            parseResponse(
+                transport.createTask(instruction.trim(), context)
+            )
         }.getOrElse {
             PlannerResult.Failure(it.message ?: "planner_request_failed")
         }
@@ -88,7 +117,17 @@ class TaskPlannerClient(
                 .takeUnless { it <= 0 },
             endTimeMillis = action.optLong("endTimeMillis")
                 .takeUnless { it <= 0 },
-            timeZone = action.optString("timeZone").ifBlank { null }
+            timeZone = action.optString("timeZone").ifBlank { null },
+            titleQuery = action.optString("titleQuery").ifBlank { null },
+            rangeStartMillis = action.optLong("rangeStartMillis")
+                .takeUnless { it <= 0 },
+            rangeEndMillis = action.optLong("rangeEndMillis")
+                .takeUnless { it <= 0 },
+            newTitle = action.optString("newTitle").ifBlank { null },
+            newStartTimeMillis = action.optLong("newStartTimeMillis")
+                .takeUnless { it <= 0 },
+            newDurationMinutes = action.optInt("newDurationMinutes")
+                .takeUnless { it <= 0 }
         )
     }
 }
@@ -97,7 +136,10 @@ class HttpTaskTransport(
     private val baseUrl: String,
     private val deviceToken: String
 ) : TaskTransport {
-    override fun createTask(instruction: String): String {
+    override fun createTask(
+        instruction: String,
+        context: TaskContextPayload?
+    ): String {
         val url = URL("${baseUrl.trimEnd('/')}/v1/tasks")
         require(
             url.protocol == "https" ||
@@ -121,6 +163,11 @@ class HttpTaskTransport(
                 stream.write(
                     JSONObject()
                         .put("instruction", instruction)
+                        .apply {
+                            context?.let {
+                                put("context", JSONObject(it.toJson()))
+                            }
+                        }
                         .toString()
                         .toByteArray(Charsets.UTF_8)
                 )

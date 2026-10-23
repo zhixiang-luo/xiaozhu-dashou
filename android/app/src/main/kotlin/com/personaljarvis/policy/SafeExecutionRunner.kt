@@ -19,7 +19,9 @@ class SafeExecutionRunner(
 
         return when (val decision = policy.evaluate(action, observation)) {
             RiskDecision.Allow -> when (val result = driver.execute(action)) {
-                DriverResult.Success -> ActionResult.Completed
+                DriverResult.Success -> ActionResult.Completed()
+                is DriverResult.SuccessWithMessage ->
+                    ActionResult.Completed(result.message)
                 is DriverResult.Failure -> ActionResult.Failed(result.reason)
                 is DriverResult.Unsupported -> ActionResult.Failed(result.reason)
             }

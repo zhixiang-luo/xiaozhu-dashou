@@ -3,6 +3,8 @@ package com.personaljarvis.voice
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import com.personaljarvis.memory.TaskContextPayload
+import com.personaljarvis.memory.RecentTaskContext
 
 class TaskPlannerClientTest {
     @Test
@@ -92,4 +94,44 @@ class TaskPlannerClientTest {
 
         assertTrue(client.submit("打开设置") is PlannerResult.Failure)
     }
+
+    @Test
+    fun sendsAppContextWithTheInstruction() {
+        var receivedContext: TaskContextPayload? = null
+        val client = TaskPlannerClient { _, context ->
+            receivedContext = context
+            """
+            {
+              "task": {"id":"task-1","generation":0},
+              "actions": [{
+                "type":"ask_user","actionId":"a1","taskId":"task-1",
+                "taskGeneration":0,"expectedState":"user_input",
+                "timeoutMs":30000,"question":"ok"
+              }]
+            }
+            """.trimIndent()
+        }
+        val context = taskContext()
+
+        client.submit("看看那个会", context)
+
+        assertEquals(context, receivedContext)
+    }
+
+    private fun taskContext() = TaskContextPayload(
+        currentTime = "2026-10-23T05:00:00.000Z",
+        timeZone = "Asia/Shanghai",
+        currentPackage = "com.personaljarvis",
+        screenSummary = "主界面",
+        upcomingEvents = emptyList(),
+        recentTasks = listOf(
+            RecentTaskContext(
+                summary = "创建和猪哥开会的日程",
+                occurredAt = "2026-10-23T04:50:00.000Z"
+            )
+        ),
+        relevantMemory = emptyList(),
+        contacts = emptyList(),
+        preferences = emptyList()
+    )
 }
