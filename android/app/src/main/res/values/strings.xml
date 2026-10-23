@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Personal Jarvis</string>
-    <string name="accessibility_service_description">Read the active app screen and perform approved actions for Personal Jarvis.</string>
+    <string name="app_name">小猪助手（暂用）</string>
+    <string name="accessibility_service_description">读取当前应用界面，并执行你授权的操作。</string>
+    <string name="status_ready">就绪</string>
+    <string name="status_listening">正在等待下一步任务</string>
+    <string name="action_start_task">开始任务</string>
+    <string name="action_stop_task">停止任务</string>
+    <string name="action_enable_accessibility">开启无障碍权限</string>
+    <string name="action_read_screen">读取当前屏幕</string>
+    <string name="action_authorize_shizuku">授权 Shizuku</string>
+    <string name="screen_not_observed">尚未读取屏幕</string>
+    <string name="accessibility_inactive">无障碍服务未启用</string>
+    <string name="shizuku_not_connected">Shizuku 未连接</string>
+    <string name="shizuku_authorized">Shizuku 已授权</string>
+    <string name="shizuku_permission_denied">Shizuku 权限被拒绝</string>
+    <string name="shizuku_disconnected">Shizuku 连接已断开</string>
+    <string name="shizuku_not_running">Shizuku 未运行</string>
+    <string name="shizuku_connecting">正在连接 Shizuku</string>
+    <string name="shizuku_waiting_permission">等待 Shizuku 授权</string>
 </resources>

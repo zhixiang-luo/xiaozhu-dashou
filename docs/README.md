@@ -26,6 +26,7 @@
 | [09-open-source-readiness.md](09-open-source-readiness.md) | 许可证、治理和安全发布清单 | 维护者 |
 | [10-acceptance-record.md](10-acceptance-record.md) | 真机、App 版本和发布验收记录 | QA |
 | [11-device-setup.md](11-device-setup.md) | 专用手机、ADB 和 Shizuku 配置 | Android |
+| [12-naming-proposal.md](12-naming-proposal.md) | 正式产品名称候选和改名清单 | Product |
 | [HANDOFF.md](HANDOFF.md) | 最近交付、验证和下一步 | 当次主 Agent/开发者 |
 | [model-compatibility.md](model-compatibility.md) | 已接入模型、能力和评测状态 | 模型负责人 |
 

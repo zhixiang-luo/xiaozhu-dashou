@@ -25,6 +25,7 @@
 - 接入 Shizuku Provider、AIDL UserService 和 Shizuku/无障碍自动回退。
 - 在 Redmi K60 / Android 15 / HyperOS OS3.0 上完成安装与权限验收。
 - 修复 HyperOS 下 Shizuku UserService 缺少进程名导致的启动崩溃。
+- 将 App 可见按钮和状态切换为中文，并在真机验证页面读取显示中文结果。
 
 ## Verified
 
@@ -38,6 +39,7 @@
 - Debug APK 位于 `android/app/build/outputs/apk/debug/app-debug.apk`。
 - 真机屏幕读取返回 `com.personaljarvis: NORMAL, 4 nodes`。
 - Shizuku 服务端以 shell UID 运行，Personal Jarvis UserService 进程 `com.personaljarvis:jarvis-actions` 已启动。
+- 中文界面验证通过：当前应用、页面类型和控件数量的结果均为中文。
 - 尚未调用真实模型 API，尚未执行第三方 App 任务。
 
 ## Open Decisions
@@ -45,6 +47,7 @@
 - Android 包名和开源许可证。
 - 云端服务部署主机与域名。
 - 是否选择 DCO 或 CLA。
+- 正式产品名称仍待从命名提案中选择。
 
 ## Open Risks
 

@@ -52,6 +52,7 @@ ANDROID_HOME=/opt/homebrew/share/android-commandlinetools \
 - [开源准备](docs/09-open-source-readiness.md)
 - [验收记录](docs/10-acceptance-record.md)
 - [专用设备配置](docs/11-device-setup.md)
+- [产品命名提案](docs/12-naming-proposal.md)
 - [当前交接状态](docs/HANDOFF.md)
 - [Agent 角色说明](docs/agents/README.md)
 
@@ -84,6 +85,7 @@ personal-jarvis/
 - Android 14 项 JVM 测试通过，Debug APK 构建成功，路径为 `android/app/build/outputs/apk/debug/app-debug.apk`。
 - 已接入 AccessibilityService、页面风险门禁、取消代次和 Shizuku UserService。
 - Redmi K60 / Android 15 / HyperOS OS3.0 真机已验证安装、无障碍读取与 Shizuku 授权。
+- 真机可见界面已切换为中文，当前标题使用暂用名“小猪助手（暂用）”。
 - 文档、链接和 YAML 结构检查通过。
 - 尚未执行微信、网易云、高德等真实 App 自动化任务。
 

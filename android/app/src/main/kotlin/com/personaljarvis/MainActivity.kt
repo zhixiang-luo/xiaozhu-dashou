@@ -23,32 +23,35 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.personaljarvis.execute.ShizukuUserServiceBridge
 import com.personaljarvis.observe.AccessibilityObserver
+import com.personaljarvis.policy.PageKind
 import rikka.shizuku.Shizuku
 
 class MainActivity : ComponentActivity() {
     private lateinit var shizukuBridge: ShizukuUserServiceBridge
-    private var shizukuStatus by mutableStateOf("Shizuku not connected")
+    private var shizukuStatus by mutableStateOf("")
 
     private val permissionListener =
         Shizuku.OnRequestPermissionResultListener { _, grantResult ->
             if (grantResult == PackageManager.PERMISSION_GRANTED) {
                 shizukuBridge.connect()
-                shizukuStatus = "Shizuku authorized"
+                shizukuStatus = getString(R.string.shizuku_authorized)
             } else {
-                shizukuStatus = "Shizuku permission denied"
+                shizukuStatus = getString(R.string.shizuku_permission_denied)
             }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        shizukuStatus = getString(R.string.shizuku_not_connected)
         shizukuBridge = ShizukuUserServiceBridge(this) { available ->
             shizukuStatus = if (available) {
-                "Shizuku authorized"
+                getString(R.string.shizuku_authorized)
             } else {
-                "Shizuku disconnected"
+                getString(R.string.shizuku_disconnected)
             }
         }
         Shizuku.addRequestPermissionResultListener(
@@ -77,18 +80,18 @@ class MainActivity : ComponentActivity() {
 
     private fun requestShizukuAccess() {
         shizukuStatus = when {
-            !Shizuku.pingBinder() -> "Shizuku is not running"
+            !Shizuku.pingBinder() -> getString(R.string.shizuku_not_running)
             hasShizukuPermission() -> {
                 shizukuBridge.connect()
                 if (shizukuBridge.isAvailable) {
-                    "Shizuku authorized"
+                    getString(R.string.shizuku_authorized)
                 } else {
-                    "Shizuku connecting"
+                    getString(R.string.shizuku_connecting)
                 }
             }
             else -> {
                 Shizuku.requestPermission(1001)
-                "Waiting for Shizuku permission"
+                getString(R.string.shizuku_waiting_permission)
             }
         }
     }
@@ -105,9 +108,11 @@ fun PersonalJarvisScreen(
     shizukuStatus: String,
     requestShizukuAccess: () -> Unit
 ) {
-    var taskActive by remember { mutableStateOf(false) }
-    var screenStatus by remember { mutableStateOf("Screen not observed") }
     val context = LocalContext.current
+    var taskActive by remember { mutableStateOf(false) }
+    var screenStatus by remember {
+        mutableStateOf(context.getString(R.string.screen_not_observed))
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
@@ -117,16 +122,26 @@ fun PersonalJarvisScreen(
         )
     ) {
         Text(
-            text = AppIdentity.displayName,
+            text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.headlineLarge
         )
         Text(
-            text = if (taskActive) "Listening for your next task" else "Ready",
+            text = if (taskActive) {
+                stringResource(R.string.status_listening)
+            } else {
+                stringResource(R.string.status_ready)
+            },
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 12.dp)
         )
         Button(onClick = { taskActive = !taskActive }) {
-            Text(if (taskActive) "Stop task" else "Start task")
+            Text(
+                if (taskActive) {
+                    stringResource(R.string.action_stop_task)
+                } else {
+                    stringResource(R.string.action_start_task)
+                }
+            )
         }
         Button(
             onClick = {
@@ -136,25 +151,37 @@ fun PersonalJarvisScreen(
                 )
             }
         ) {
-            Text("Enable accessibility")
+            Text(stringResource(R.string.action_enable_accessibility))
         }
         Button(
             onClick = {
                 val observation = AccessibilityObserver.instance?.snapshot()
                 screenStatus = if (observation == null) {
-                    "Accessibility service is not active"
+                    context.getString(R.string.accessibility_inactive)
                 } else {
-                    "${observation.foregroundPackage}: " +
-                        "${observation.pageKind}, ${observation.nodes.size} nodes"
+                    "当前应用：${observation.foregroundPackage}，" +
+                        "页面：${pageKindLabel(observation.pageKind)}，" +
+                        "控件：${observation.nodes.size} 个"
                 }
             }
         ) {
-            Text("Read current screen")
+            Text(stringResource(R.string.action_read_screen))
         }
         Text(text = screenStatus)
         Button(onClick = requestShizukuAccess) {
-            Text("Authorize Shizuku")
+            Text(stringResource(R.string.action_authorize_shizuku))
         }
         Text(text = shizukuStatus)
+    }
+}
+
+private fun pageKindLabel(pageKind: PageKind): String {
+    return when (pageKind) {
+        PageKind.NORMAL -> "普通页面"
+        PageKind.LOGIN -> "登录页面"
+        PageKind.PAYMENT -> "支付页面"
+        PageKind.OTP -> "验证码页面"
+        PageKind.SECURE -> "安全页面"
+        PageKind.PERMISSION -> "权限页面"
     }
 }
