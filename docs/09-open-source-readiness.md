@@ -1,23 +1,23 @@
 # 开源准备
 
-> Status: Draft
+> Status: Ready for v0.1.0 public review
 > Owner: Maintainers
 > Last reviewed: 2026-10-23
 
 ## 当前结论
 
-小猪搭手未来可能开源，但目前尚未选择许可证，也没有公开维护者、治理方式和安全联系方式。项目内部正式成立，不等于可以公开发布；在这些事项完成前，仓库不得作为正式开源项目发布。
+小猪搭手采用 MIT License 公开代码和文档，使用 DCO 接受贡献。维护者为
+`@zhixiang-luo`，项目名称、Logo 和猪哥角色保留为官方品牌。仓库公开发布前仍需完成
+密钥扫描、安全扫描和 GitHub Private Vulnerability Reporting 配置。
 
 ## 发布前必须决定
 
-1. 许可证：Apache-2.0、AGPL-3.0 或自定义/双许可需要维护者结合商业化、网络服务和专利条款选择。
-2. 贡献模式：DCO 或 CLA。
-3. 治理：个人维护、核心维护者或委员会；谁拥有架构、风险策略和发布权。
-4. 安全披露：启用 GitHub Private Vulnerability Reporting，指定响应负责人和时限。
-5. 品牌与包名：项目名、图标、域名和应用包名。
-6. 支持范围：只支持固定设备，还是接受社区兼容性贡献。
-
-这些是需要维护者拍板的事项，不由实现 Agent 自行选择。
+1. 许可证：MIT License。
+2. 贡献模式：DCO，不要求 CLA。
+3. 治理：个人维护者负责架构、安全和发布，社区通过 Issue/PR 参与。
+4. 安全披露：GitHub Private Vulnerability Reporting。
+5. 品牌：官方名称、Logo 和猪哥角色使用边界见 `TRADEMARK.md`。
+6. 支持范围：Developer Edition 固定设备优先，接受社区兼容性报告。
 
 ## 技术发布检查
 

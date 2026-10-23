@@ -4,104 +4,216 @@
   <img src="design/brand/exports/brand-lockup.png" alt="小猪搭手：猪哥，暖科技任务猪" width="760" />
 </p>
 
-小猪搭手是一个运行在开发者专用 Android 手机上的个人 Agent。用户通过持续语音或悬浮入口发起任务，小猪搭手观察屏幕、通知和个人上下文，规划并执行日常操作；账号、支付、验证码和身份验证由本人完成。
+<p align="center">
+  <strong>你开口，我来做。</strong><br />
+  一个看得见手机屏幕、听得懂自然语言、能真正动手完成任务的 Android 个人 Agent。
+</p>
 
-> 项目正式名称：小猪搭手。开发期 Android 包名暂时保留 `com.personaljarvis`，正式发布前再决定最终包名。
+<p align="center">
+  <a href="https://github.com/zhixiang-luo/xiaozhu-dashou/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/zhixiang-luo/xiaozhu-dashou/actions/workflows/ci.yml/badge.svg" /></a>
+  <a href="https://github.com/zhixiang-luo/xiaozhu-dashou/actions/workflows/android.yml"><img alt="Android" src="https://github.com/zhixiang-luo/xiaozhu-dashou/actions/workflows/android.yml/badge.svg" /></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-f29a9a.svg" /></a>
+  <img alt="Android 11+" src="https://img.shields.io/badge/Android-11%2B-3ddc84.svg" />
+</p>
 
-## 当前状态
+> **项目状态：v0.1 Developer Edition。** 这是一个面向专用 Android 设备的实验性
+> 个人 Agent，不是已经可以直接安装到普通用户主力手机上的消费级产品。
 
-项目已正式成立，当前进入 **首批真实 App 技能开发阶段**。共享协议、云端编排和 Android App 已经建立；“语音 → 任务服务 → 本机打开系统设置”开发版闭环已在 Redmi K60 / HyperOS 真机通过验收。常驻唤醒、正式 TTS 和微信/网易云等第三方 App 自动化尚未接入。
+## 为什么做小猪搭手
 
-当前可以运行共享合约和云端编排测试：
+桌面 Agent 已经可以读屏幕、写代码、操作浏览器。但手机上最日常的事情仍然需要人一步步
+点：打开微信、找到会话、输入一句话、切到地图、搜索地点、设提醒。
+
+小猪搭手想验证另一条路径：
+
+```text
+“帮我到文件传输助手里面发一句：测试成功了”
+                    ↓
+             实时中文语音识别
+                    ↓
+             DeepSeek 意图拆解
+                    ↓
+       文件传输助手 + 消息正文“测试成功了”
+                    ↓
+     打开微信 → 进入会话 → 输入 → 发送
+```
+
+它不是另一个聊天机器人，而是一个把“语言”变成“手机上的动作”的开源实验。
+
+<p align="center">
+  <img src="design/brand/exports/state-sheet.png" alt="小猪搭手悬浮入口状态" width="900" />
+</p>
+
+## 当前能力
+
+| 能力 | 状态 | 说明 |
+| --- | --- | --- |
+| 中文按住说话 | 可用 | 悬浮球长按录音、触觉反馈、实时字幕 |
+| 火山双向流式 ASR | 可用 | 16 kHz PCM，边听边识别，松手后提交累计文本 |
+| DeepSeek 意图拆解 | 可用 | 把自然语言转成受 Schema 约束的技能调用 |
+| 系统设置 | 可用 | 语音打开设置已在 Redmi K60 真机验证 |
+| 微信文件传输助手 | Beta | 已录制坐标和验证点，支持自然语言指定消息正文 |
+| 微信任意联系人 | 计划中 | 需要唯一收件人、搜索页和视觉验证校准 |
+| 网易云音乐 / 高德 | 计划中 | 已有技能清单，等待真机回放 |
+| 常驻唤醒 / 正式 TTS | 计划中 | 当前使用悬浮球入口和系统中文转写体验 |
+
+## 架构
+
+```mermaid
+flowchart LR
+  A[悬浮球按住说话] --> B[Android AudioRecord]
+  B --> C[本地 WebSocket 网关]
+  C --> D[火山双向流式 ASR]
+  D --> C
+  C --> A
+  A --> E[DeepSeek 意图拆解]
+  E --> F[Skill Catalog]
+  F --> G[受约束动作计划]
+  G --> H[Android PolicyGate]
+  H --> I[Shizuku / 无障碍执行]
+  I --> J[截图与结果验证]
+```
+
+- **语音与意图分离**：ASR 只负责听清，DeepSeek 只负责拆解意图。
+- **模型不能直接点屏幕**：模型只能选择已注册技能并填写参数。
+- **技能版本化**：每个 App 流程由 `skills/**/manifest.yaml` 描述。
+- **手机负责最终授权**：所有动作经过本地风险策略、任务代次和页面检查。
+- **可替换模型**：语音、意图和视觉能力使用独立适配器，不绑定单一供应商。
+
+## 安全边界
+
+小猪搭手优先防止错误操作，而不是追求“什么都能自动化”。
+
+- 普通消息只有在收件人和页面都明确时才允许自动发送。
+- 账号登录、支付、转账、红包、验证码、密码、银行卡和身份验证必须由本人完成。
+- 同名联系人、可疑页面和未校准 App 版本会停止或请求澄清。
+- API Key 只存在于服务端 `.env`，不会进入 Android APK。
+- 音频和转写正文不写入服务端日志。
+- 出现歧义时宁可停下来，也不盲点固定坐标。
+- 微信自动发送在公开版本默认关闭，只能由专用开发者设备显式开启。
+
+完整说明见 [安全与隐私](docs/05-security-privacy.md)。
+
+### 已知限制
+
+- 微信 8.0.79 不提供可用 UI 树，当前技能依赖校准坐标；即使重启微信和校验前台包名，
+  仍未实现发送前的 OCR 会话标题验证。
+- 因此微信发送仍标记为 Beta，只应在专用测试设备启用。
+- 设备 Token 是本地开发认证，不是面向互联网的产品级账号体系。
+- DeepSeek 会接收用户文字，火山会接收语音；默认部署仅监听本机回环地址。
+
+## 5 分钟开始
+
+### 依赖
+
+- Node.js 22+
+- pnpm 11+
+- JDK 17
+- Android SDK 35 / Build Tools 36
+- 已安装 Shizuku 的 Android 11+ 测试设备
+
+### 本地运行
 
 ```bash
-nvm use
+git clone https://github.com/zhixiang-luo/xiaozhu-dashou.git
+cd xiaozhu-dashou
+corepack enable
 pnpm install
+cp .env.example .env
 pnpm check
 ```
 
-Android 构建：
+在 `.env` 中配置：
+
+```dotenv
+DEVICE_TOKEN=replace-with-a-random-development-token
+VOLCENGINE_ASR_API_KEY=your_volcengine_key
+VOLCENGINE_ASR_RESOURCE_ID=volc.seedasr.sauc.duration
+DEEPSEEK_API_KEY=your_deepseek_key
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL=deepseek-chat
+ALLOW_WECHAT_AUTOSEND=false
+```
+
+只有在你确认手机是专用测试设备、微信文件传输助手位置已校准时，才可把
+`ALLOW_WECHAT_AUTOSEND` 改成 `true`。默认关闭是为了避免坐标失效时误发到错误会话。
+
+构建 Android 时通过环境变量或 Gradle 参数传入同一个 Token：
+
+```bash
+DEVICE_TOKEN=replace-with-a-random-development-token ./gradlew :app:assembleDebug
+# 或：./gradlew :app:assembleDebug -PDEVICE_TOKEN=replace-with-a-random-development-token
+```
+
+启动编排服务：
+
+```bash
+pnpm --filter @personal-jarvis/orchestrator start
+```
+
+连接手机并建立回环端口：
+
+```bash
+adb reverse tcp:4100 tcp:4100
+```
+
+构建并安装 Android App：
 
 ```bash
 cd android
 JAVA_HOME=/opt/homebrew/opt/openjdk@17 \
 ANDROID_HOME=/opt/homebrew/share/android-commandlinetools \
 ./gradlew :app:testDebugUnitTest :app:assembleDebug
+adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
-## 小猪搭手 1.0 目标
+设备配置和权限步骤见 [专用设备配置](docs/11-device-setup.md)。
 
-- 常驻唤醒词、按住说话和点击悬浮球。
-- 持续观察屏幕、通知、剪贴板与任务上下文。
-- 打开已配置的 App，并跨 App 传递信息。
-- 在微信中自动回复普通私聊消息。
-- 在网易云音乐中搜索并播放歌曲，支持系统媒体控制。
-- 地图搜索与导航、日历、提醒、闹钟、文件和截图检索。
-- Shizuku 优先、Android 无障碍降级；不要求 Root。
-- 普通消息直接发送；账号、支付、验证码和身份验证交还本人。
-- 云端模型通过统一供应商接口接入，支持团队并行开发多个模型。
-
-## 文档入口
-
-- [文档索引](docs/README.md)
-- [产品宪章](docs/00-product-charter.md)
-- [V1 产品需求](docs/01-prd.md)
-- [系统架构](docs/02-system-architecture.md)
-- [Agent 与模型接入](docs/03-agent-and-model-integration.md)
-- [Android 执行层](docs/04-android-execution.md)
-- [安全与隐私](docs/05-security-privacy.md)
-- [测试与评测](docs/06-testing-and-evaluation.md)
-- [开发路线图](docs/07-roadmap.md)
-- [文档治理](docs/08-documentation-process.md)
-- [开源准备](docs/09-open-source-readiness.md)
-- [验收记录](docs/10-acceptance-record.md)
-- [专用设备配置](docs/11-device-setup.md)
-- [产品命名提案](docs/12-naming-proposal.md)
-- [App 技能架构](docs/14-app-skill-architecture.md)
-- [角色、唤醒与声音设计](docs/13-brand-character-and-voice.md)
-- [当前交接状态](docs/HANDOFF.md)
-- [Agent 角色说明](docs/agents/README.md)
-
-## 计划中的仓库结构
+## 仓库结构
 
 ```text
 xiaozhu-dashou/
-├── AGENTS.md
-├── packages/contracts/       共享协议与类型
-├── services/orchestrator/    云端编排服务
-├── android/                  Kotlin Android 客户端
-├── skills/                   App 操作技能
-├── design/                   品牌角色、状态稿和导出资源
-├── docs/                     产品、架构、ADR 与协作文档
-└── .github/                  PR 与 Issue 模板
+├── android/                  Kotlin Android 客户端、语音和执行器
+├── services/orchestrator/    Fastify 编排、火山语音网关、DeepSeek 规划
+├── packages/contracts/       Android 与服务端共享协议
+├── packages/skills/          技能 manifest 解析与校验
+├── skills/                   微信、音乐、地图和跨 App 技能
+├── design/                   品牌、角色、表情和动效视觉资产
+├── docs/                     产品、架构、ADR、安全和验收记录
+└── .github/                  CI、Issue Forms、CODEOWNERS 和 Dependabot
 ```
+
+## 扩展技能
+
+一个 App 技能由确定性的 manifest 描述，不要求所有开发者直接修改 Android 通用循环：
+
+- [App 技能架构](docs/14-app-skill-architecture.md)
+- [新增 App 技能](docs/guides/adding-app-skill.md)
+- [录制 App 技能](docs/guides/recording-app-skill.md)
+- [新增模型供应商](docs/guides/adding-model-provider.md)
+
+新增模型必须经过结构校验、超时、错误映射和安全评测；新增 App 技能必须包含唯一目标、
+成功验证、失败降级和支持版本。
 
 ## 参与开发
 
-先阅读根目录 `AGENTS.md`、`docs/README.md` 和对应模块的 `AGENTS.md`。新增模型、App 技能或跨模块协议的流程分别见：
+项目使用 MIT License 和 DCO。提交前请阅读：
 
-- [新增模型供应商](docs/guides/adding-model-provider.md)
-- [新增 App 技能](docs/guides/adding-app-skill.md)
-- [录制 App 技能](docs/guides/recording-app-skill.md)
-- [多 Agent 与团队协作](docs/guides/agent-collaboration.md)
+- [贡献指南](CONTRIBUTING.md)
+- [行为准则](CODE_OF_CONDUCT.md)
+- [安全策略](SECURITY.md)
+- [当前交接状态](docs/HANDOFF.md)
+- [完整文档索引](docs/README.md)
 
-## 当前已验证
+欢迎提交设备兼容性报告、技能 manifest、模型适配器和安全测试。不要在 Issue 或 PR 中
+上传真实聊天、录音、联系人、手机号、API Key 或支付信息。
 
-- 共享合约通过 5 项 Vitest 测试和 TypeScript 严格类型检查。
-- 云端编排通过 14 项 Vitest 测试和 TypeScript 严格类型检查，包含开发版任务规划器。
-- 技能 manifest 包通过 7 项测试和 TypeScript 严格类型检查，覆盖结构化步骤、输入、风险和 4 个随仓技能清单。
-- Android 24 项 JVM 测试通过，Debug APK 构建成功，路径为 `android/app/build/outputs/apk/debug/app-debug.apk`。
-- 已接入 AccessibilityService、页面风险门禁、取消代次和 Shizuku UserService。
-- Redmi K60 / Android 15 / HyperOS OS3.0 真机已验证安装、无障碍读取与 Shizuku 授权。
-- 真机可见界面已切换为中文，当前标题为正式名称“小猪搭手”。
-- 悬浮球已启动；短按可打开主界面，长按可启动语音识别会话。
-- 按住时悬浮球会展开为“正在听…”，带脉冲和触感；未开口不会提前报错，松手后才等待最终识别结果。
-- 语音文字已接入 `/v1/tasks`；“打开设置/微信/网易云/高德”可由开发版规划器返回并执行 `open_app` 动作。
-- 已建立微信、网易云、高德及跨 App 的结构化技能清单；真实选择器仍需按设备录制校准。
-- 真机已确认端到端链路可用：长按说“打开设置”后，任务服务返回动作并由本机自动打开系统设置。
-- 文档、链接和 YAML 结构检查通过。
-- 尚未执行微信、网易云、高德等真实 App 自动化任务，结构化清单仍需真机校准。
+## 路线图
 
-## 许可证
+近期重点是把“看得见、做得对、能验证”做扎实：更多微信联系人、网易云音乐、高德、
+跨 App 参数传递、视觉定位和失败恢复。完整计划见 [ROADMAP.md](ROADMAP.md)。
 
-许可证尚未选择。决策完成前不得把仓库公开为正式开源项目；候选方案和发布阻塞项见 [开源准备](docs/09-open-source-readiness.md)。
+## License
+
+代码和文档采用 [MIT License](LICENSE)。官方名称、Logo 和“猪哥”角色视觉的品牌边界
+见 [TRADEMARK.md](TRADEMARK.md)。

@@ -16,6 +16,7 @@ pending
 
 ## Checklist
 
+- [ ] 所有提交已使用 `git commit -s` 添加 DCO `Signed-off-by`。
 - [ ] 行为与 PRD/ADR 一致。
 - [ ] 共享契约、迁移和兼容性已处理。
 - [ ] 新增模型通过 provider suite 和评测。

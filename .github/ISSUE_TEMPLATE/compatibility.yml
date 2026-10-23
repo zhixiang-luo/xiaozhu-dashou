@@ -1,0 +1,40 @@
+name: Device or app compatibility
+description: 报告不同手机、系统或 App 版本上的兼容性
+title: "[compatibility] "
+labels:
+  - compatibility
+body:
+  - type: markdown
+    attributes:
+      value: "请勿上传真实聊天、账号、支付信息或未脱敏截图。"
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: 手机型号、Android、HyperOS 和显示缩放
+    validations:
+      required: true
+  - type: input
+    id: app
+    attributes:
+      label: Target app version
+    validations:
+      required: true
+  - type: dropdown
+    id: driver
+    attributes:
+      label: Execution driver
+      options:
+        - Shizuku
+        - Accessibility
+        - Mixed
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Result
+      description: 哪一步成功、哪一步失败，是否出现错误收件人或重复动作
+    validations:
+      required: true

@@ -30,5 +30,5 @@ jobs:
         run: ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4
         with:
-          name: personal-jarvis-debug-apk
+          name: xiaozhu-dashou-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk

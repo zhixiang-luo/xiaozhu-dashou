@@ -29,15 +29,20 @@
 | [12-naming-proposal.md](12-naming-proposal.md) | 正式产品名称候选和改名清单 | Product |
 | [14-app-skill-architecture.md](14-app-skill-architecture.md) | 通用能力与具体 App 技能的分层 | Agent Runtime + Android |
 | [13-brand-character-and-voice.md](13-brand-character-and-voice.md) | 猪哥形象、悬浮状态、唤醒词和 TTS 声音方向 | Product + Design |
+| [15-character-ip-bible.md](15-character-ip-bible.md) | 全身母版、产品变体、3D 前置条件和产权清单 | Product + Design |
 | [HANDOFF.md](HANDOFF.md) | 最近交付、验证和下一步 | 当次主 Agent/开发者 |
 | [model-compatibility.md](model-compatibility.md) | 已接入模型、能力和评测状态 | 模型负责人 |
+| [release/v0.1.0-checklist.md](release/v0.1.0-checklist.md) | 首次公开发布门槛和发布状态 | 维护者 |
 
 ## 专题目录
 
 - `adr/`：不可轻易推翻的架构与产品决策。
 - `guides/`：新增模型、App 技能、团队协作和发布流程。
 - `superpowers/plans/`：按子系统拆分的可执行开发计划。
+- `superpowers/specs/`：已确认的跨模块设计规格。
+- `release/`：版本发布检查。
 - `../design/brand/`：品牌角色、Android 图标和六态交互源文件。
+- `../design/ip/`：猪哥全身、表情、手势和后续 3D 母版资产。
 - [agents/](agents/README.md)：按角色拆分的 Agent 任务说明；实际启动时仍需引用本页和模块规则。
 
 ## 文档状态

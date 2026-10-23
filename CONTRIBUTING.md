@@ -1,6 +1,7 @@
 # Contributing
 
-感谢参与小猪搭手。项目尚未公开开源，许可证和安全披露方式确定前不接受外部代码贡献；内部协作者可以按本文流程开发。
+感谢参与小猪搭手。代码与文档采用 MIT License，项目使用 Developer Certificate of
+Origin（DCO）接受公开贡献，不要求签署 CLA。
 
 ## Before You Start
 
@@ -15,6 +16,8 @@
 - 跨模块、权限、数据模型、模型供应商或风险策略变化必须先写 ADR 或规格，并获得架构负责人评审。
 - 共享契约变化必须先合并契约与测试，再并行实现 Android 和云端。
 - 每个 PR 只解决一个可验证问题，附带测试、文档和 `HANDOFF` 更新。
+- 每个提交必须使用 `git commit -s`，提交信息末尾包含
+  `Signed-off-by: Your Name <your-email@example.com>`。
 
 ## Commit Convention
 
@@ -40,10 +43,7 @@ test(eval): add WeChat wrong-recipient scenario
 - [ ] 文档和 `docs/HANDOFF.md` 已更新。
 - [ ] 没有提交密钥、签名文件、真实用户数据或构建产物。
 
-## Public Launch Blockers
+## Security
 
-- 选择并提交许可证。
-- 启用 GitHub 私密漏洞报告并填写 `SECURITY.md`。
-- 确定维护者、CODEOWNERS 和治理规则。
-- 清理内部密钥、截图、测试账号和个人配置。
-- 通过公开仓库安全检查。
+不要通过公开 Issue 报告漏洞。请使用 GitHub Private Vulnerability Reporting，
+并遵守 [SECURITY.md](SECURITY.md)。

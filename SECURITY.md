@@ -1,12 +1,14 @@
 # Security Policy
 
-## Current Status
+## Supported Version
 
-小猪搭手尚未公开发布，当前没有受支持的生产版本。不要在公开 Issue 中披露密钥、聊天内容、账号信息或可利用细节。
+当前处于 `0.1.x` Developer Edition 阶段，仅支持经过校准的开发设备和 Android
+版本。不要在生产账号或主力支付手机上使用未经验证的版本。
 
 ## Reporting
 
-仓库公开发布前，维护者必须启用 GitHub Private Vulnerability Reporting，并在本节补充唯一有效的私密报告入口。在此之前，不得将仓库设为公开。
+请使用仓库的 GitHub Private Vulnerability Reporting 私密报告漏洞。不要在公开
+Issue 中披露密钥、聊天内容、账号信息、设备标识或可利用细节。
 
 报告至少包含：
 
