@@ -1,5 +1,8 @@
 # 微信当前会话显式回复 Implementation Plan
 
+> 状态：暂停实验，未合并 `main`。本计划保留已完成的工程探索和真机失败原因，不再继续
+> 按原方式推进。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 用户明确要求时，结合微信当前会话生成回复，并在两次会话校验后安全发送。
