@@ -82,11 +82,12 @@ xiaozhu-dashou/
 - 共享合约通过 5 项 Vitest 测试和 TypeScript 严格类型检查。
 - 云端编排通过 12 项 Vitest 测试和 TypeScript 严格类型检查，包含 WebSocket 事件流和确认绑定。
 - 技能 manifest 包通过 4 项测试和 TypeScript 严格类型检查。
-- Android 18 项 JVM 测试通过，Debug APK 构建成功，路径为 `android/app/build/outputs/apk/debug/app-debug.apk`。
+- Android 21 项 JVM 测试通过，Debug APK 构建成功，路径为 `android/app/build/outputs/apk/debug/app-debug.apk`。
 - 已接入 AccessibilityService、页面风险门禁、取消代次和 Shizuku UserService。
 - Redmi K60 / Android 15 / HyperOS OS3.0 真机已验证安装、无障碍读取与 Shizuku 授权。
 - 真机可见界面已切换为中文，当前标题为正式名称“小猪搭手”。
 - 悬浮球已启动；短按可打开主界面，长按可启动语音识别会话。
+- 按住时悬浮球会展开为“正在听…”，带脉冲和触感；未开口不会提前报错，松手后才等待最终识别结果。
 - 文档、链接和 YAML 结构检查通过。
 - 尚未执行微信、网易云、高德等真实 App 自动化任务。
 

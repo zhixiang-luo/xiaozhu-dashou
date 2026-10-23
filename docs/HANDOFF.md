@@ -33,7 +33,7 @@
 - 共享合约：5 项 Vitest 测试通过，TypeScript 严格类型检查通过。
 - 云端编排：12 项 Vitest 测试通过，TypeScript 严格类型检查通过。
 - 技能 schema：4 项 Vitest 测试通过，TypeScript 严格类型检查通过。
-- Android：18 项 JVM 单元测试通过，`assembleDebug` 成功。
+- Android：21 项 JVM 单元测试通过，`assembleDebug` 成功。
 - `node scripts/check-docs.mjs` 通过：相对链接可解析、代码块闭合、无空文档和尾随空格。
 - GitHub Actions 和 Issue 模板的 3 个 YAML 文件解析通过。
 - 未发现常见密钥格式内容。
@@ -43,6 +43,7 @@
 - 中文界面验证通过：当前应用、页面类型和控件数量的结果均为中文。
 - 悬浮球前台服务已运行，系统窗口层确认 168×168 的悬浮控件存在。
 - 短按悬浮球已在真机验证可以打开小猪搭手；长按手势能启动语音会话且进程不崩溃。
+- 录音状态增加“正在听…”展开、触感、脉冲和实时部分文字；按住等待期间不会提前提示未听清。
 - 尚未调用真实模型 API，尚未执行第三方 App 任务。
 
 ## Open Decisions
@@ -62,4 +63,4 @@
 
 ## Next Smallest Task
 
-实现 `TaskPlannerClient`，把悬浮球识别出的文字提交到 `/v1/tasks`，再把服务端返回的动作交给 `SafeExecutionRunner`。
+在手机上复测按住超过 5 秒、未立即说话、说完松手和识别失败四种场景，然后实现 `TaskPlannerClient`。

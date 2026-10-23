@@ -20,6 +20,7 @@
 - `:app:assembleDebug`
 - 14 JVM tests passed, including UI compaction, page classification, policy blocking, cancellation, and driver fallback.
 - 18 JVM tests passed, including the voice session state machine.
+- 21 JVM tests passed, including retry/empty-result behavior while holding the voice bubble.
 - APK installed successfully through ADB.
 - Accessibility service bound successfully.
 - “Read current screen” returned `com.personaljarvis: NORMAL, 4 nodes`.
@@ -31,6 +32,7 @@
 - Long-press gesture started the speech recognition session without crashing.
 - APK SHA-256: `03f25b6ed2254e8385ef8b2f4c4063b3da61e1e266700b30cff6f3ba75ef44d9`.
 - Latest APK SHA-256: `98af92300a3b49b36b7401328c4cd86f1b43ad2c9af5c6691bc3d6fe7265e84d`.
+- Recording UX build SHA-256: `6b727eee5b58b101ac9b0cb19e445c5d0967303ec3ce34a985fe49d5fd41cc4c`.
 - Debug APK produced at `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 ### Failed

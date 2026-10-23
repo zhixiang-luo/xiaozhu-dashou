@@ -21,6 +21,8 @@
     <string name="shizuku_waiting_permission">等待 Shizuku 授权</string>
     <string name="bubble_ready">小猪搭手待命中</string>
     <string name="bubble_listening">正在听你说</string>
+    <string name="bubble_listening_prompt">正在听…</string>
+    <string name="bubble_recognizing">识别中…</string>
     <string name="bubble_notification_channel">小猪搭手运行状态</string>
     <string name="bubble_overlay_permission_needed">请允许显示在其他应用上层，然后返回再次点击“开启悬浮球”</string>
     <string name="bubble_microphone_denied">需要麦克风权限才能使用按住说话</string>

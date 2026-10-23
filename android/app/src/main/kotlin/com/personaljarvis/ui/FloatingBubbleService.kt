@@ -1,5 +1,6 @@
 package com.personaljarvis.ui
 
+import android.animation.ValueAnimator
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -16,15 +17,20 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.view.Gravity
+import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.TextView
 import android.widget.Toast
 import com.personaljarvis.MainActivity
 import com.personaljarvis.R
 import com.personaljarvis.voice.VoiceSessionController
+import com.personaljarvis.voice.VoiceErrorAction
+import com.personaljarvis.voice.VoiceRecognitionPolicy
+import kotlin.math.min
 import kotlin.math.abs
 
 class FloatingBubbleService : Service() {
@@ -34,17 +40,34 @@ class FloatingBubbleService : Service() {
     private var speechRecognizer: SpeechRecognizer? = null
     private var latestText = ""
     private val voiceController = VoiceSessionController()
+    private val recognitionPolicy = VoiceRecognitionPolicy()
     private var touchDownX = 0f
     private var touchDownY = 0f
     private var initialX = 0
     private var initialY = 0
     private var listeningByGesture = false
+    private var isHolding = false
     private var moved = false
+    private var sessionActive = false
+    private var pulseAnimator: ValueAnimator? = null
 
     private val longPress = Runnable {
         if (!moved) {
+            isHolding = true
             listeningByGesture = true
             startListening()
+        }
+    }
+
+    private val releaseTimeout = Runnable {
+        if (sessionActive) {
+            showEmptyResult()
+        }
+    }
+
+    private val restartRecognition = Runnable {
+        if (isHolding && sessionActive) {
+            createAndStartRecognizer()
         }
     }
 
@@ -68,6 +91,9 @@ class FloatingBubbleService : Service() {
 
     override fun onDestroy() {
         bubble?.removeCallbacks(longPress)
+        bubble?.removeCallbacks(releaseTimeout)
+        bubble?.removeCallbacks(restartRecognition)
+        pulseAnimator?.cancel()
         bubble?.let { view ->
             runCatching { windowManager.removeView(view) }
         }
@@ -84,6 +110,8 @@ class FloatingBubbleService : Service() {
             text = "搭"
             contentDescription = getString(R.string.bubble_ready)
             gravity = Gravity.CENTER
+            maxLines = 1
+            ellipsize = android.text.TextUtils.TruncateAt.END
             setTextColor(Color.WHITE)
             textSize = 24f
             background = GradientDrawable().apply {
@@ -115,6 +143,7 @@ class FloatingBubbleService : Service() {
                     initialY = currentParams.y
                     moved = false
                     listeningByGesture = false
+                    isHolding = false
                     view.postDelayed(longPress, LONG_PRESS_MS)
                     true
                 }
@@ -135,6 +164,7 @@ class FloatingBubbleService : Service() {
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     view.removeCallbacks(longPress)
                     if (listeningByGesture) {
+                        isHolding = false
                         finishListening()
                     } else if (!moved) {
                         openMainActivity()
@@ -152,8 +182,14 @@ class FloatingBubbleService : Service() {
 
     private fun startListening() {
         latestText = ""
+        sessionActive = true
         voiceController.startPressToTalk()
-        bubble?.text = "听"
+        bubble?.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+        showListeningVisual()
+        createAndStartRecognizer()
+    }
+
+    private fun createAndStartRecognizer() {
         bubble?.contentDescription = getString(R.string.bubble_listening)
 
         speechRecognizer?.destroy()
@@ -167,19 +203,29 @@ class FloatingBubbleService : Service() {
                 override fun onEvent(eventType: Int, params: Bundle?) = Unit
                 override fun onPartialResults(partialResults: Bundle?) {
                     latestText = firstResult(partialResults)
+                    if (latestText.isNotBlank() && isHolding) {
+                        bubble?.text = latestText.takeLast(10)
+                    }
                 }
                 override fun onResults(results: Bundle?) {
                     latestText = firstResult(results)
-                    submitLatestVoice()
+                    if (!isHolding) {
+                        submitLatestVoice()
+                    }
                 }
                 override fun onError(error: Int) {
-                    voiceController.cancel()
-                    resetBubble()
-                    Toast.makeText(
-                        this@FloatingBubbleService,
-                        R.string.voice_empty,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    when (
+                        recognitionPolicy.onError(
+                            isHolding = isHolding,
+                            hasText = latestText.isNotBlank()
+                        )
+                    ) {
+                        VoiceErrorAction.Retry -> {
+                            bubble?.postDelayed(restartRecognition, 350)
+                        }
+                        VoiceErrorAction.SubmitText -> submitLatestVoice()
+                        VoiceErrorAction.ShowEmpty -> showEmptyResult()
+                    }
                 }
             })
             startListening(
@@ -190,19 +236,42 @@ class FloatingBubbleService : Service() {
                     )
                     putExtra(RecognizerIntent.EXTRA_LANGUAGE, "zh-CN")
                     putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+                    putExtra(
+                        RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS,
+                        5_000L
+                    )
+                    putExtra(
+                        RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
+                        5_000L
+                    )
+                    putExtra(
+                        RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
+                        5_000L
+                    )
                 }
             )
         }
     }
 
     private fun finishListening() {
+        isHolding = false
+        bubble?.removeCallbacks(restartRecognition)
         speechRecognizer?.stopListening()
         if (latestText.isNotBlank()) {
             submitLatestVoice()
+        } else {
+            bubble?.text = getString(R.string.bubble_recognizing)
+            bubble?.postDelayed(releaseTimeout, FINAL_RESULT_GRACE_MS)
         }
     }
 
     private fun submitLatestVoice() {
+        if (!sessionActive) {
+            return
+        }
+        sessionActive = false
+        bubble?.removeCallbacks(releaseTimeout)
+        bubble?.removeCallbacks(restartRecognition)
         voiceController.stopPressToTalk(latestText)
         val submitted = voiceController.consumeSubmitted()
         resetBubble()
@@ -221,10 +290,76 @@ class FloatingBubbleService : Service() {
         }
     }
 
+    private fun showEmptyResult() {
+        if (!sessionActive) {
+            return
+        }
+        sessionActive = false
+        voiceController.cancel()
+        resetBubble()
+        Toast.makeText(
+            this,
+            R.string.voice_empty,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
     private fun resetBubble() {
         listeningByGesture = false
+        isHolding = false
+        bubble?.textSize = 24f
         bubble?.text = "搭"
         bubble?.contentDescription = getString(R.string.bubble_ready)
+        updateBubbleWidth(CIRCLE_SIZE_DP)
+        pulseAnimator?.cancel()
+        pulseAnimator = null
+        bubble?.scaleX = 1f
+        bubble?.scaleY = 1f
+        bubble?.background = bubbleBackground(cornerRadiusDp = 32, strokeDp = 2)
+    }
+
+    private fun showListeningVisual() {
+        val view = bubble ?: return
+        view.text = getString(R.string.bubble_listening_prompt)
+        view.textSize = 17f
+        updateBubbleWidth(LISTENING_WIDTH_DP)
+        view.background = bubbleBackground(cornerRadiusDp = 24, strokeDp = 3)
+        pulseAnimator?.cancel()
+        pulseAnimator = ValueAnimator.ofFloat(1f, 1.06f).apply {
+            duration = 480L
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.REVERSE
+            interpolator = AccelerateDecelerateInterpolator()
+            addUpdateListener { animator ->
+                val scale = animator.animatedValue as Float
+                view.scaleX = scale
+                view.scaleY = scale
+            }
+            start()
+        }
+    }
+
+    private fun updateBubbleWidth(widthDp: Int) {
+        val params = layoutParams ?: return
+        val view = bubble ?: return
+        params.width = dp(widthDp)
+        params.x = min(
+            params.x,
+            resources.displayMetrics.widthPixels - params.width - dp(16)
+        )
+        windowManager.updateViewLayout(view, params)
+    }
+
+    private fun bubbleBackground(
+        cornerRadiusDp: Int,
+        strokeDp: Int
+    ): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = dp(cornerRadiusDp).toFloat()
+            setColor(Color.rgb(232, 154, 150))
+            setStroke(dp(strokeDp), Color.rgb(41, 38, 36))
+        }
     }
 
     private fun firstResult(bundle: Bundle?): String {
@@ -278,5 +413,8 @@ class FloatingBubbleService : Service() {
         private const val CHANNEL_ID = "xiaozhu_dashou_bubble"
         private const val NOTIFICATION_ID = 2026
         private const val LONG_PRESS_MS = 450L
+        private const val FINAL_RESULT_GRACE_MS = 1_600L
+        private const val CIRCLE_SIZE_DP = 64
+        private const val LISTENING_WIDTH_DP = 164
     }
 }
