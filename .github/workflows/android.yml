@@ -24,7 +24,7 @@ jobs:
       - uses: android-actions/setup-android@v3
       - name: Install Android platform
         run: sdkmanager "platforms;android-35" "build-tools;36.0.0"
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
       - name: Test and build
         working-directory: android
         run: ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon
