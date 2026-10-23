@@ -36,6 +36,7 @@
 - Recording UX build SHA-256: `6b727eee5b58b101ac9b0cb19e445c5d0967303ec3ce34a985fe49d5fd41cc4c`.
 - Development orchestrator returned an `open_app` action for “打开设置” targeting `com.android.settings`.
 - End-to-end task client APK SHA-256: `a997917ade6a735b97e0ea189a9d308616b4cc04df07cbd399636227d395a954`.
+- Device owner verified the complete voice-to-action flow: holding the bubble, saying “打开设置”, submitting the task, receiving `open_app`, and opening Android Settings all completed successfully.
 - Device owner manually verified the revised hold-to-talk UX as acceptable: recording state is visible, partial transcription is understandable, silence while holding no longer triggers a premature failure, and final transcription works.
 - Debug APK produced at `android/app/build/outputs/apk/debug/app-debug.apk`.
 
