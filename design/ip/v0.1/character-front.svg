@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" role="img" aria-labelledby="title desc">
+  <title id="title">猪哥全身标准正面</title>
+  <desc id="desc">约 3.2 头身的暖科技任务猪，穿着奶油白任务马甲、携带薄荷绿任务节点和短尾信号灯</desc>
+
+  <!-- 尾巴与腿部位于身体后方 -->
+  <path d="M407 557C452 548 479 578 466 608C456 632 426 636 417 617C410 601 423 586 437 591C449 596 451 607 444 614" fill="none" stroke="#20262B" stroke-width="27" stroke-linecap="round"/>
+  <path d="M407 557C452 548 479 578 466 608C456 632 426 636 417 617C410 601 423 586 437 591C449 596 451 607 444 614" fill="none" stroke="#E89A96" stroke-width="15" stroke-linecap="round"/>
+  <circle cx="444" cy="614" r="7" fill="#64DDC3" stroke="#20262B" stroke-width="4"/>
+
+  <path d="M258 600L247 765" fill="none" stroke="#20262B" stroke-width="82" stroke-linecap="round"/>
+  <path d="M342 600L353 765" fill="none" stroke="#20262B" stroke-width="82" stroke-linecap="round"/>
+  <path d="M258 600L247 765" fill="none" stroke="#565E62" stroke-width="60" stroke-linecap="round"/>
+  <path d="M342 600L353 765" fill="none" stroke="#565E62" stroke-width="60" stroke-linecap="round"/>
+  <path d="M208 794C208 773 225 760 251 760C277 760 293 773 293 794V814C293 829 282 837 264 837H237C220 837 208 829 208 814Z" fill="#E89A96" stroke="#20262B" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M307 794C307 773 324 760 350 760C376 760 392 773 392 794V814C392 829 381 837 363 837H336C319 837 307 829 307 814Z" fill="#E89A96" stroke="#20262B" stroke-width="10" stroke-linejoin="round"/>
+  <rect x="211" y="814" width="80" height="18" rx="9" fill="#20262B"/>
+  <rect x="309" y="814" width="80" height="18" rx="9" fill="#20262B"/>
+
+  <!-- 手臂与手 -->
+  <path d="M225 355C188 386 165 438 158 488" fill="none" stroke="#20262B" stroke-width="66" stroke-linecap="round"/>
+  <path d="M375 355C412 386 435 438 442 488" fill="none" stroke="#20262B" stroke-width="66" stroke-linecap="round"/>
+  <path d="M225 355C188 386 165 438 158 488" fill="none" stroke="#FFF9EF" stroke-width="44" stroke-linecap="round"/>
+  <path d="M375 355C412 386 435 438 442 488" fill="none" stroke="#FFF9EF" stroke-width="44" stroke-linecap="round"/>
+  <circle cx="157" cy="492" r="29" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+  <circle cx="443" cy="492" r="29" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+  <path d="M142 486Q154 476 167 485" fill="none" stroke="#A75258" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+  <path d="M433 486Q446 476 458 485" fill="none" stroke="#A75258" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+
+  <!-- 身体与任务马甲 -->
+  <path d="M225 316C198 334 186 370 186 422L191 563C194 598 216 621 250 626L350 626C384 621 406 598 409 563L414 422C414 370 402 334 375 316Z" fill="#FFF9EF" stroke="#20262B" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M253 320L300 355L347 320" fill="#E89A96" stroke="#20262B" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M300 355V542" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round" opacity=".25"/>
+  <path d="M214 359C227 392 230 433 225 477M386 359C373 392 370 433 375 477" fill="none" stroke="#20262B" stroke-width="9" stroke-linecap="round" opacity=".13"/>
+  <rect x="210" y="449" width="72" height="76" rx="15" fill="#F3EADF" stroke="#20262B" stroke-width="7"/>
+  <rect x="318" y="449" width="72" height="76" rx="15" fill="#F3EADF" stroke="#20262B" stroke-width="7"/>
+  <path d="M228 468H264M336 468H372" fill="none" stroke="#A75258" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="350" cy="385" r="17" fill="#64DDC3" stroke="#20262B" stroke-width="7"/>
+  <path d="M342 386H349M346 379V393" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- 工具腰带 -->
+  <rect x="184" y="543" width="232" height="36" rx="15" fill="#20262B"/>
+  <rect x="277" y="546" width="46" height="30" rx="10" fill="#64DDC3" stroke="#FFF9EF" stroke-width="4"/>
+  <circle cx="300" cy="561" r="6" fill="#20262B"/>
+  <rect x="198" y="551" width="47" height="20" rx="8" fill="#565E62"/>
+  <rect x="355" y="551" width="47" height="20" rx="8" fill="#565E62"/>
+
+  <!-- 头部 -->
+  <path d="M197 169C164 148 154 102 183 85C214 67 248 101 266 145" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M403 169C436 148 446 102 417 85C386 67 352 101 334 145" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M199 143C185 127 182 108 195 100C210 91 227 110 236 132" fill="#A75258" opacity=".22"/>
+  <path d="M401 143C415 127 418 108 405 100C390 91 373 110 364 132" fill="#A75258" opacity=".22"/>
+
+  <path d="M205 199C205 139 247 103 300 103C353 103 395 139 395 199L395 242C395 291 354 322 300 322C246 322 205 291 205 242Z" fill="#FFF9EF" stroke="#20262B" stroke-width="11" stroke-linejoin="round"/>
+  <ellipse cx="242" cy="252" rx="22" ry="11" fill="#E89A96" opacity=".45"/>
+  <ellipse cx="358" cy="252" rx="22" ry="11" fill="#E89A96" opacity=".45"/>
+
+  <ellipse cx="271" cy="194" rx="12" ry="17" fill="#20262B"/>
+  <ellipse cx="329" cy="194" rx="12" ry="17" fill="#20262B"/>
+  <circle cx="267" cy="189" r="4" fill="#64DDC3"/>
+  <circle cx="325" cy="189" r="4" fill="#64DDC3"/>
+
+  <rect x="264" y="211" width="72" height="52" rx="26" fill="#E89A96" stroke="#20262B" stroke-width="9"/>
+  <ellipse cx="287" cy="237" rx="6" ry="10" fill="#20262B"/>
+  <ellipse cx="313" cy="237" rx="6" ry="10" fill="#20262B"/>
+
+  <path d="M251 278Q267 289 282 279M318 279Q333 289 349 278" fill="none" stroke="#20262B" stroke-width="5" stroke-linecap="round"/>
+</svg>

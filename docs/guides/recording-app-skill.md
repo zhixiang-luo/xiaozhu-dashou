@@ -21,7 +21,20 @@ App 技能不是让用户每次手工编辑代码。推荐流程是：
 
 - `screens/NNNNN.png`：当前屏幕截图。
 - `ui/NNNNN.xml`：当前 Accessibility UI 树。
+- `accessibility.jsonl`：小猪搭手自己的 AccessibilityService 结构化节点记录。
 - `metadata.txt`：设备、时间和采样间隔。
+
+部分 App 会向系统 `uiautomator` 返回空树。录制结束后同时比较 `ui/` 和 `accessibility.jsonl`；如果两者都为空，技能必须使用截图加 OCR/视觉定位和坐标兜底，微信就是这种情况。
+
+## 分析截图文字
+
+macOS 开发机可以用 Vision OCR 提取文字和归一化坐标：
+
+```bash
+./scripts/ocr-screens.sh artifacts/skill-recordings/<session>/screens/*.png
+```
+
+默认使用本机 `MacOSX26.5.sdk`；其他 macOS 版本可通过 `MACOS_SDK_PATH` 指定兼容 SDK。
 
 录制文件位于：
 

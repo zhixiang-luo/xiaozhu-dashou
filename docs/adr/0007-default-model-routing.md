@@ -1,10 +1,13 @@
 # ADR-0007: Default OpenAI Model Routing
 
-> Status: Accepted
+> Status: Superseded by ADR-0009
 > Date: 2026-10-23
 > Owners: Model Platform
 
 ## Context
+
+> 本 ADR 记录的候选路由未进入实现；当前真实接入见
+> [ADR-0009](0009-deepseek-first-intent-planner.md)。
 
 小猪搭手需要连续语音意图、截图理解、工具调用、复杂任务规划和失败恢复。使用一个高成本模型处理所有步骤会显著增加延迟和费用；使用一个低成本模型又无法可靠处理复杂跨 App 任务。
 

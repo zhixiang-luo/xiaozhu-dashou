@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 820" role="img" aria-labelledby="title desc">
+  <title id="title">猪哥基础表情 v0.1</title>
+  <desc id="desc">待命、听见、思考、执行、完成、等待接管、拒绝和困惑八种基础表情</desc>
+  <rect width="1800" height="820" fill="#F7F2E8"/>
+
+  <defs>
+    <g id="faceBase">
+      <path d="M197 169C164 148 154 102 183 85C214 67 248 101 266 145" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M403 169C436 148 446 102 417 85C386 67 352 101 334 145" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M199 143C185 127 182 108 195 100C210 91 227 110 236 132" fill="#A75258" opacity=".22"/>
+      <path d="M401 143C415 127 418 108 405 100C390 91 373 110 364 132" fill="#A75258" opacity=".22"/>
+      <path d="M205 199C205 139 247 103 300 103C353 103 395 139 395 199L395 242C395 291 354 322 300 322C246 322 205 291 205 242Z" fill="#FFF9EF" stroke="#20262B" stroke-width="11" stroke-linejoin="round"/>
+      <ellipse cx="242" cy="252" rx="22" ry="11" fill="#E89A96" opacity=".45"/>
+      <ellipse cx="358" cy="252" rx="22" ry="11" fill="#E89A96" opacity=".45"/>
+      <rect x="264" y="211" width="72" height="52" rx="26" fill="#E89A96" stroke="#20262B" stroke-width="9"/>
+      <ellipse cx="287" cy="237" rx="6" ry="10" fill="#20262B"/>
+      <ellipse cx="313" cy="237" rx="6" ry="10" fill="#20262B"/>
+    </g>
+  </defs>
+
+  <g font-family="PingFang SC, Noto Sans CJK SC, sans-serif">
+    <text x="60" y="67" fill="#20262B" font-size="40" font-weight="700" letter-spacing="3">猪哥 · 基础表情 v0.1</text>
+    <text x="62" y="104" fill="#626A6D" font-size="18">同一套五官结构表达状态，不依靠夸张变形制造情绪</text>
+    <rect x="1390" y="51" width="350" height="50" rx="25" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".12"/>
+    <circle cx="1422" cy="76" r="7" fill="#64DDC3"/>
+    <text x="1444" y="83" fill="#20262B" font-size="17" font-weight="600">8 个基础状态 · 可继续扩展</text>
+
+    <!-- 01 待命 -->
+    <g transform="translate(60 150)">
+      <rect width="400" height="280" rx="24" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <use href="#faceBase" transform="translate(30 54) scale(.35)"/>
+      <path d="M105 124Q116 117 127 124M143 124Q154 117 165 124" fill="none" stroke="#20262B" stroke-width="6" stroke-linecap="round"/>
+      <path d="M109 162Q123 169 137 162" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round"/>
+      <text x="220" y="92" fill="#20262B" font-size="27" font-weight="700">待命</text>
+      <text x="220" y="128" fill="#626A6D" font-size="17">安静、可随时响应</text>
+      <rect x="220" y="151" width="75" height="31" rx="15.5" fill="#F1EAE0"/>
+      <text x="238" y="172" fill="#626A6D" font-size="14" font-weight="600">低打扰</text>
+      <text x="220" y="217" fill="#626A6D" font-size="14">不眨眼循环，避免抢注意力</text>
+    </g>
+
+    <!-- 02 听见 -->
+    <g transform="translate(475 150)">
+      <rect width="400" height="280" rx="24" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <use href="#faceBase" transform="translate(30 54) scale(.35)"/>
+      <ellipse cx="116" cy="123" rx="9" ry="13" fill="#20262B"/>
+      <ellipse cx="154" cy="123" rx="9" ry="13" fill="#20262B"/>
+      <circle cx="113" cy="119" r="3" fill="#64DDC3"/>
+      <circle cx="151" cy="119" r="3" fill="#64DDC3"/>
+      <path d="M113 161Q127 171 141 161" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round"/>
+      <text x="220" y="92" fill="#20262B" font-size="27" font-weight="700">听见</text>
+      <text x="220" y="128" fill="#626A6D" font-size="17">确认唤醒，等待指令</text>
+      <rect x="220" y="151" width="78" height="31" rx="15.5" fill="#D9F8F0"/>
+      <text x="238" y="172" fill="#0B695D" font-size="14" font-weight="600">已唤醒</text>
+      <text x="220" y="217" fill="#626A6D" font-size="14">短提示音与触感优先于播报</text>
+    </g>
+
+    <!-- 03 思考 -->
+    <g transform="translate(890 150)">
+      <rect width="400" height="280" rx="24" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <use href="#faceBase" transform="translate(30 54) scale(.35)"/>
+      <ellipse cx="116" cy="120" rx="9" ry="13" fill="#20262B"/>
+      <ellipse cx="154" cy="120" rx="9" ry="13" fill="#20262B"/>
+      <circle cx="119" cy="116" r="3" fill="#64DDC3"/>
+      <circle cx="157" cy="116" r="3" fill="#64DDC3"/>
+      <path d="M111 155Q127 153 140 162" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="171" cy="82" r="6" fill="#E89A96"/>
+      <circle cx="184" cy="66" r="4" fill="#E89A96" opacity=".6"/>
+      <text x="220" y="92" fill="#20262B" font-size="27" font-weight="700">思考</text>
+      <text x="220" y="128" fill="#626A6D" font-size="17">理解目标、识别歧义</text>
+      <rect x="220" y="151" width="84" height="31" rx="15.5" fill="#F8E8C9"/>
+      <text x="238" y="172" fill="#876123" font-size="14" font-weight="600">理解中</text>
+      <text x="220" y="217" fill="#626A6D" font-size="14">不显示虚构的思考气泡</text>
+    </g>
+
+    <!-- 04 执行 -->
+    <g transform="translate(1305 150)">
+      <rect width="400" height="280" rx="24" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <use href="#faceBase" transform="translate(30 54) scale(.35)"/>
+      <path d="M107 120H125M145 120H163" fill="none" stroke="#20262B" stroke-width="8" stroke-linecap="round"/>
+      <path d="M113 160H141" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round"/>
+      <path d="M74 165A48 48 0 0 1 105 78" fill="none" stroke="#64DDC3" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="105" cy="78" r="5" fill="#64DDC3"/>
+      <text x="220" y="92" fill="#20262B" font-size="27" font-weight="700">执行</text>
+      <text x="220" y="128" fill="#626A6D" font-size="17">专注、当前步骤确定</text>
+      <rect x="220" y="151" width="84" height="31" rx="15.5" fill="#D9F8F0"/>
+      <text x="238" y="172" fill="#0B695D" font-size="14" font-weight="600">执行中</text>
+      <text x="220" y="217" fill="#626A6D" font-size="14">眼神收窄，不使用胜利表情</text>
+    </g>
+
+    <!-- 05 完成 -->
+    <g transform="translate(60 470)">
+      <rect width="400" height="280" rx="24" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <use href="#faceBase" transform="translate(30 54) scale(.35)"/>
+      <path d="M105 122Q116 132 127 122M143 122Q154 132 165 122" fill="none" stroke="#20262B" stroke-width="6" stroke-linecap="round"/>
+      <path d="M110 160Q127 173 144 160" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round"/>
+      <path d="M57 120A62 62 0 0 1 78 70" fill="none" stroke="#64DDC3" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="172" cy="72" r="6" fill="#64DDC3"/>
+      <text x="220" y="92" fill="#20262B" font-size="27" font-weight="700">完成</text>
+      <text x="220" y="128" fill="#626A6D" font-size="17">结果已验证后短暂反馈</text>
+      <rect x="220" y="151" width="75" height="31" rx="15.5" fill="#D9F8F0"/>
+      <text x="238" y="172" fill="#0B695D" font-size="14" font-weight="600">完成</text>
+      <text x="220" y="217" fill="#626A6D" font-size="14">420ms 后回到待命</text>
+    </g>
+
+    <!-- 06 等待接管 -->
+    <g transform="translate(475 470)">
+      <rect width="400" height="280" rx="24" fill="#FFF9EF" stroke="#E9A94F" stroke-width="2"/>
+      <use href="#faceBase" transform="translate(30 54) scale(.35)"/>
+      <ellipse cx="116" cy="120" rx="9" ry="13" fill="#20262B"/>
+      <ellipse cx="154" cy="116" rx="9" ry="13" fill="#20262B"/>
+      <circle cx="119" cy="116" r="3" fill="#E9A94F"/>
+      <circle cx="157" cy="112" r="3" fill="#E9A94F"/>
+      <path d="M110 158H143" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="173" cy="76" r="11" fill="#E9A94F" stroke="#20262B" stroke-width="4"/>
+      <path d="M173 69V76" stroke="#20262B" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="173" cy="81" r="1.8" fill="#20262B"/>
+      <text x="220" y="92" fill="#20262B" font-size="27" font-weight="700">等待接管</text>
+      <text x="220" y="128" fill="#626A6D" font-size="17">目标不确定或安全页</text>
+      <rect x="220" y="151" width="88" height="31" rx="15.5" fill="#F8E8C9"/>
+      <text x="238" y="172" fill="#876123" font-size="14" font-weight="600">需要你</text>
+      <text x="220" y="217" fill="#626A6D" font-size="14">停止动作，不使用焦虑表情</text>
+    </g>
+
+    <!-- 07 拒绝 -->
+    <g transform="translate(890 470)">
+      <rect width="400" height="280" rx="24" fill="#FFF9EF" stroke="#C9534D" stroke-width="2"/>
+      <use href="#faceBase" transform="translate(30 54) scale(.35)"/>
+      <path d="M104 121H128M142 121H166" fill="none" stroke="#20262B" stroke-width="7" stroke-linecap="round"/>
+      <path d="M111 162H145" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round"/>
+      <path d="M154 80L176 99M176 80L154 99" fill="none" stroke="#C9534D" stroke-width="5" stroke-linecap="round"/>
+      <text x="220" y="92" fill="#20262B" font-size="27" font-weight="700">拒绝</text>
+      <text x="220" y="128" fill="#626A6D" font-size="17">支付、验证码或越权</text>
+      <rect x="220" y="151" width="88" height="31" rx="15.5" fill="#F4D9D6"/>
+      <text x="238" y="172" fill="#8E3834" font-size="14" font-weight="600">已阻止</text>
+      <text x="220" y="217" fill="#626A6D" font-size="14">坚定但不指责用户</text>
+    </g>
+
+    <!-- 08 困惑 -->
+    <g transform="translate(1305 470)">
+      <rect width="400" height="280" rx="24" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <use href="#faceBase" transform="translate(30 54) scale(.35)"/>
+      <ellipse cx="116" cy="120" rx="9" ry="13" fill="#20262B"/>
+      <ellipse cx="154" cy="123" rx="9" ry="13" fill="#20262B"/>
+      <circle cx="119" cy="116" r="3" fill="#64DDC3"/>
+      <circle cx="151" cy="119" r="3" fill="#64DDC3"/>
+      <path d="M112 162Q124 156 136 164" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round"/>
+      <path d="M159 86C166 77 178 76 184 84C190 91 183 98 176 102C173 104 172 108 172 111" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="172" cy="118" r="2" fill="#20262B"/>
+      <text x="220" y="92" fill="#20262B" font-size="27" font-weight="700">困惑</text>
+      <text x="220" y="128" fill="#626A6D" font-size="17">指令不完整或页面变化</text>
+      <rect x="220" y="151" width="88" height="31" rx="15.5" fill="#F1EAE0"/>
+      <text x="238" y="172" fill="#626A6D" font-size="14" font-weight="600">需澄清</text>
+      <text x="220" y="217" fill="#626A6D" font-size="14">说明缺什么，不把问题推给用户</text>
+    </g>
+
+    <line x1="60" y1="778" x2="1740" y2="778" stroke="#20262B" stroke-opacity=".12"/>
+    <text x="60" y="806" fill="#626A6D" font-size="15">表情规则：眼睛变化承担主要情绪；嘴部克制；耳朵只做轻微状态反馈；所有表情必须能回到同一个中性脸。</text>
+  </g>
+</svg>

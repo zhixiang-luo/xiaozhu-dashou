@@ -6,11 +6,34 @@ import {
   DevTaskPlanner,
   type TaskPlanner
 } from "./tasks/planner.js";
+import { DeepSeekTaskPlanner } from "./tasks/deepseek-planner.js";
+import { DeepSeekIntentClient } from "./providers/deepseek/client.js";
+import {
+  loadDefaultSkillCatalog,
+  type SkillCatalog
+} from "./skills/catalog.js";
+import { registerVoiceRoutes } from "./voice/routes.js";
 
 interface BuildServerOptions {
   deviceToken?: string;
+  allowWechatAutoSend?: boolean;
   coordinator?: TaskCoordinator;
   planner?: TaskPlanner;
+  skillCatalog?: SkillCatalog;
+  deepSeek?: {
+    apiKey: string;
+    baseUrl?: string;
+    model?: string;
+    timeoutMs?: number;
+    fetchImpl?: typeof fetch;
+  };
+  voice?: {
+    apiKey: string;
+    resourceId: string;
+    upstreamUrl?: string;
+    maxStreamBytes?: number;
+    maxStreamMs?: number;
+  };
 }
 
 const CreateTaskBodySchema = z.object({
@@ -25,11 +48,63 @@ const ConfirmationBodySchema = z.object({
 export function buildServer(options: BuildServerOptions = {}) {
   const app = Fastify({ logger: false });
   const coordinator = options.coordinator ?? new TaskCoordinator();
-  const planner = options.planner ?? new DevTaskPlanner();
-  const deviceToken = options.deviceToken ?? "dev-token";
+  const skillCatalog =
+    options.skillCatalog ?? loadDefaultSkillCatalog();
+  const deepSeekApiKey =
+    options.deepSeek?.apiKey ?? process.env.DEEPSEEK_API_KEY ?? "";
+  const plannerOptions = {
+    allowWechatAutoSend:
+      options.allowWechatAutoSend ??
+      process.env.ALLOW_WECHAT_AUTOSEND === "true"
+  };
+  const planner =
+    options.planner ??
+    (deepSeekApiKey
+      ? new DeepSeekTaskPlanner(
+          new DeepSeekIntentClient({
+            apiKey: deepSeekApiKey,
+            baseUrl:
+              options.deepSeek?.baseUrl ??
+              process.env.DEEPSEEK_BASE_URL ??
+              "https://api.deepseek.com",
+            model:
+              options.deepSeek?.model ??
+              process.env.DEEPSEEK_MODEL ??
+              "deepseek-chat",
+            timeoutMs: options.deepSeek?.timeoutMs,
+            fetchImpl: options.deepSeek?.fetchImpl
+          }),
+          skillCatalog,
+          undefined,
+          plannerOptions
+        )
+      : new DevTaskPlanner(plannerOptions));
+  const deviceToken =
+    options.deviceToken ?? process.env.DEVICE_TOKEN ?? "dev-token";
 
-  app.register(fastifyWebsocket);
+  app.register(fastifyWebsocket, {
+    options: { maxPayload: 64 * 1024 }
+  });
   app.get("/health", async () => ({ status: "ok" }));
+  const voiceOptions = {
+    apiKey: options.voice?.apiKey ?? process.env.VOLCENGINE_ASR_API_KEY ?? "",
+    resourceId:
+      options.voice?.resourceId ??
+      process.env.VOLCENGINE_ASR_RESOURCE_ID ??
+      "volc.seedasr.sauc.duration"
+  };
+  registerVoiceRoutes(app, {
+    ...voiceOptions,
+    ...(options.voice?.upstreamUrl
+      ? { upstreamUrl: options.voice.upstreamUrl }
+      : {}),
+    ...(options.voice?.maxStreamBytes
+      ? { maxStreamBytes: options.voice.maxStreamBytes }
+      : {}),
+    ...(options.voice?.maxStreamMs
+      ? { maxStreamMs: options.voice.maxStreamMs }
+      : {})
+  });
 
   app.addHook("onRequest", async (request, reply) => {
     if (!request.url.startsWith("/v1/")) {
@@ -50,7 +125,7 @@ export function buildServer(options: BuildServerOptions = {}) {
     const task = coordinator.create(parsed.data);
     return reply.code(201).send({
       task,
-      actions: planner.plan(task)
+      actions: await planner.plan(task)
     });
   });
 

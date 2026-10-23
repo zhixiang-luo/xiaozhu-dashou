@@ -7,4 +7,6 @@ interface IShizukuActionService {
     boolean inputText(String text) = 4;
     boolean keyEvent(int keyCode) = 5;
     boolean openApp(String packageName) = 6;
+    boolean pasteText() = 7;
+    boolean restartApp(String packageName) = 8;
 }

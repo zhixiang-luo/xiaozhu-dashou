@@ -50,6 +50,15 @@ public final class ShizukuActionService extends IShizukuActionService.Stub {
     }
 
     @Override
+    public boolean pasteText() throws RemoteException {
+        return runInput(
+                "keycombination",
+                "KEYCODE_CTRL_LEFT",
+                "KEYCODE_V"
+        );
+    }
+
+    @Override
     public boolean keyEvent(int keyCode) throws RemoteException {
         return runInput("keyevent", Integer.toString(keyCode));
     }
@@ -60,6 +69,32 @@ public final class ShizukuActionService extends IShizukuActionService.Stub {
             return false;
         }
         return runInput("monkey", "-p", packageName, "1");
+    }
+
+    @Override
+    public boolean restartApp(String packageName) throws RemoteException {
+        if (!isPackageName(packageName)) {
+            return false;
+        }
+        return runCommand("am", "force-stop", packageName)
+                && runInput("monkey", "-p", packageName, "1");
+    }
+
+    private boolean isPackageName(String packageName) {
+        return packageName.matches(
+                "[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+"
+        );
+    }
+
+    private boolean runCommand(String... command) {
+        try {
+            Process process = new ProcessBuilder(command)
+                    .redirectErrorStream(true)
+                    .start();
+            return process.waitFor() == 0;
+        } catch (IOException | InterruptedException ignored) {
+            return false;
+        }
     }
 
     private boolean runInput(String... args) {

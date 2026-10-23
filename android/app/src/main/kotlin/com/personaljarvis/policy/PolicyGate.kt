@@ -15,6 +15,15 @@ class PolicyGate {
             return RiskDecision.Block("account_or_payment_screen")
         }
 
+        if (
+            action.type != RuntimeActionType.OPEN_APP &&
+            action.type != RuntimeActionType.RESTART_APP &&
+            action.requiredPackage != null &&
+            action.requiredPackage != observation.foregroundPackage
+        ) {
+            return RiskDecision.Block("unexpected_foreground_app")
+        }
+
         if (action.type == RuntimeActionType.SEND_MESSAGE) {
             return when (observation.recipientResolution) {
                 RecipientResolution.UNIQUE -> RiskDecision.Allow

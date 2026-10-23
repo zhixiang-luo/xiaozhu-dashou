@@ -29,8 +29,8 @@ verification:
   - intended_conversation_visible
   - sent_message_visible
 steps:
-  - id: open-wechat
-    action: open_app
+  - id: restart-wechat
+    action: restart_app
     package: com.tencent.mm
   - id: require-wechat
     action: require_foreground
@@ -43,15 +43,24 @@ steps:
     action: tap
     target:
       text: "{{contactName}}"
+      fallbackPoint:
+        x: 0.32
+        y: 0.26
   - id: input-message
     action: input_text
     target:
       text: 输入
+      fallbackPoint:
+        x: 0.5
+        y: 0.93
     inputKey: message
   - id: send-message
     action: send
     target:
       text: 发送
+      fallbackPoint:
+        x: 0.91
+        y: 0.59
   - id: verify-sent
     action: verify
     predicate: sent_message_visible

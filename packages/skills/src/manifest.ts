@@ -19,7 +19,14 @@ const TargetSchema = z
     text: z.string().min(1).optional(),
     contentDescription: z.string().min(1).optional(),
     resourceId: z.string().min(1).optional(),
-    role: z.string().min(1).optional()
+    role: z.string().min(1).optional(),
+    fallbackPoint: z
+      .object({
+        x: z.number().min(0).max(1),
+        y: z.number().min(0).max(1)
+      })
+      .strict()
+      .optional()
   })
   .strict()
   .refine(
@@ -40,6 +47,10 @@ const StepEnvelope = z.object({
 const SkillStepSchema = z.discriminatedUnion("action", [
   StepEnvelope.extend({
     action: z.literal("open_app"),
+    package: PackageNameSchema
+  }).strict(),
+  StepEnvelope.extend({
+    action: z.literal("restart_app"),
     package: PackageNameSchema
   }).strict(),
   StepEnvelope.extend({

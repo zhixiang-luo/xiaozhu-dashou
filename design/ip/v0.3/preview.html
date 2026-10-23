@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>猪哥 · 暖科技任务猪</title>
+    <style>
+      :root {
+        --canvas: #f4efe6;
+        --paper: #fffaf1;
+        --ink: #1d2529;
+        --muted: #687074;
+        --blush: #e89a96;
+        --blush-deep: #a75258;
+        --mint: #69ddc4;
+        --mint-deep: #0d6a60;
+        --line: rgba(29, 37, 41, 0.12);
+        --soft: #ece4d8;
+      }
+
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; }
+      body {
+        display: grid;
+        place-items: center;
+        background: #d9d3c9;
+        color: var(--ink);
+        font-family: "PingFang SC", "Hiragino Sans GB", sans-serif;
+      }
+
+      .artboard {
+        position: relative;
+        width: 1600px;
+        height: 1000px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 17% 14%, rgba(232, 154, 150, 0.13), transparent 31%),
+          radial-gradient(circle at 83% 76%, rgba(105, 221, 196, 0.10), transparent 35%),
+          var(--canvas);
+      }
+
+      .artboard::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.25;
+        background-image: radial-gradient(rgba(29, 37, 41, 0.26) 0.65px, transparent 0.65px);
+        background-size: 9px 9px;
+        mask-image: linear-gradient(to bottom, black, transparent 75%);
+        pointer-events: none;
+      }
+
+      .topbar {
+        position: relative;
+        z-index: 5;
+        height: 78px;
+        padding: 0 62px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        object-fit: contain;
+      }
+
+      .meta {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        color: var(--muted);
+        font-size: 13px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .live {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--mint-deep);
+        font-weight: 600;
+      }
+
+      .live::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--mint);
+        box-shadow: 0 0 0 5px rgba(105, 221, 196, 0.14);
+      }
+
+      .content {
+        position: relative;
+        z-index: 2;
+        height: 860px;
+        padding: 38px 62px 48px;
+        display: grid;
+        grid-template-columns: 910px 1fr;
+        gap: 42px;
+      }
+
+      .hero {
+        position: relative;
+        min-width: 0;
+        overflow: hidden;
+        border-radius: 38px;
+        background:
+          radial-gradient(circle at 50% 43%, rgba(105, 221, 196, 0.16), transparent 30%),
+          linear-gradient(145deg, #172126 0%, #222d32 58%, #172126 100%);
+        box-shadow: 0 30px 80px rgba(29, 37, 41, 0.18);
+        isolation: isolate;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        width: 620px;
+        aspect-ratio: 1;
+        left: 50%;
+        top: 48%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 52% 42%, #fff9ef 0%, #f0e4d3 73%, #dfcfbb 100%);
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.25),
+          0 50px 100px rgba(0, 0, 0, 0.25);
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        width: 730px;
+        aspect-ratio: 1;
+        left: 50%;
+        top: 48%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        border: 1px solid rgba(105, 221, 196, 0.3);
+        border-left-color: rgba(105, 221, 196, 0.82);
+        border-bottom-color: rgba(232, 154, 150, 0.45);
+        filter: drop-shadow(0 0 14px rgba(105, 221, 196, 0.22));
+      }
+
+      .hero-grain {
+        position: absolute;
+        inset: 0;
+        opacity: 0.12;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+        mix-blend-mode: soft-light;
+        pointer-events: none;
+      }
+
+      .character {
+        position: absolute;
+        z-index: 3;
+        width: 470px;
+        height: 705px;
+        object-fit: contain;
+        left: 50%;
+        bottom: 32px;
+        transform: translateX(-50%);
+        filter: drop-shadow(0 35px 35px rgba(22, 29, 33, 0.22));
+        animation: arrive 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+
+      @keyframes arrive {
+        from { opacity: 0; transform: translateX(-50%) translateY(26px) scale(0.97); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+      }
+
+      .wake {
+        position: absolute;
+        z-index: 5;
+        top: 36px;
+        left: 34px;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 13px 18px 13px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 999px;
+        color: #f8f3e9;
+        background: rgba(14, 20, 23, 0.52);
+        backdrop-filter: blur(16px);
+        font-size: 15px;
+        letter-spacing: 0.03em;
+      }
+
+      .wave {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        height: 20px;
+      }
+
+      .wave i {
+        width: 3px;
+        border-radius: 4px;
+        background: var(--mint);
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+
+      .wave i:nth-child(1) { height: 8px; animation-delay: -0.3s; }
+      .wave i:nth-child(2) { height: 16px; animation-delay: -0.1s; }
+      .wave i:nth-child(3) { height: 11px; animation-delay: -0.55s; }
+      .wave i:nth-child(4) { height: 18px; animation-delay: -0.2s; }
+      @keyframes pulse { 50% { transform: scaleY(0.45); opacity: 0.45; } }
+
+      .task-card {
+        position: absolute;
+        z-index: 5;
+        top: 108px;
+        right: 28px;
+        width: 290px;
+        padding: 20px 21px 19px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 22px;
+        background: rgba(19, 27, 31, 0.76);
+        color: #f8f3e9;
+        backdrop-filter: blur(20px);
+      }
+
+      .task-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: rgba(248, 243, 233, 0.55);
+        font-size: 11px;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+      }
+
+      .task-title {
+        margin: 14px 0 15px;
+        font-family: "Songti SC", "STSong", serif;
+        font-size: 25px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+      }
+
+      .task-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: rgba(248, 243, 233, 0.78);
+      }
+
+      .task-step::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--mint);
+        box-shadow: 0 0 0 4px rgba(105, 221, 196, 0.12);
+      }
+
+      .hero-title {
+        position: absolute;
+        z-index: 4;
+        left: 34px;
+        bottom: 31px;
+        max-width: 410px;
+        color: rgba(248, 243, 233, 0.94);
+        font-family: "Songti SC", "STSong", serif;
+        font-size: 45px;
+        line-height: 1.14;
+        letter-spacing: 0.05em;
+      }
+
+      .hero-title small {
+        display: block;
+        margin-top: 10px;
+        color: rgba(248, 243, 233, 0.44);
+        font-family: "PingFang SC", sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.19em;
+        text-transform: uppercase;
+      }
+
+      .side {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        padding: 16px 8px 8px 4px;
+      }
+
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--blush-deep);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.19em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow span:last-child {
+        color: var(--muted);
+        font-weight: 500;
+        letter-spacing: 0.1em;
+      }
+
+      h1 {
+        margin: 15px 0 0;
+        font-family: "Songti SC", "STSong", serif;
+        font-size: 152px;
+        font-weight: 600;
+        line-height: 0.95;
+        letter-spacing: -0.08em;
+      }
+
+      h2 {
+        margin: 21px 0 0;
+        color: var(--mint-deep);
+        font-size: 31px;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+      }
+
+      .statement {
+        margin: 28px 0 0;
+        max-width: 460px;
+        color: var(--muted);
+        font-family: "Songti SC", "STSong", serif;
+        font-size: 23px;
+        line-height: 1.65;
+      }
+
+      .statement strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .icon-row {
+        margin-top: 30px;
+        display: grid;
+        grid-template-columns: 106px 1fr;
+        gap: 22px;
+        align-items: center;
+        padding: 16px 18px;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: rgba(255, 250, 241, 0.7);
+      }
+
+      .app-icon {
+        width: 92px;
+        height: 92px;
+        object-fit: contain;
+        border-radius: 26px;
+        filter: drop-shadow(0 12px 18px rgba(41, 38, 36, 0.12));
+      }
+
+      .icon-copy b {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 17px;
+        letter-spacing: 0.02em;
+      }
+
+      .icon-copy span {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .expression-panel {
+        margin-top: 20px;
+        padding: 16px 18px 15px;
+        border-radius: 24px;
+        background: #e9e1d5;
+        overflow: hidden;
+      }
+
+      .expression-title {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .expression-title b {
+        font-family: "Songti SC", "STSong", serif;
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      .expression-title span {
+        color: var(--muted);
+        font-size: 11px;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+      }
+
+      .expression-window {
+        height: 171px;
+        overflow: hidden;
+        border-radius: 15px;
+        background: #fff9ef;
+      }
+
+      .expression-window img {
+        display: block;
+        width: 1800px;
+        height: 820px;
+        transform: scale(0.25);
+        transform-origin: 0 0;
+        translate: -14px -36px;
+      }
+
+      .principles {
+        margin-top: auto;
+        padding-top: 26px;
+      }
+
+      .principle-line {
+        display: flex;
+        gap: 14px;
+        align-items: baseline;
+        padding: 10px 0;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .principle-line b {
+        width: 52px;
+        color: var(--blush-deep);
+        font-size: 11px;
+        letter-spacing: 0.12em;
+      }
+
+      .palette {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-top: 22px;
+      }
+
+      .swatch {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+        border: 1px solid rgba(29, 37, 41, 0.10);
+      }
+
+      .palette-label {
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="artboard">
+      <header class="topbar">
+        <div class="brand">
+          <img class="brand-mark" src="assets/piggy-task-mark.png" alt="" />
+          <span>小猪搭手</span>
+        </div>
+        <div class="meta">
+          <span>IP Character System</span>
+          <span>Edition 01</span>
+          <span class="live">在线待命</span>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="hero">
+          <div class="hero-grain"></div>
+          <div class="wake">
+            <div class="wave"><i></i><i></i><i></i><i></i></div>
+            <span>猪哥猪哥</span>
+          </div>
+          <img class="character" src="assets/character-front.png" alt="猪哥全身标准形象" />
+          <div class="hero-title">
+            你开口，<br />我来做。
+            <small>Voice in. Task done.</small>
+          </div>
+          <div class="task-card">
+            <div class="task-label"><span>当前任务</span><span>02 / 03</span></div>
+            <div class="task-title">给张三发消息</div>
+            <div class="task-step">正在打开微信</div>
+          </div>
+        </div>
+
+        <aside class="side">
+          <div class="eyebrow"><span>Character identity</span><span>V0.1 · 原形象</span></div>
+          <h1>猪哥</h1>
+          <h2>暖科技任务猪</h2>
+          <p class="statement">
+            一个住在手机里的<strong>靠谱搭手</strong>。<br />
+            不只是听懂，而是把事情做完。
+          </p>
+
+          <div class="icon-row">
+            <img class="app-icon" src="assets/piggy-task-mark.png" alt="猪哥 App 图标" />
+            <div class="icon-copy">
+              <b>同一只猪，从图标到系统。</b>
+              <span>头部负责识别，全身负责表达。<br />产品换装，不换角色。</span>
+            </div>
+          </div>
+
+          <div class="expression-panel">
+            <div class="expression-title"><b>表情，是状态</b><span>8 emotional states</span></div>
+            <div class="expression-window">
+              <img src="assets/expressions.png" alt="猪哥八种基础表情" />
+            </div>
+          </div>
+
+          <div class="principles">
+            <div class="principle-line"><b>IDENTITY</b><span>圆耳、猪鼻、双眼距和头身比例永久锁定</span></div>
+            <div class="principle-line"><b>BEHAVIOR</b><span>先行动，再用短句说清结果</span></div>
+            <div class="principle-line"><b>VARIANT</b><span>只更换服装、道具与局部主题色</span></div>
+            <div class="palette">
+              <i class="swatch" style="background:#e89a96"></i>
+              <i class="swatch" style="background:#fff9ef"></i>
+              <i class="swatch" style="background:#20262b"></i>
+              <i class="swatch" style="background:#64ddc3"></i>
+              <span class="palette-label">BLUSH · BONE · INK · SIGNAL</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>

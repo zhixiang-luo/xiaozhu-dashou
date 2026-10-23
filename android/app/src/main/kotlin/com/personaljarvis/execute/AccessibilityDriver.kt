@@ -22,6 +22,8 @@ class AccessibilityDriver(
 
         return when (action.type) {
             RuntimeActionType.OPEN_APP -> openApp(action)
+            RuntimeActionType.RESTART_APP ->
+                DriverResult.Unsupported("shizuku_required")
             RuntimeActionType.TAP -> {
                 val nodeId = action.targetNodeId
                     ?: return DriverResult.Failure("tap_target_missing")

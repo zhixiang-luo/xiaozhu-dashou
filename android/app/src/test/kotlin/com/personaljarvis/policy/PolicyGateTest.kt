@@ -29,6 +29,22 @@ class PolicyGateTest {
     }
 
     @Test
+    fun blocksTapWhenTheExpectedAppIsNotForeground() {
+        val decision = gate.evaluate(
+            action = action(
+                RuntimeActionType.TAP,
+                requiredPackage = "com.tencent.mm"
+            ),
+            observation = observation(foregroundPackage = "com.example")
+        )
+
+        assertEquals(
+            RiskDecision.Block("unexpected_foreground_app"),
+            decision
+        )
+    }
+
+    @Test
     fun asksUserWhenMessageRecipientIsAmbiguous() {
         val decision = gate.evaluate(
             action = action(RuntimeActionType.SEND_MESSAGE),
@@ -56,20 +72,23 @@ class PolicyGateTest {
 
     private fun action(
         type: RuntimeActionType,
-        taskGeneration: Int = 1
+        taskGeneration: Int = 1,
+        requiredPackage: String? = null
     ) = RuntimeAction(
         actionId = "action-1",
         taskId = "task-1",
         taskGeneration = taskGeneration,
         type = type,
-        text = null
+        text = null,
+        requiredPackage = requiredPackage
     )
 
     private fun observation(
         pageKind: PageKind = PageKind.NORMAL,
-        recipient: RecipientResolution = RecipientResolution.NONE
+        recipient: RecipientResolution = RecipientResolution.NONE,
+        foregroundPackage: String = "com.example"
     ) = ObservationSnapshot(
-        foregroundPackage = "com.example",
+        foregroundPackage = foregroundPackage,
         pageTitle = "Example",
         pageKind = pageKind,
         recipientResolution = recipient,

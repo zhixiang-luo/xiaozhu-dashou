@@ -11,12 +11,16 @@ data class PlannedAction(
     val taskGeneration: Int,
     val type: String,
     val expectedState: String,
+    val expectedPackage: String? = null,
     val targetPackage: String? = null,
+    val targetX: Double? = null,
+    val targetY: Double? = null,
+    val text: String? = null,
     val question: String? = null
 )
 
 sealed interface PlannerResult {
-    data class Action(val action: PlannedAction) : PlannerResult
+    data class Plan(val actions: List<PlannedAction>) : PlannerResult
     data class Message(val text: String) : PlannerResult
     data class Failure(val reason: String) : PlannerResult
 }
@@ -46,23 +50,36 @@ class TaskPlannerClient(
             return PlannerResult.Failure("planner_returned_no_actions")
         }
 
-        val action = actions.getJSONObject(0)
-        return when (action.getString("type")) {
-            "open_app" -> PlannerResult.Action(
-                PlannedAction(
-                    actionId = action.getString("actionId"),
-                    taskId = action.getString("taskId"),
-                    taskGeneration = action.getInt("taskGeneration"),
-                    type = "open_app",
-                    expectedState = action.getString("expectedState"),
-                    targetPackage = action.getString("packageName")
-                )
-            )
-            "ask_user" -> PlannerResult.Message(action.getString("question"))
-            else -> PlannerResult.Failure(
-                "unsupported_action:${action.getString("type")}"
-            )
+        val plan = actions.length().let { length ->
+            buildList {
+                for (index in 0 until length) {
+                    add(parseAction(actions.getJSONObject(index)))
+                }
+            }
         }
+
+        val message = plan.firstOrNull { it.type == "ask_user" }
+            ?.question
+            ?.let(PlannerResult::Message)
+        return message ?: PlannerResult.Plan(plan)
+    }
+
+    private fun parseAction(action: JSONObject): PlannedAction {
+        val type = action.getString("type")
+        val target = action.optJSONObject("target")
+        return PlannedAction(
+            actionId = action.getString("actionId"),
+            taskId = action.getString("taskId"),
+            taskGeneration = action.getInt("taskGeneration"),
+            type = type,
+            expectedState = action.getString("expectedState"),
+            expectedPackage = action.optString("expectedPackage").ifBlank { null },
+            targetPackage = action.optString("packageName").ifBlank { null },
+            targetX = target?.optDouble("x")?.takeUnless { it.isNaN() },
+            targetY = target?.optDouble("y")?.takeUnless { it.isNaN() },
+            text = action.optString("text").ifBlank { null },
+            question = action.optString("question").ifBlank { null }
+        )
     }
 }
 

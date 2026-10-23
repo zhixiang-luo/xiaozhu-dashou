@@ -10,7 +10,7 @@
 语音/文字/悬浮球
         │
         ▼
-Android App ── HTTPS/WSS ──> Orchestrator ──> ModelProvider[]
+Android App ── HTTP/WSS ──> Orchestrator ──> DeepSeek / Volcano / future providers
         │                         │
         │                         └─ Task store / model routing / prompts
         │
@@ -41,6 +41,8 @@ Android App ── HTTPS/WSS ──> Orchestrator ──> ModelProvider[]
 - TypeScript + Fastify + PostgreSQL，先使用单机 Docker Compose 部署。
 - 维护任务事件、确认状态、会话超时和匿名运行指标。
 - 通过 `ModelGateway` 选择规划、视觉定位和可选辅助模型。
+- 实时接收 Android PCM WebSocket，并转发火山双向流式 ASR。
+- DeepSeek 将用户文字拆成 Intent Schema，再转换成已注册技能动作。
 - 只返回契约定义的动作，不持有手机控制能力。
 - 对模型调用执行超时、重试、版本记录、成本上限和 schema 校验。
 
@@ -93,6 +95,8 @@ queued
 ## 部署
 
 - 开发：Android 真机 + HTTPS 云端编排；可用本地隧道访问开发服务。
+- 本地开发服务默认只监听 `127.0.0.1`，手机通过 `adb reverse` 访问；需要局域网调试时
+  必须显式设置 `HOST=0.0.0.0` 并了解公开端口风险。
 - 生产候选：单个 Linux 主机、Docker Compose、PostgreSQL、反向代理与 TLS。
 - 密钥由环境变量或托管密钥服务提供；客户端只持有短期设备令牌。
 - 任务事件按保留期清理；调试采集需要独立开关和自动过期。

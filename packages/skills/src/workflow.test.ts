@@ -38,12 +38,46 @@ describe("Workflow skill manifests", () => {
     });
   });
 
+  it("accepts a controlled app restart step", () => {
+    const manifest = parseSkillYaml(`
+id: example.restart
+version: 0.1.0
+appPackages: [com.example.app]
+prerequisites: [app.installed]
+capabilities: [shizuku]
+risk: { sideEffect: none }
+verification: [app.home_visible]
+steps:
+  - id: restart
+    action: restart_app
+    package: com.example.app
+`);
+
+    expect(manifest.steps[0]).toMatchObject({
+      id: "restart",
+      action: "restart_app",
+      package: "com.example.app"
+    });
+  });
+
   it("rejects unknown step actions", () => {
     expect(() =>
       parseSkillYaml(
         stepManifest.replace("action: send", "action: execute_anything")
       )
     ).toThrow();
+  });
+
+  it("accepts a normalized visual fallback point", () => {
+    const manifest = stepManifest.replace(
+      "target: { text: 发送 }",
+      "target: { text: 发送, fallbackPoint: { x: 0.91, y: 0.59 } }"
+    );
+
+    const parsed = parseSkillYaml(manifest);
+    expect(parsed.steps[1]).toMatchObject({
+      target: { fallbackPoint: { x: 0.91, y: 0.59 } }
+    });
   });
 
   it("validates every shipped manifest", async () => {

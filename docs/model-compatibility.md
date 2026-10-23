@@ -1,16 +1,18 @@
 # 模型兼容性矩阵
 
-> Status: Draft
+> Status: Accepted
 > Owner: Model Platform
 > Last reviewed: 2026-10-23
 
-当前尚未接入和评测模型。下表记录小猪搭手的默认候选路由；实际支持状态必须由兼容性测试更新，不能仅根据官方能力目录标记为已通过。
+当前已接入火山实时 ASR 和 DeepSeek 意图规划。以下状态只代表现有实现和测试结果，
+不代表所有设备、网络和模型版本都已验证。
 
-| Provider ID | 角色 | 模型/版本 | 工具调用 | 图片 | 中文 | 坐标定位 | 评测状态 | Owner |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| openai-fast | planner | `gpt-6-luna` | 官方支持 | 支持 | 待测 | 待测 | Not run | Model Platform |
-| openai-main | planner + vision | `gpt-6.1-sol` | 官方支持 | 支持 | 待测 | 待测 | Not run | Model Platform |
-| openai-recovery | planner | `gpt-6-astra` | 官方支持 | 支持 | 待测 | 待测 | Not run | Model Platform |
+| Provider ID | 角色 | 模型/版本 | 结构化输出 | 图片 | 中文 | 评测状态 | Owner |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| volcano-asr | speech_to_text | `bigmodel` 双向流式 | partial/final 文本 | 否 | 真实 PCM 验证 | Supported | Model Platform |
+| deepseek | intent | `deepseek-chat` | JSON Intent | 否 | 自然语言消息提取验证 | Supported | Model Platform |
+
+DeepSeek 当前只处理意图，不进行视觉定位。火山当前只处理语音识别，不承担任务规划。
 
 ## 状态定义
 

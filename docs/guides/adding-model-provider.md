@@ -33,6 +33,10 @@ services/orchestrator/src/providers/<provider-id>/
 └── adapter.test.ts
 ```
 
+DeepSeek 是首个真实意图 adapter，可参考
+`services/orchestrator/src/providers/deepseek/client.ts`。它展示了
+OpenAI-compatible Chat Completions、JSON 输出、超时和 Intent Schema 校验。
+
 - adapter 只依赖 `packages/contracts` 和 `ModelProvider` 公共接口。
 - 不得 import 其他供应商的 adapter。
 - 不得在 App 或 skill 中出现供应商模型名和响应格式。

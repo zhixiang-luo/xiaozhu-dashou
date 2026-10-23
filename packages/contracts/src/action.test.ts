@@ -16,6 +16,21 @@ describe("ActionSchema", () => {
     expect(result.type).toBe("tap");
   });
 
+  it("accepts a controlled app restart before a calibrated workflow", () => {
+    const result = ActionSchema.parse({
+      type: "restart_app",
+      actionId: "a1",
+      taskId: "t1",
+      taskGeneration: 1,
+      expectedState: "wechat.home",
+      expectedPackage: "com.tencent.mm",
+      timeoutMs: 10000,
+      packageName: "com.tencent.mm"
+    });
+
+    expect(result.type).toBe("restart_app");
+  });
+
   it("rejects unsupported tools", () => {
     expect(() =>
       ActionSchema.parse({

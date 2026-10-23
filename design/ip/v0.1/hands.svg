@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 760" role="img" aria-labelledby="title desc">
+  <title id="title">猪哥基础手部与手势 v0.1</title>
+  <desc id="desc">猪哥的四指卡通手，包含自然垂手、指向、停止、点击、拿手机和点赞六种基础手势</desc>
+  <rect width="1800" height="760" fill="#F7F2E8"/>
+
+  <defs>
+    <g id="openHand">
+      <rect x="49" y="35" width="20" height="58" rx="10" fill="#E89A96" stroke="#20262B" stroke-width="6"/>
+      <rect x="75" y="18" width="20" height="76" rx="10" fill="#E89A96" stroke="#20262B" stroke-width="6"/>
+      <rect x="101" y="29" width="20" height="65" rx="10" fill="#E89A96" stroke="#20262B" stroke-width="6"/>
+      <rect x="127" y="49" width="18" height="48" rx="9" fill="#E89A96" stroke="#20262B" stroke-width="6"/>
+      <path d="M48 84C48 68 61 61 77 61H119C135 61 146 73 144 92L138 153C136 173 122 184 104 184H79C60 184 47 172 45 153Z" fill="#E89A96" stroke="#20262B" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M42 114C27 109 23 91 35 80C44 72 56 78 64 96L70 114" fill="#E89A96" stroke="#20262B" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M75 95V133M101 95V133M127 95V129" fill="none" stroke="#A75258" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+    </g>
+
+    <g id="pointHand">
+      <rect x="72" y="31" width="22" height="83" rx="11" fill="#E89A96" stroke="#20262B" stroke-width="6"/>
+      <path d="M48 97C48 80 62 72 78 72H120C138 72 150 85 148 105L142 157C140 175 126 185 107 185H80C61 185 48 173 46 155Z" fill="#E89A96" stroke="#20262B" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M43 123C27 118 23 99 36 88C45 80 58 87 67 105L72 118" fill="#E89A96" stroke="#20262B" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M98 108H128M98 127H130M98 146H125" fill="none" stroke="#A75258" stroke-width="4" stroke-linecap="round"/>
+      <path d="M80 76V107" fill="none" stroke="#20262B" stroke-width="3" opacity=".35"/>
+    </g>
+
+    <g id="fist">
+      <path d="M45 92C45 71 62 59 83 59H124C143 59 156 72 156 92V145C156 169 139 184 115 184H83C60 184 45 170 45 145Z" fill="#E89A96" stroke="#20262B" stroke-width="7"/>
+      <path d="M63 82V145M86 79V146M109 78V146M132 82V144" fill="none" stroke="#A75258" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+      <path d="M39 110C25 104 20 86 31 75C39 67 50 72 58 86L66 101" fill="#E89A96" stroke="#20262B" stroke-width="7"/>
+    </g>
+  </defs>
+
+  <g font-family="PingFang SC, Noto Sans CJK SC, sans-serif">
+    <text x="60" y="66" fill="#20262B" font-size="40" font-weight="700" letter-spacing="3">猪哥 · 手部图鉴 v0.1</text>
+    <text x="62" y="104" fill="#626A6D" font-size="18">四指卡通手 · 圆润关节 · 保持足够大的手势轮廓</text>
+    <rect x="1390" y="50" width="350" height="50" rx="25" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".12"/>
+    <circle cx="1422" cy="75" r="7" fill="#64DDC3"/>
+    <text x="1444" y="82" fill="#20262B" font-size="17" font-weight="600">手势必须能在 32px 识别</text>
+
+    <!-- 01 自然垂手 -->
+    <g transform="translate(60 146)">
+      <rect width="260" height="520" rx="24" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <use href="#openHand" transform="translate(34 74) scale(1.06) rotate(8 95 125)"/>
+      <text x="30" y="388" fill="#20262B" font-size="25" font-weight="700">自然垂手</text>
+      <text x="30" y="423" fill="#626A6D" font-size="15">标准站姿，不做紧张握拳</text>
+      <text x="30" y="451" fill="#626A6D" font-size="15">用于四视图和中性姿态</text>
+    </g>
+
+    <!-- 02 指向 -->
+    <g transform="translate(348 146)">
+      <rect width="260" height="520" rx="24" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <use href="#pointHand" transform="translate(34 80) scale(1.06) rotate(-8 95 120)"/>
+      <text x="30" y="388" fill="#20262B" font-size="25" font-weight="700">指向</text>
+      <text x="30" y="423" fill="#626A6D" font-size="15">说明步骤、指向目标控件</text>
+      <text x="30" y="451" fill="#626A6D" font-size="15">不能取代界面焦点提示</text>
+    </g>
+
+    <!-- 03 停止 -->
+    <g transform="translate(636 146)">
+      <rect width="260" height="520" rx="24" fill="#FFF9EF" stroke="#C9534D" stroke-width="2"/>
+      <circle cx="130" cy="192" r="84" fill="none" stroke="#C9534D" stroke-width="9" opacity=".18"/>
+      <use href="#openHand" transform="translate(34 80) scale(1.03)"/>
+      <text x="30" y="388" fill="#20262B" font-size="25" font-weight="700">停止</text>
+      <text x="30" y="423" fill="#626A6D" font-size="15">用户取消或本地策略阻止</text>
+      <text x="30" y="451" fill="#626A6D" font-size="15">停留原位，不做挥手动画</text>
+    </g>
+
+    <!-- 04 点击 -->
+    <g transform="translate(924 146)">
+      <rect width="260" height="520" rx="24" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <use href="#pointHand" transform="translate(35 80) scale(1.03) rotate(17 95 120)"/>
+      <circle cx="94" cy="117" r="22" fill="none" stroke="#64DDC3" stroke-width="7"/>
+      <circle cx="94" cy="117" r="8" fill="#64DDC3" stroke="#20262B" stroke-width="4"/>
+      <text x="30" y="388" fill="#20262B" font-size="25" font-weight="700">点击</text>
+      <text x="30" y="423" fill="#626A6D" font-size="15">任务执行与操作成功反馈</text>
+      <text x="30" y="451" fill="#626A6D" font-size="15">触点由界面层提供</text>
+    </g>
+
+    <!-- 05 拿手机 -->
+    <g transform="translate(1212 146)">
+      <rect width="260" height="520" rx="24" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <use href="#fist" transform="translate(30 74) scale(1.03)"/>
+      <rect x="83" y="100" width="94" height="198" rx="20" fill="#20262B" stroke="#FFF9EF" stroke-width="7"/>
+      <rect x="94" y="118" width="72" height="145" rx="10" fill="#FFF9EF"/>
+      <circle cx="130" cy="280" r="6" fill="#64DDC3"/>
+      <path d="M109 140H151M109 158H144M109 176H151" stroke="#626A6D" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+      <text x="30" y="388" fill="#20262B" font-size="25" font-weight="700">拿手机</text>
+      <text x="30" y="423" fill="#626A6D" font-size="15">说明观察页面或等待操作</text>
+      <text x="30" y="451" fill="#626A6D" font-size="15">设备轮廓保持通用，不放真实界面</text>
+    </g>
+
+    <!-- 06 点赞 -->
+    <g transform="translate(1500 146)">
+      <rect width="260" height="520" rx="24" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <use href="#fist" transform="translate(31 91) scale(1.03) rotate(-18 95 125)"/>
+      <rect x="45" y="60" width="30" height="88" rx="15" fill="#E89A96" stroke="#20262B" stroke-width="6" transform="rotate(-28 60 104)"/>
+      <path d="M143 89C172 71 188 84 180 106C175 120 158 127 143 126" fill="#E89A96" stroke="#20262B" stroke-width="7"/>
+      <path d="M155 62L166 75L189 45" fill="none" stroke="#0B695D" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="30" y="388" fill="#20262B" font-size="25" font-weight="700">点赞</text>
+      <text x="30" y="423" fill="#626A6D" font-size="15">低频使用，仅限轻松场景</text>
+      <text x="30" y="451" fill="#626A6D" font-size="15">安全提示和失败状态禁用</text>
+    </g>
+
+    <line x1="60" y1="710" x2="1740" y2="710" stroke="#20262B" stroke-opacity=".12"/>
+    <text x="60" y="738" fill="#626A6D" font-size="15">v0.1 评审问题：四指是否足够自然；手指长度是否影响 3D 绑定；拿手机手势是否需要左右手镜像。</text>
+  </g>
+</svg>

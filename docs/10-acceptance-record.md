@@ -39,8 +39,18 @@
 - Device owner verified the complete voice-to-action flow: holding the bubble, saying “打开设置”, submitting the task, receiving `open_app`, and opening Android Settings all completed successfully.
 - Skill recorder smoke test saved 2 screenshot/UI-tree frame pairs from Redmi K60.
 - Installed target versions recorded: WeChat 8.0.79, NetEase Cloud Music 9.6.08, Amap 17.01.0.2012.
+- WeChat 8.0.79 returned empty UI hierarchies from both `uiautomator` and the app AccessibilityService; screenshot OCR is required for its skill.
+- Vision OCR recovered the chat entry, input/send row, and sent message coordinates from 23 recorded frames.
+- Multi-action skill build SHA-256: `d16cce76cc0d65907505135a6a66e6acd3a46951c9eb902a8478442569c40462`.
 - Device owner manually verified the revised hold-to-talk UX as acceptable: recording state is visible, partial transcription is understandable, silence while holding no longer triggers a premature failure, and final transcription works.
+- Device owner confirmed the Volcengine realtime voice experience has high accuracy and is substantially better than the previous system recognizer.
+- A 6.8-second 16 kHz PCM sample produced 16 partial events and a complete final transcript through the real Volcengine gateway.
+- DeepSeek `deepseek-chat` parsed the natural-language request
+  “帮我到文件传输助手里面去发一句话，比如说，测试成功了” into the exact message
+  “测试成功了” and a five-step WeChat action plan.
 - Debug APK produced at `android/app/build/outputs/apk/debug/app-debug.apk`.
+- DeepSeek planning and realtime voice APK SHA-256:
+  `306455bdcec379722e2c71073950477dcf299bedd58358fd294c23964e3592cc`.
 
 ### Failed
 

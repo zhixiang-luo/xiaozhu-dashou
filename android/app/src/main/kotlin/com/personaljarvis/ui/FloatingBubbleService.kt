@@ -11,13 +11,9 @@ import android.content.pm.ServiceInfo
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
-import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.speech.RecognitionListener
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -27,6 +23,7 @@ import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.TextView
 import android.widget.Toast
+import com.personaljarvis.BuildConfig
 import com.personaljarvis.MainActivity
 import com.personaljarvis.R
 import com.personaljarvis.execute.AccessibilityDriver
@@ -41,11 +38,13 @@ import com.personaljarvis.policy.RecipientResolution
 import com.personaljarvis.policy.RuntimeAction
 import com.personaljarvis.policy.RuntimeActionType
 import com.personaljarvis.policy.SafeExecutionRunner
+import com.personaljarvis.voice.OkHttpVoiceStream
+import com.personaljarvis.voice.PcmAudioCapture
 import com.personaljarvis.voice.PlannerResult
+import com.personaljarvis.voice.RealtimeVoiceSession
 import com.personaljarvis.voice.TaskPlannerClient
+import com.personaljarvis.voice.VoiceSessionScheduler
 import com.personaljarvis.voice.VoiceSessionController
-import com.personaljarvis.voice.VoiceErrorAction
-import com.personaljarvis.voice.VoiceRecognitionPolicy
 import kotlin.math.min
 import kotlin.math.abs
 
@@ -56,10 +55,15 @@ class FloatingBubbleService : Service() {
     private val taskPlannerClient = TaskPlannerClient()
     private var bubble: TextView? = null
     private var layoutParams: WindowManager.LayoutParams? = null
-    private var speechRecognizer: SpeechRecognizer? = null
+    private var realtimeSession: RealtimeVoiceSession? = null
+    private var voicePreparationError: String? = null
     private var latestText = ""
     private val voiceController = VoiceSessionController()
-    private val recognitionPolicy = VoiceRecognitionPolicy()
+    private val voiceScheduler = object : VoiceSessionScheduler {
+        override fun postDelayed(delayMs: Long, action: () -> Unit) {
+            mainHandler.postDelayed(action, delayMs)
+        }
+    }
     private var touchDownX = 0f
     private var touchDownY = 0f
     private var initialX = 0
@@ -72,21 +76,25 @@ class FloatingBubbleService : Service() {
 
     private val longPress = Runnable {
         if (!moved) {
-            isHolding = true
-            listeningByGesture = true
-            startListening()
+            val preparationError = voicePreparationError
+            if (preparationError != null) {
+                showRealtimeError(preparationError)
+            } else {
+                isHolding = true
+                listeningByGesture = true
+                startListening()
+            }
         }
     }
 
-    private val releaseTimeout = Runnable {
-        if (sessionActive) {
-            showEmptyResult()
-        }
-    }
-
-    private val restartRecognition = Runnable {
-        if (isHolding && sessionActive) {
-            createAndStartRecognizer()
+    private val voiceDurationTimeout = Runnable {
+        if (sessionActive && isHolding) {
+            Toast.makeText(
+                this,
+                "已听满 30 秒，正在整理文字",
+                Toast.LENGTH_SHORT
+            ).show()
+            finishListening()
         }
     }
 
@@ -112,15 +120,14 @@ class FloatingBubbleService : Service() {
 
     override fun onDestroy() {
         bubble?.removeCallbacks(longPress)
-        bubble?.removeCallbacks(releaseTimeout)
-        bubble?.removeCallbacks(restartRecognition)
+        bubble?.removeCallbacks(voiceDurationTimeout)
         pulseAnimator?.cancel()
         bubble?.let { view ->
             runCatching { windowManager.removeView(view) }
         }
         bubble = null
-        speechRecognizer?.destroy()
-        speechRecognizer = null
+        realtimeSession?.cancel()
+        realtimeSession = null
         super.onDestroy()
     }
 
@@ -165,6 +172,7 @@ class FloatingBubbleService : Service() {
                     moved = false
                     listeningByGesture = false
                     isHolding = false
+                    prepareVoiceSession()
                     view.postDelayed(longPress, LONG_PRESS_MS)
                     true
                 }
@@ -188,7 +196,12 @@ class FloatingBubbleService : Service() {
                         isHolding = false
                         finishListening()
                     } else if (!moved) {
+                        realtimeSession?.cancel()
+                        realtimeSession = null
                         openMainActivity()
+                    } else {
+                        realtimeSession?.cancel()
+                        realtimeSession = null
                     }
                     true
                 }
@@ -207,83 +220,62 @@ class FloatingBubbleService : Service() {
         voiceController.startPressToTalk()
         bubble?.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
         showListeningVisual()
-        createAndStartRecognizer()
+        bubble?.postDelayed(voiceDurationTimeout, MAX_RECORDING_MS)
+        realtimeSession?.startStreaming() ?: showRealtimeError(
+            "麦克风尚未准备好，请重新按住悬浮球。"
+        )
     }
 
-    private fun createAndStartRecognizer() {
-        bubble?.contentDescription = getString(R.string.bubble_listening)
-
-        speechRecognizer?.destroy()
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this).apply {
-            setRecognitionListener(object : RecognitionListener {
-                override fun onReadyForSpeech(params: Bundle?) = Unit
-                override fun onBeginningOfSpeech() = Unit
-                override fun onRmsChanged(rmsdB: Float) = Unit
-                override fun onBufferReceived(buffer: ByteArray?) = Unit
-                override fun onEndOfSpeech() = Unit
-                override fun onEvent(eventType: Int, params: Bundle?) = Unit
-                override fun onPartialResults(partialResults: Bundle?) {
-                    latestText = firstResult(partialResults)
-                    if (latestText.isNotBlank() && isHolding) {
-                        bubble?.text = latestText.takeLast(10)
+    private fun prepareVoiceSession() {
+        realtimeSession?.cancel()
+        latestText = ""
+        voicePreparationError = null
+        val session = RealtimeVoiceSession(
+            capture = PcmAudioCapture(),
+            transport = OkHttpVoiceStream(
+                baseUrl = BuildConfig.ORCHESTRATOR_URL,
+                deviceToken = BuildConfig.DEVICE_TOKEN,
+                deviceId = "xiaozhu-dashou"
+            ),
+            scheduler = voiceScheduler,
+            onPartial = { text ->
+                mainHandler.post {
+                    if (sessionActive) {
+                        latestText = text
+                        bubble?.text = text.takeLast(10)
                     }
                 }
-                override fun onResults(results: Bundle?) {
-                    latestText = firstResult(results)
-                    if (!isHolding) {
+            },
+            onFinal = { text ->
+                mainHandler.post {
+                    if (sessionActive) {
+                        latestText = text
                         submitLatestVoice()
                     }
                 }
-                override fun onError(error: Int) {
-                    when (
-                        recognitionPolicy.onError(
-                            isHolding = isHolding,
-                            hasText = latestText.isNotBlank()
-                        )
-                    ) {
-                        VoiceErrorAction.Retry -> {
-                            bubble?.postDelayed(restartRecognition, 350)
-                        }
-                        VoiceErrorAction.SubmitText -> submitLatestVoice()
-                        VoiceErrorAction.ShowEmpty -> showEmptyResult()
+            },
+            onError = { message ->
+                mainHandler.post {
+                    if (sessionActive) {
+                        showRealtimeError(message)
                     }
                 }
-            })
-            startListening(
-                Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                    putExtra(
-                        RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-                    )
-                    putExtra(RecognizerIntent.EXTRA_LANGUAGE, "zh-CN")
-                    putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
-                    putExtra(
-                        RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS,
-                        5_000L
-                    )
-                    putExtra(
-                        RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
-                        5_000L
-                    )
-                    putExtra(
-                        RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
-                        5_000L
-                    )
-                }
-            )
-        }
+            }
+        )
+        realtimeSession = session
+        runCatching { session.startCapture() }
+            .onFailure {
+                realtimeSession = null
+                session.cancel()
+                voicePreparationError = "无法启动麦克风，请检查录音权限。"
+            }
     }
 
     private fun finishListening() {
         isHolding = false
-        bubble?.removeCallbacks(restartRecognition)
-        speechRecognizer?.stopListening()
-        if (latestText.isNotBlank()) {
-            submitLatestVoice()
-        } else {
-            bubble?.text = getString(R.string.bubble_recognizing)
-            bubble?.postDelayed(releaseTimeout, FINAL_RESULT_GRACE_MS)
-        }
+        bubble?.removeCallbacks(voiceDurationTimeout)
+        bubble?.text = getString(R.string.bubble_recognizing)
+        realtimeSession?.stopAndFinish() ?: showEmptyResult()
     }
 
     private fun submitLatestVoice() {
@@ -291,8 +283,8 @@ class FloatingBubbleService : Service() {
             return
         }
         sessionActive = false
-        bubble?.removeCallbacks(releaseTimeout)
-        bubble?.removeCallbacks(restartRecognition)
+        bubble?.removeCallbacks(voiceDurationTimeout)
+        realtimeSession = null
         voiceController.stopPressToTalk(latestText)
         val submitted = voiceController.consumeSubmitted()
         resetBubble()
@@ -318,7 +310,7 @@ class FloatingBubbleService : Service() {
             val result = taskPlannerClient.submit(instruction)
             mainHandler.post {
                 when (result) {
-                    is PlannerResult.Action -> executePlannedAction(result)
+                    is PlannerResult.Plan -> executePlannedActions(result)
                     is PlannerResult.Message -> {
                         Toast.makeText(
                             this,
@@ -338,46 +330,120 @@ class FloatingBubbleService : Service() {
         }.start()
     }
 
-    private fun executePlannedAction(result: PlannerResult.Action) {
-        val planned = result.action
-        if (planned.type != "open_app") {
-            Toast.makeText(this, "暂不支持该动作", Toast.LENGTH_SHORT).show()
+    private fun executePlannedActions(plan: PlannerResult.Plan) {
+        if (plan.actions.isEmpty()) {
+            Toast.makeText(this, "任务没有可执行动作", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val runtimeAction = RuntimeAction(
-            actionId = planned.actionId,
-            taskId = planned.taskId,
-            taskGeneration = planned.taskGeneration,
-            type = RuntimeActionType.OPEN_APP,
-            text = null,
-            targetPackage = planned.targetPackage
-        )
-        val observation = AccessibilityObserver.instance?.snapshot()
-            ?: ObservationSnapshot(
-                foregroundPackage = "unknown",
-                pageTitle = null,
-                pageKind = PageKind.NORMAL,
-                recipientResolution = RecipientResolution.NONE,
-                nodes = emptyList()
-            )
         val driver = FallbackExecutionDriver(
             ShizukuDriver(shizukuBridge),
             AccessibilityDriver(this)
         )
         val runner = SafeExecutionRunner(
             driver = driver,
-            initialGeneration = planned.taskGeneration
+            initialGeneration = plan.actions.first().taskGeneration
         )
-        val actionResult = runner.execute(runtimeAction, observation)
-        val message = when (actionResult) {
-            ActionResult.Completed -> "已打开应用"
-            is ActionResult.Rejected -> "任务已取消或过期"
-            is ActionResult.NeedsConfirmation -> "需要你确认后继续"
-            is ActionResult.Blocked -> "当前页面需要你本人处理"
-            is ActionResult.Failed -> "执行失败：${actionResult.reason}"
+
+        fun executeAt(index: Int) {
+            if (index >= plan.actions.size) {
+                Toast.makeText(
+                    this,
+                    "任务执行完成，请核对最终页面",
+                    Toast.LENGTH_LONG
+                ).show()
+                return
+            }
+
+            val planned = plan.actions[index]
+            val runtimeAction = when (planned.type) {
+                "open_app" -> RuntimeAction(
+                    actionId = planned.actionId,
+                    taskId = planned.taskId,
+                    taskGeneration = planned.taskGeneration,
+                    type = RuntimeActionType.OPEN_APP,
+                    text = null,
+                    targetPackage = planned.targetPackage
+                )
+                "restart_app" -> RuntimeAction(
+                    actionId = planned.actionId,
+                    taskId = planned.taskId,
+                    taskGeneration = planned.taskGeneration,
+                    type = RuntimeActionType.RESTART_APP,
+                    text = null,
+                    targetPackage = planned.targetPackage
+                )
+                "tap" -> RuntimeAction(
+                    actionId = planned.actionId,
+                    taskId = planned.taskId,
+                    taskGeneration = planned.taskGeneration,
+                    type = RuntimeActionType.TAP,
+                    text = null,
+                    requiredPackage = planned.expectedPackage,
+                    targetX = planned.targetX?.toFloat(),
+                    targetY = planned.targetY?.toFloat()
+                )
+                "input_text" -> RuntimeAction(
+                    actionId = planned.actionId,
+                    taskId = planned.taskId,
+                    taskGeneration = planned.taskGeneration,
+                    type = RuntimeActionType.INPUT_TEXT,
+                    text = planned.text,
+                    requiredPackage = planned.expectedPackage
+                )
+                else -> null
+            }
+
+            if (runtimeAction == null) {
+                Toast.makeText(
+                    this,
+                    "暂不支持动作：${planned.type}",
+                    Toast.LENGTH_LONG
+                ).show()
+                return
+            }
+
+            val observation = AccessibilityObserver.instance?.snapshot()
+                ?: ObservationSnapshot(
+                    foregroundPackage = "unknown",
+                    pageTitle = null,
+                    pageKind = PageKind.NORMAL,
+                    recipientResolution = RecipientResolution.NONE,
+                    nodes = emptyList()
+                )
+            when (val result = runner.execute(runtimeAction, observation)) {
+                ActionResult.Completed -> {
+                    bubble?.postDelayed(
+                        { executeAt(index + 1) },
+                        if (runtimeAction.type == RuntimeActionType.OPEN_APP) {
+                            OPEN_APP_DELAY_MS
+                        } else if (runtimeAction.type == RuntimeActionType.RESTART_APP) {
+                            RESTART_APP_DELAY_MS
+                        } else {
+                            ACTION_DELAY_MS
+                        }
+                    )
+                }
+                is ActionResult.Rejected -> {
+                    Toast.makeText(this, "任务已取消或过期", Toast.LENGTH_LONG).show()
+                }
+                is ActionResult.NeedsConfirmation -> {
+                    Toast.makeText(this, "需要你确认后继续", Toast.LENGTH_LONG).show()
+                }
+                is ActionResult.Blocked -> {
+                    Toast.makeText(this, "当前页面需要你本人处理", Toast.LENGTH_LONG).show()
+                }
+                is ActionResult.Failed -> {
+                    Toast.makeText(
+                        this,
+                        "执行失败：${result.reason}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
         }
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+
+        executeAt(0)
     }
 
     private fun showEmptyResult() {
@@ -385,6 +451,9 @@ class FloatingBubbleService : Service() {
             return
         }
         sessionActive = false
+        bubble?.removeCallbacks(voiceDurationTimeout)
+        realtimeSession?.cancel()
+        realtimeSession = null
         voiceController.cancel()
         resetBubble()
         Toast.makeText(
@@ -392,6 +461,16 @@ class FloatingBubbleService : Service() {
             R.string.voice_empty,
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    private fun showRealtimeError(message: String) {
+        sessionActive = false
+        bubble?.removeCallbacks(voiceDurationTimeout)
+        realtimeSession?.cancel()
+        realtimeSession = null
+        voiceController.cancel()
+        resetBubble()
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     private fun resetBubble() {
@@ -452,13 +531,6 @@ class FloatingBubbleService : Service() {
         }
     }
 
-    private fun firstResult(bundle: Bundle?): String {
-        return bundle
-            ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-            ?.firstOrNull()
-            .orEmpty()
-    }
-
     private fun openMainActivity() {
         startActivity(
             Intent(this, MainActivity::class.java).addFlags(
@@ -503,8 +575,11 @@ class FloatingBubbleService : Service() {
         private const val CHANNEL_ID = "xiaozhu_dashou_bubble"
         private const val NOTIFICATION_ID = 2026
         private const val LONG_PRESS_MS = 450L
-        private const val FINAL_RESULT_GRACE_MS = 1_600L
+        private const val MAX_RECORDING_MS = 30_000L
         private const val CIRCLE_SIZE_DP = 64
         private const val LISTENING_WIDTH_DP = 164
+        private const val ACTION_DELAY_MS = 1_200L
+        private const val OPEN_APP_DELAY_MS = 2_500L
+        private const val RESTART_APP_DELAY_MS = 3_500L
     }
 }

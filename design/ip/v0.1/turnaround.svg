@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1500" role="img" aria-labelledby="title desc">
+  <title id="title">猪哥 IP Bible v0.1 全身四视图</title>
+  <desc id="desc">标准正面、四分之三、侧面和背面视图，包含约 3.2 头身比例、奶油白任务马甲、工具腰带和信号尾巴</desc>
+  <rect width="2400" height="1500" fill="#F7F2E8"/>
+
+  <defs>
+    <g id="frontFigure">
+      <path d="M407 557C452 548 479 578 466 608C456 632 426 636 417 617C410 601 423 586 437 591C449 596 451 607 444 614" fill="none" stroke="#20262B" stroke-width="27" stroke-linecap="round"/>
+      <path d="M407 557C452 548 479 578 466 608C456 632 426 636 417 617C410 601 423 586 437 591C449 596 451 607 444 614" fill="none" stroke="#E89A96" stroke-width="15" stroke-linecap="round"/>
+      <circle cx="444" cy="614" r="7" fill="#64DDC3" stroke="#20262B" stroke-width="4"/>
+      <path d="M258 600L247 765M342 600L353 765" fill="none" stroke="#20262B" stroke-width="82" stroke-linecap="round"/>
+      <path d="M258 600L247 765M342 600L353 765" fill="none" stroke="#565E62" stroke-width="60" stroke-linecap="round"/>
+      <path d="M208 794C208 773 225 760 251 760C277 760 293 773 293 794V814C293 829 282 837 264 837H237C220 837 208 829 208 814Z" fill="#E89A96" stroke="#20262B" stroke-width="10" stroke-linejoin="round"/>
+      <path d="M307 794C307 773 324 760 350 760C376 760 392 773 392 794V814C392 829 381 837 363 837H336C319 837 307 829 307 814Z" fill="#E89A96" stroke="#20262B" stroke-width="10" stroke-linejoin="round"/>
+      <rect x="211" y="814" width="80" height="18" rx="9" fill="#20262B"/>
+      <rect x="309" y="814" width="80" height="18" rx="9" fill="#20262B"/>
+      <path d="M225 355C188 386 165 438 158 488M375 355C412 386 435 438 442 488" fill="none" stroke="#20262B" stroke-width="66" stroke-linecap="round"/>
+      <path d="M225 355C188 386 165 438 158 488M375 355C412 386 435 438 442 488" fill="none" stroke="#FFF9EF" stroke-width="44" stroke-linecap="round"/>
+      <circle cx="157" cy="492" r="29" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+      <circle cx="443" cy="492" r="29" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+      <path d="M142 486Q154 476 167 485M433 486Q446 476 458 485" fill="none" stroke="#A75258" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+      <path d="M225 316C198 334 186 370 186 422L191 563C194 598 216 621 250 626L350 626C384 621 406 598 409 563L414 422C414 370 402 334 375 316Z" fill="#FFF9EF" stroke="#20262B" stroke-width="11" stroke-linejoin="round"/>
+      <path d="M253 320L300 355L347 320" fill="#E89A96" stroke="#20262B" stroke-width="8" stroke-linejoin="round"/>
+      <path d="M300 355V542" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round" opacity=".25"/>
+      <path d="M214 359C227 392 230 433 225 477M386 359C373 392 370 433 375 477" fill="none" stroke="#20262B" stroke-width="9" stroke-linecap="round" opacity=".13"/>
+      <rect x="210" y="449" width="72" height="76" rx="15" fill="#F3EADF" stroke="#20262B" stroke-width="7"/>
+      <rect x="318" y="449" width="72" height="76" rx="15" fill="#F3EADF" stroke="#20262B" stroke-width="7"/>
+      <path d="M228 468H264M336 468H372" fill="none" stroke="#A75258" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="350" cy="385" r="17" fill="#64DDC3" stroke="#20262B" stroke-width="7"/>
+      <path d="M342 386H349M346 379V393" fill="none" stroke="#20262B" stroke-width="4" stroke-linecap="round"/>
+      <rect x="184" y="543" width="232" height="36" rx="15" fill="#20262B"/>
+      <rect x="277" y="546" width="46" height="30" rx="10" fill="#64DDC3" stroke="#FFF9EF" stroke-width="4"/>
+      <circle cx="300" cy="561" r="6" fill="#20262B"/>
+      <rect x="198" y="551" width="47" height="20" rx="8" fill="#565E62"/>
+      <rect x="355" y="551" width="47" height="20" rx="8" fill="#565E62"/>
+      <path d="M197 169C164 148 154 102 183 85C214 67 248 101 266 145" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M403 169C436 148 446 102 417 85C386 67 352 101 334 145" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M199 143C185 127 182 108 195 100C210 91 227 110 236 132" fill="#A75258" opacity=".22"/>
+      <path d="M401 143C415 127 418 108 405 100C390 91 373 110 364 132" fill="#A75258" opacity=".22"/>
+      <path d="M205 199C205 139 247 103 300 103C353 103 395 139 395 199L395 242C395 291 354 322 300 322C246 322 205 291 205 242Z" fill="#FFF9EF" stroke="#20262B" stroke-width="11" stroke-linejoin="round"/>
+      <ellipse cx="242" cy="252" rx="22" ry="11" fill="#E89A96" opacity=".45"/>
+      <ellipse cx="358" cy="252" rx="22" ry="11" fill="#E89A96" opacity=".45"/>
+      <ellipse cx="271" cy="194" rx="12" ry="17" fill="#20262B"/>
+      <ellipse cx="329" cy="194" rx="12" ry="17" fill="#20262B"/>
+      <circle cx="267" cy="189" r="4" fill="#64DDC3"/>
+      <circle cx="325" cy="189" r="4" fill="#64DDC3"/>
+      <rect x="264" y="211" width="72" height="52" rx="26" fill="#E89A96" stroke="#20262B" stroke-width="9"/>
+      <ellipse cx="287" cy="237" rx="6" ry="10" fill="#20262B"/>
+      <ellipse cx="313" cy="237" rx="6" ry="10" fill="#20262B"/>
+      <path d="M251 278Q267 289 282 279M318 279Q333 289 349 278" fill="none" stroke="#20262B" stroke-width="5" stroke-linecap="round"/>
+    </g>
+
+    <g id="sideFigure">
+      <!-- 尾巴 -->
+      <path d="M231 554C194 548 167 574 176 604C184 630 214 638 225 618C233 602 221 585 206 590C194 595 193 607 200 614" fill="none" stroke="#20262B" stroke-width="27" stroke-linecap="round"/>
+      <path d="M231 554C194 548 167 574 176 604C184 630 214 638 225 618C233 602 221 585 206 590C194 595 193 607 200 614" fill="none" stroke="#E89A96" stroke-width="15" stroke-linecap="round"/>
+      <circle cx="200" cy="614" r="7" fill="#64DDC3" stroke="#20262B" stroke-width="4"/>
+      <!-- 腿与鞋 -->
+      <path d="M277 598L265 765M338 598L344 765" fill="none" stroke="#20262B" stroke-width="82" stroke-linecap="round"/>
+      <path d="M277 598L265 765M338 598L344 765" fill="none" stroke="#565E62" stroke-width="60" stroke-linecap="round"/>
+      <path d="M225 791C225 771 242 759 267 759C292 759 307 771 307 791V813C307 829 296 838 278 838H253C236 838 225 829 225 813Z" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+      <path d="M308 791C308 771 324 759 349 759C374 759 391 771 391 791V813C391 829 380 838 362 838H337C320 838 308 829 308 813Z" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+      <rect x="228" y="818" width="79" height="18" rx="9" fill="#20262B"/>
+      <rect x="311" y="818" width="80" height="18" rx="9" fill="#20262B"/>
+      <!-- 后臂与前臂 -->
+      <path d="M249 357C224 393 214 438 220 482M350 357C380 388 397 430 401 475" fill="none" stroke="#20262B" stroke-width="62" stroke-linecap="round"/>
+      <path d="M249 357C224 393 214 438 220 482M350 357C380 388 397 430 401 475" fill="none" stroke="#FFF9EF" stroke-width="40" stroke-linecap="round"/>
+      <circle cx="220" cy="485" r="27" fill="#E89A96" stroke="#20262B" stroke-width="9"/>
+      <circle cx="402" cy="477" r="27" fill="#E89A96" stroke="#20262B" stroke-width="9"/>
+      <!-- 侧身 -->
+      <path d="M254 317C228 344 214 390 220 443L231 557C234 592 257 617 290 622L347 622C379 617 398 593 397 561L386 445C381 390 365 345 340 317Z" fill="#FFF9EF" stroke="#20262B" stroke-width="11" stroke-linejoin="round"/>
+      <path d="M249 340C278 357 302 359 340 348" fill="none" stroke="#E89A96" stroke-width="13" stroke-linecap="round"/>
+      <path d="M299 358V534" fill="none" stroke="#20262B" stroke-width="4" opacity=".25"/>
+      <rect x="224" y="543" width="178" height="36" rx="15" fill="#20262B"/>
+      <rect x="307" y="546" width="45" height="30" rx="10" fill="#64DDC3" stroke="#FFF9EF" stroke-width="4"/>
+      <rect x="239" y="551" width="43" height="20" rx="8" fill="#565E62"/>
+      <!-- 侧面头部 -->
+      <path d="M310 162C281 140 276 98 302 84C329 70 356 101 366 145" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round"/>
+      <path d="M311 142C299 126 299 108 311 100C325 92 341 111 347 132" fill="#A75258" opacity=".22"/>
+      <path d="M254 196C254 139 294 106 340 107C382 108 411 140 414 182L416 232C418 258 399 278 371 281L347 283C335 310 308 325 279 318C254 312 239 290 242 261Z" fill="#FFF9EF" stroke="#20262B" stroke-width="11" stroke-linejoin="round"/>
+      <ellipse cx="332" cy="191" rx="12" ry="17" fill="#20262B"/>
+      <circle cx="328" cy="186" r="4" fill="#64DDC3"/>
+      <path d="M363 211C407 207 436 224 438 246C440 269 418 288 374 289L357 290L359 208Z" fill="#E89A96" stroke="#20262B" stroke-width="9"/>
+      <ellipse cx="399" cy="245" rx="6" ry="10" fill="#20262B"/>
+      <path d="M331 288Q347 298 360 287" fill="none" stroke="#20262B" stroke-width="5" stroke-linecap="round"/>
+    </g>
+
+    <g id="backFigure">
+      <!-- 尾巴与腿部先画 -->
+      <path d="M404 558C452 546 488 574 480 607C473 634 442 643 428 624C417 609 428 591 443 594C455 597 458 608 451 615" fill="none" stroke="#20262B" stroke-width="27" stroke-linecap="round"/>
+      <path d="M404 558C452 546 488 574 480 607C473 634 442 643 428 624C417 609 428 591 443 594C455 597 458 608 451 615" fill="none" stroke="#E89A96" stroke-width="15" stroke-linecap="round"/>
+      <circle cx="451" cy="615" r="7" fill="#64DDC3" stroke="#20262B" stroke-width="4"/>
+      <path d="M258 600L247 765M342 600L353 765" fill="none" stroke="#20262B" stroke-width="82" stroke-linecap="round"/>
+      <path d="M258 600L247 765M342 600L353 765" fill="none" stroke="#565E62" stroke-width="60" stroke-linecap="round"/>
+      <path d="M208 794C208 773 225 760 251 760C277 760 293 773 293 794V814C293 829 282 837 264 837H237C220 837 208 829 208 814Z" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+      <path d="M307 794C307 773 324 760 350 760C376 760 392 773 392 794V814C392 829 381 837 363 837H336C319 837 307 829 307 814Z" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+      <path d="M225 355C188 386 165 438 158 488M375 355C412 386 435 438 442 488" fill="none" stroke="#20262B" stroke-width="66" stroke-linecap="round"/>
+      <path d="M225 355C188 386 165 438 158 488M375 355C412 386 435 438 442 488" fill="none" stroke="#FFF9EF" stroke-width="44" stroke-linecap="round"/>
+      <circle cx="157" cy="492" r="29" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+      <circle cx="443" cy="492" r="29" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+      <!-- 背身 -->
+      <path d="M225 316C198 334 186 370 186 422L191 563C194 598 216 621 250 626L350 626C384 621 406 598 409 563L414 422C414 370 402 334 375 316Z" fill="#FFF9EF" stroke="#20262B" stroke-width="11" stroke-linejoin="round"/>
+      <path d="M225 339C247 370 282 386 300 386C318 386 353 370 375 339M218 484C258 504 342 504 382 484" fill="none" stroke="#20262B" stroke-width="13" stroke-linecap="round" opacity=".22"/>
+      <path d="M300 385V538" fill="none" stroke="#20262B" stroke-width="4" opacity=".25"/>
+      <rect x="255" y="430" width="90" height="64" rx="15" fill="#F3EADF" stroke="#20262B" stroke-width="7"/>
+      <circle cx="300" cy="462" r="15" fill="#64DDC3" stroke="#20262B" stroke-width="6"/>
+      <rect x="184" y="543" width="232" height="36" rx="15" fill="#20262B"/>
+      <rect x="277" y="546" width="46" height="30" rx="10" fill="#64DDC3" stroke="#FFF9EF" stroke-width="4"/>
+      <rect x="198" y="551" width="47" height="20" rx="8" fill="#565E62"/>
+      <rect x="355" y="551" width="47" height="20" rx="8" fill="#565E62"/>
+      <!-- 后脑与双耳 -->
+      <path d="M197 169C164 148 154 102 183 85C214 67 248 101 266 145" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round"/>
+      <path d="M403 169C436 148 446 102 417 85C386 67 352 101 334 145" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round"/>
+      <path d="M199 143C185 127 182 108 195 100C210 91 227 110 236 132" fill="#A75258" opacity=".22"/>
+      <path d="M401 143C415 127 418 108 405 100C390 91 373 110 364 132" fill="#A75258" opacity=".22"/>
+      <path d="M205 199C205 139 247 103 300 103C353 103 395 139 395 199L395 242C395 291 354 322 300 322C246 322 205 291 205 242Z" fill="#FFF9EF" stroke="#20262B" stroke-width="11"/>
+      <path d="M250 128C263 116 281 110 300 110C319 110 337 116 350 128" fill="none" stroke="#20262B" stroke-width="5" stroke-linecap="round" opacity=".18"/>
+    </g>
+  </defs>
+
+  <g font-family="PingFang SC, Noto Sans CJK SC, sans-serif">
+    <text x="70" y="76" fill="#20262B" font-size="46" font-weight="700" letter-spacing="3">猪哥 · IP Bible v0.1</text>
+    <text x="72" y="116" fill="#626A6D" font-size="19" letter-spacing="1.5">一个母版角色，不同产品只换装和道具</text>
+    <rect x="1932" y="54" width="398" height="50" rx="25" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".12"/>
+    <circle cx="1964" cy="79" r="7" fill="#64DDC3"/>
+    <text x="1986" y="86" fill="#20262B" font-size="17" font-weight="600">概念评审稿 · 尚未进入 3D 生产</text>
+
+    <!-- 面板 -->
+    <rect x="70" y="154" width="540" height="980" rx="28" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+    <rect x="620" y="154" width="540" height="980" rx="28" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+    <rect x="1170" y="154" width="540" height="980" rx="28" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+    <rect x="1720" y="154" width="610" height="980" rx="28" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+
+    <text x="102" y="198" fill="#A75258" font-size="18" font-weight="700" letter-spacing="2">01 / 标准正面</text>
+    <text x="652" y="198" fill="#0B695D" font-size="18" font-weight="700" letter-spacing="2">02 / 四分之三</text>
+    <text x="1202" y="198" fill="#0B695D" font-size="18" font-weight="700" letter-spacing="2">03 / 标准侧面</text>
+    <text x="1752" y="198" fill="#0B695D" font-size="18" font-weight="700" letter-spacing="2">04 / 标准背面</text>
+
+    <use href="#frontFigure" transform="translate(82 212) scale(.84)"/>
+    <use href="#frontFigure" transform="translate(624 260) scale(.78) rotate(-7 300 430)"/>
+    <use href="#sideFigure" transform="translate(1182 218) scale(.84)"/>
+    <use href="#backFigure" transform="translate(1742 218) scale(.84)"/>
+
+    <!-- 底部规范区 -->
+    <line x1="70" y1="1182" x2="2330" y2="1182" stroke="#20262B" stroke-opacity=".12"/>
+    <text x="70" y="1230" fill="#20262B" font-size="22" font-weight="700">角色锚点</text>
+    <text x="70" y="1270" fill="#626A6D" font-size="18">约 3.2 头身（含耳）· 豆形躯干 · 短腿 · 四指手 · 猪鼻始终位于面部中心</text>
+    <text x="70" y="1303" fill="#626A6D" font-size="18">任务马甲使用奶油白；腰带和鞋底用墨色压住轮廓；薄荷绿只表达任务节点与信号。</text>
+
+    <text x="1100" y="1230" fill="#20262B" font-size="22" font-weight="700">产品变体规则</text>
+    <text x="1100" y="1270" fill="#626A6D" font-size="18">允许换装：围裙、耳机、地图夹板、乐器、手持工具</text>
+    <text x="1100" y="1303" fill="#626A6D" font-size="18">不可改变：头部轮廓、五官间距、肤色、身体比例、尾巴信号灯</text>
+
+    <text x="1880" y="1230" fill="#20262B" font-size="22" font-weight="700">主色</text>
+    <rect x="1880" y="1250" width="76" height="48" rx="13" fill="#E89A96"/>
+    <rect x="1968" y="1250" width="76" height="48" rx="13" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".18"/>
+    <rect x="2056" y="1250" width="76" height="48" rx="13" fill="#20262B"/>
+    <rect x="2144" y="1250" width="76" height="48" rx="13" fill="#64DDC3"/>
+    <text x="1882" y="1324" fill="#626A6D" font-size="14">Blush</text>
+    <text x="1970" y="1324" fill="#626A6D" font-size="14">Bone</text>
+    <text x="2058" y="1324" fill="#626A6D" font-size="14">Ink</text>
+    <text x="2146" y="1324" fill="#626A6D" font-size="14">Signal</text>
+
+    <rect x="70" y="1370" width="2260" height="72" rx="20" fill="#20262B"/>
+    <text x="100" y="1415" fill="#FFF9EF" font-size="18">评审重点：头身比例是否足够像“搭手”；手部是否需要更拟人；任务马甲是否过重；产品换装应保持多少主色。</text>
+    <text x="2210" y="1415" fill="#64DDC3" font-size="16" font-weight="700">v0.1</text>
+  </g>
+</svg>

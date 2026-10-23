@@ -30,8 +30,16 @@ started_at=$(date '+%Y-%m-%d %H:%M:%S %z')
 capture_interval_ms=${CAPTURE_INTERVAL_MS:-800}
 META
 
+"${adb_bin}" -s "${device}" shell am broadcast \
+  -a com.personaljarvis.DEBUG_SKILL_TRACE \
+  -n com.personaljarvis/.debug.SkillTraceReceiver \
+  --ez reset true >/dev/null 2>&1 || true
+
 cleanup() {
   "${adb_bin}" -s "${device}" shell rm -f /sdcard/xiaozhu-skill-window.xml >/dev/null 2>&1 || true
+  "${adb_bin}" -s "${device}" exec-out \
+    run-as com.personaljarvis cat files/skill-trace/latest.jsonl \
+    > "${session_dir}/accessibility.jsonl" 2>/dev/null || true
   echo
   echo "Recording saved to: ${session_dir}"
   echo "Frames: $(find "${session_dir}/screens" -type f | wc -l | tr -d ' ')"
@@ -52,6 +60,9 @@ while true; do
   "${adb_bin}" -s "${device}" exec-out screencap -p > "${session_dir}/screens/${frame}.png"
   "${adb_bin}" -s "${device}" shell uiautomator dump /sdcard/xiaozhu-skill-window.xml >/dev/null
   "${adb_bin}" -s "${device}" exec-out cat /sdcard/xiaozhu-skill-window.xml > "${session_dir}/ui/${frame}.xml"
+  "${adb_bin}" -s "${device}" shell am broadcast \
+    -a com.personaljarvis.DEBUG_SKILL_TRACE \
+    -n com.personaljarvis/.debug.SkillTraceReceiver >/dev/null 2>&1 || true
   counter=$((counter + 1))
   printf '\rCaptured %s frames' "${counter}"
   sleep "${interval_seconds}"

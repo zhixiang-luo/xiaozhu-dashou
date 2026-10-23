@@ -5,6 +5,7 @@ const ActionEnvelope = z.object({
   taskId: z.string().min(1),
   taskGeneration: z.number().int().nonnegative(),
   expectedState: z.string().min(1),
+  expectedPackage: z.string().min(1).optional(),
   timeoutMs: z.number().int().positive().max(30_000)
 });
 
@@ -14,6 +15,10 @@ export const ActionSchema = z.discriminatedUnion("type", [
   }),
   ActionEnvelope.extend({
     type: z.literal("open_app"),
+    packageName: z.string().min(1)
+  }),
+  ActionEnvelope.extend({
+    type: z.literal("restart_app"),
     packageName: z.string().min(1)
   }),
   ActionEnvelope.extend({

@@ -2,9 +2,13 @@ package com.personaljarvis.execute
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.IBinder
+import android.os.Handler
+import android.os.Looper
 import com.personaljarvis.IShizukuActionService
 import com.personaljarvis.ShizukuActionService
 import com.personaljarvis.policy.DriverResult
@@ -18,6 +22,9 @@ class ShizukuUserServiceBridge(
     private val onConnectionChanged: (Boolean) -> Unit = {}
 ) : ShizukuBridge {
     private var service: IShizukuActionService? = null
+    private val clipboardManager =
+        context.getSystemService(ClipboardManager::class.java)
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
@@ -35,7 +42,7 @@ class ShizukuUserServiceBridge(
         ComponentName(context, ShizukuActionService::class.java)
     )
         .daemon(false)
-        .version(1)
+        .version(3)
         .tag("personal-jarvis-actions")
         .processNameSuffix("jarvis-actions")
 
@@ -68,6 +75,11 @@ class ShizukuUserServiceBridge(
                     ?: return DriverResult.Failure("target_package_missing")
                 activeService.openApp(packageName)
             }
+            RuntimeActionType.RESTART_APP -> {
+                val packageName = action.targetPackage
+                    ?: return DriverResult.Failure("target_package_missing")
+                activeService.restartApp(packageName)
+            }
             RuntimeActionType.TAP -> {
                 val x = action.targetX
                     ?: return DriverResult.Failure("tap_x_missing")
@@ -82,7 +94,11 @@ class ShizukuUserServiceBridge(
             RuntimeActionType.INPUT_TEXT -> {
                 val text = action.text
                     ?: return DriverResult.Failure("input_text_missing")
-                activeService.inputText(text)
+                if (TextInputRouting.requiresClipboard(text)) {
+                    inputUnicodeWithClipboard(activeService, text)
+                } else {
+                    activeService.inputText(text)
+                }
             }
             RuntimeActionType.MEDIA_CONTROL,
             RuntimeActionType.SEND_MESSAGE ->
@@ -98,9 +114,45 @@ class ShizukuUserServiceBridge(
 
     override fun cancel() = Unit
 
+    private fun inputUnicodeWithClipboard(
+        activeService: IShizukuActionService,
+        text: String
+    ): Boolean {
+        val clipboard = clipboardManager
+            ?: return false
+        val previousClip = runCatching {
+            clipboard.primaryClip
+        }.getOrNull()
+        val prepared = runCatching {
+            clipboard.setPrimaryClip(
+                ClipData.newPlainText("小猪搭手输入内容", text)
+            )
+        }.isSuccess
+        if (!prepared) {
+            return false
+        }
+
+        val pasted = activeService.pasteText()
+        if (previousClip != null) {
+            mainHandler.postDelayed(
+                {
+                    runCatching {
+                        clipboard.setPrimaryClip(previousClip)
+                    }
+                },
+                CLIPBOARD_RESTORE_DELAY_MS
+            )
+        }
+        return pasted
+    }
+
     private fun hasPermission(): Boolean {
         return runCatching {
             Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
         }.getOrDefault(false)
+    }
+
+    private companion object {
+        const val CLIPBOARD_RESTORE_DELAY_MS = 2_500L
     }
 }

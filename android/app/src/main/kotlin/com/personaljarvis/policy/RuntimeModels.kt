@@ -4,6 +4,7 @@ import com.personaljarvis.observe.UiNodeSnapshot
 
 enum class RuntimeActionType {
     OPEN_APP,
+    RESTART_APP,
     TAP,
     INPUT_TEXT,
     SEND_MESSAGE,
@@ -33,6 +34,7 @@ data class RuntimeAction(
     val type: RuntimeActionType,
     val text: String?,
     val targetPackage: String? = null,
+    val requiredPackage: String? = null,
     val targetNodeId: String? = null,
     val targetX: Float? = null,
     val targetY: Float? = null,

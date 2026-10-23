@@ -128,6 +128,7 @@
               "action": {
                 "enum": [
                   "open_app",
+                  "restart_app",
                   "require_foreground",
                   "tap",
                   "input_text",
@@ -206,6 +207,26 @@
         "role": {
           "type": "string",
           "minLength": 1
+        },
+        "fallbackPoint": {
+          "$ref": "#/$defs/point"
+        }
+      }
+    },
+    "point": {
+      "type": "object",
+      "required": ["x", "y"],
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         }
       }
     }
