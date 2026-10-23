@@ -71,7 +71,7 @@ Eligible for the next vertical slice: floating entry, push-to-talk, and real app
 ## 2026-10-23 / calendar-crud-context
 
 - Tester: controller agent + device owner
-- Commit: feature commit on `main` containing calendar CRUD and local context
+- Commit: `a97a54a` (`feat: add calendar crud and local context`)
 - Device: Redmi K60 (`23013RK75C`)
 - Android / HyperOS: Android 15 / HyperOS OS3.0
 - Shizuku: installed; calendar acceptance does not depend on Shizuku UserService
