@@ -1,10 +1,10 @@
-# Personal Jarvis 当前交接
+# 小猪搭手当前交接
 
 > Last updated: 2026-10-23
 
 ## Current State
 
-项目已正式命名为 Personal Jarvis，定位为开发者专用 Android Agent 设备。Redmi K60 真机已完成安装、无障碍观察和 Shizuku UserService 授权；当前进入语音/悬浮入口和首批真实 App 技能开发。
+项目已正式命名为小猪搭手，定位为开发者专用 Android Agent 设备。Redmi K60 真机已完成安装、无障碍观察、Shizuku UserService 授权和悬浮语音入口；当前进入任务提交与真实 App 技能开发。
 
 ## Completed
 
@@ -15,7 +15,7 @@
 - 建立根目录与模块级 `AGENTS.md`。
 - 建立 ADR、模型接入指南、App 技能指南和 GitHub 协作模板。
 - 建立角色化 Agent 任务书、CODEOWNERS 示例和文档 CI。
-- 将项目从 Mobile Agent 重命名为 Personal Jarvis，并加入 Developer Appliance Mode。
+- 将项目从 Mobile Agent 重命名为 Personal Jarvis，后续正式定名小猪搭手，并加入 Developer Appliance Mode。
 - 决定默认模型路由为 `gpt-6-luna`、`gpt-6.1-sol`、`gpt-6-astra`。
 - 建立 pnpm workspace、共享合约、云端编排服务和统一 CI 检查。
 - 增加 WebSocket 任务事件、确认接口和 Android CI。
@@ -26,20 +26,23 @@
 - 在 Redmi K60 / Android 15 / HyperOS OS3.0 上完成安装与权限验收。
 - 修复 HyperOS 下 Shizuku UserService 缺少进程名导致的启动崩溃。
 - 将 App 可见按钮和状态切换为中文，并在真机验证页面读取显示中文结果。
+- 建立中文悬浮球：短按回到主界面，长按启动系统语音识别并显示临时转写结果。
 
 ## Verified
 
 - 共享合约：5 项 Vitest 测试通过，TypeScript 严格类型检查通过。
 - 云端编排：12 项 Vitest 测试通过，TypeScript 严格类型检查通过。
 - 技能 schema：4 项 Vitest 测试通过，TypeScript 严格类型检查通过。
-- Android：14 项 JVM 单元测试通过，`assembleDebug` 成功。
+- Android：18 项 JVM 单元测试通过，`assembleDebug` 成功。
 - `node scripts/check-docs.mjs` 通过：相对链接可解析、代码块闭合、无空文档和尾随空格。
 - GitHub Actions 和 Issue 模板的 3 个 YAML 文件解析通过。
 - 未发现常见密钥格式内容。
 - Debug APK 位于 `android/app/build/outputs/apk/debug/app-debug.apk`。
 - 真机屏幕读取返回 `com.personaljarvis: NORMAL, 4 nodes`。
-- Shizuku 服务端以 shell UID 运行，Personal Jarvis UserService 进程 `com.personaljarvis:jarvis-actions` 已启动。
+- Shizuku 服务端以 shell UID 运行，小猪搭手 UserService 进程 `com.personaljarvis:jarvis-actions` 已启动。
 - 中文界面验证通过：当前应用、页面类型和控件数量的结果均为中文。
+- 悬浮球前台服务已运行，系统窗口层确认 168×168 的悬浮控件存在。
+- 短按悬浮球已在真机验证可以打开小猪搭手；长按手势能启动语音会话且进程不崩溃。
 - 尚未调用真实模型 API，尚未执行第三方 App 任务。
 
 ## Open Decisions
@@ -59,4 +62,4 @@
 
 ## Next Smallest Task
 
-实现悬浮入口与按住说话，并将 UI 观察、Shizuku 执行器和 SafeExecutionRunner 串成一个可取消的前台任务闭环。
+实现 `TaskPlannerClient`，把悬浮球识别出的文字提交到 `/v1/tasks`，再把服务端返回的动作交给 `SafeExecutionRunner`。

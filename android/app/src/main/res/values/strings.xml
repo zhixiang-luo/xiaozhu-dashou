@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">小猪助手（暂用）</string>
+    <string name="app_name">小猪搭手</string>
     <string name="accessibility_service_description">读取当前应用界面，并执行你授权的操作。</string>
     <string name="status_ready">就绪</string>
     <string name="status_listening">正在等待下一步任务</string>
@@ -9,6 +9,7 @@
     <string name="action_enable_accessibility">开启无障碍权限</string>
     <string name="action_read_screen">读取当前屏幕</string>
     <string name="action_authorize_shizuku">授权 Shizuku</string>
+    <string name="action_enable_bubble">开启悬浮球</string>
     <string name="screen_not_observed">尚未读取屏幕</string>
     <string name="accessibility_inactive">无障碍服务未启用</string>
     <string name="shizuku_not_connected">Shizuku 未连接</string>
@@ -18,4 +19,13 @@
     <string name="shizuku_not_running">Shizuku 未运行</string>
     <string name="shizuku_connecting">正在连接 Shizuku</string>
     <string name="shizuku_waiting_permission">等待 Shizuku 授权</string>
+    <string name="bubble_ready">小猪搭手待命中</string>
+    <string name="bubble_listening">正在听你说</string>
+    <string name="bubble_notification_channel">小猪搭手运行状态</string>
+    <string name="bubble_overlay_permission_needed">请允许显示在其他应用上层，然后返回再次点击“开启悬浮球”</string>
+    <string name="bubble_microphone_denied">需要麦克风权限才能使用按住说话</string>
+    <string name="bubble_started">悬浮球已开启</string>
+    <string name="bubble_permission_open_failed">无法打开悬浮窗权限设置</string>
+    <string name="voice_empty">没有听清，请再试一次</string>
+    <string name="voice_result_prefix">已听到：</string>
 </resources>

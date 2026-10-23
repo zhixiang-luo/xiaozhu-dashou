@@ -6,7 +6,7 @@ import org.junit.Test
 class AppIdentityTest {
     @Test
     fun appIdentityUsesPersonalJarvisName() {
-        assertEquals("Personal Jarvis", AppIdentity.displayName)
+        assertEquals("小猪搭手", AppIdentity.displayName)
     }
 
     @Test

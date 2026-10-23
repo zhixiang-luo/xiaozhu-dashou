@@ -15,7 +15,7 @@
 | 文档 | 内容 | 主要更新者 |
 | --- | --- | --- |
 | [00-product-charter.md](00-product-charter.md) | 用户、原则、边界和成功标准 | 产品负责人 |
-| [01-prd.md](01-prd.md) | Personal Jarvis 1.0 用户流程、行为与验收 | 产品 + Android |
+| [01-prd.md](01-prd.md) | 小猪搭手 1.0 用户流程、行为与验收 | 产品 + Android |
 | [02-system-architecture.md](02-system-architecture.md) | 组件、数据流、信任边界和部署 | 架构负责人 |
 | [03-agent-and-model-integration.md](03-agent-and-model-integration.md) | 任务循环、工具协议、模型供应商接口 | 模型运行时负责人 |
 | [04-android-execution.md](04-android-execution.md) | 无障碍、Shizuku、权限和技能执行 | Android 负责人 |

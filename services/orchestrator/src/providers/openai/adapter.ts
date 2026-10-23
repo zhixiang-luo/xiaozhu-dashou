@@ -50,7 +50,7 @@ export class OpenAIProvider implements ModelProvider {
           body: JSON.stringify({
             model: request.model,
             instructions:
-              "Return one or more Personal Jarvis actions as a JSON array. Use only the provided action schema.",
+              "Return one or more 小猪搭手 actions as a JSON array. Use only the provided action schema.",
             input: [
               {
                 role: "user",

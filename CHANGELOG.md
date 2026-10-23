@@ -15,6 +15,7 @@
 - 增加 AccessibilityService UI 观察、页面风险分类、取消门禁、无障碍驱动与 Shizuku UserService。
 - 修复 HyperOS 下 Shizuku UserService 进程名导致的崩溃，并在 Redmi K60 上完成真机权限验收。
 - 将可见界面切换为中文，并增加产品命名提案。
+- 正式确认产品名为“小猪搭手”。
 
 ### Changed
 

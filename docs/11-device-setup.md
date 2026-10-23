@@ -4,7 +4,7 @@
 > Owner: Android
 > Last reviewed: 2026-10-23
 
-本文用于配置 Personal Jarvis Developer Edition 的独立测试手机。APK 已可构建，本清单是安装和真机验收的前置环境。
+本文用于配置小猪搭手 Developer Edition 的独立测试手机。APK 已可构建，本清单是安装和真机验收的前置环境。
 
 ## 设备原则
 
@@ -41,7 +41,7 @@ pnpm --version
 2. 开启开发者选项和 USB 调试。
 3. 通过 USB 连接开发机，确认 `adb devices` 显示 `device`。
 4. 在 HyperOS 中允许 USB 安装和调试。
-5. 关闭针对 Personal Jarvis 的省电限制和后台自动清理。
+5. 关闭针对小猪搭手的省电限制和后台自动清理。
 6. 保持设备插电并连接稳定网络，用于长任务测试。
 
 ## App 权限
@@ -54,7 +54,7 @@ pnpm --version
 - 通知使用权：读取通知和媒体会话。
 - 屏幕录制：无障碍截图不可用时的屏幕观察。
 - 前台服务：保持任务和悬浮入口运行。
-- 默认助手：长按 Home/电源键进入 Personal Jarvis。
+- 默认助手：长按 Home/电源键进入小猪搭手。
 
 每项权限在 App 内展示用途、当前状态、拒绝后的功能和对系统设置的跳转。
 
@@ -63,7 +63,7 @@ pnpm --version
 1. 安装并启动 Shizuku。
 2. 在开发者选项中开启无线调试。
 3. 按 Shizuku 指引完成配对和服务启动。
-4. 在 Personal Jarvis 内确认 Shizuku 状态为可用。
+4. 在小猪搭手内确认 Shizuku 状态为可用。
 5. 重启手机后重新检查 Shizuku；不可用时验证无障碍降级。
 
 App 不得把 Shizuku 用户文本拼接成 shell 命令。所有点击、滑动、按键和文本输入必须来自共享 schema 校验后的结构化动作。

@@ -10,7 +10,7 @@
 
 **Spec:** `docs/04-android-execution.md`, `docs/05-security-privacy.md`
 
-> Implementation status: Tasks 1–3 implemented, unit verified, and physically validated. Task 4 remains pending.
+> Implementation status: Tasks 1–3 and the floating/voice portion of Task 4 are implemented and physically validated. `TaskPlannerClient` remains pending.
 
 ## Global Constraints
 
@@ -57,7 +57,7 @@ Expected: FAIL because the module or `BuildConfig` is missing.
 
 - [ ] **Step 4: Implement minimal app shell and manifest**
 
-The Activity shows “Personal Jarvis”, permission state, and a start/stop task button. The manifest declares no accessibility, overlay, microphone, notification listener, or screen capture permission until their task adds them.
+The Activity shows “小猪搭手”, permission state, and a start/stop task button. The manifest declares no accessibility, overlay, microphone, notification listener, or screen capture permission until their task adds them.
 
 - [ ] **Step 5: Verify**
 

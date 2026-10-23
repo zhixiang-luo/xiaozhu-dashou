@@ -1,10 +1,10 @@
-# Personal Jarvis 实施计划
+# 小猪搭手实施计划
 
 > Status: Accepted
 > Owner: Architecture
 > Last reviewed: 2026-10-23
 
-Personal Jarvis V1 按可独立验收的子系统拆分。执行顺序如下：
+小猪搭手 V1 按可独立验收的子系统拆分。执行顺序如下：
 
 1. [Contracts Foundation](2026-10-23-contracts-foundation.md)：共享协议、schema、测试向量。
 2. [Orchestrator and Model Gateway](2026-10-23-orchestrator-model-gateway.md)：任务 API、事件流、多模型路由。
@@ -19,5 +19,5 @@ Personal Jarvis V1 按可独立验收的子系统拆分。执行顺序如下：
 | --- | --- |
 | Contracts Foundation | Implemented and verified |
 | Orchestrator and Model Gateway | Core, model adapter, REST and WebSocket implemented |
-| Android Observer and Executor | Tasks 1–3 implemented, unit and device verified; voice/overlay pending |
+| Android Observer and Executor | Tasks 1–3 and floating/voice verified; cloud task submission pending |
 | First App Skills | Platform-neutral manifest schema implemented; Android loader pending |

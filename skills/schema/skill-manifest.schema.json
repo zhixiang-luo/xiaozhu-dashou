@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://personal-jarvis.local/schemas/skill-manifest.schema.json",
-  "title": "Personal Jarvis skill manifest",
+  "title": "小猪搭手 skill manifest",
   "type": "object",
   "additionalProperties": false,
   "required": [

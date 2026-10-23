@@ -6,7 +6,7 @@
 
 ## Context
 
-产品需要读取其他 App 的 UI、保持悬浮入口、通过 Shizuku 执行动作，并管理无障碍、语音和前台服务。这些能力主要存在于 Android 原生层。Personal Jarvis 1.0 使用开发者专用的小米/Redmi 设备。
+产品需要读取其他 App 的 UI、保持悬浮入口、通过 Shizuku 执行动作，并管理无障碍、语音和前台服务。这些能力主要存在于 Android 原生层。小猪搭手 1.0 使用开发者专用的小米/Redmi 设备。
 
 ## Decision
 

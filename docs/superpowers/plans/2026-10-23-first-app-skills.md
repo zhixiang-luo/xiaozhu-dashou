@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 交付 Personal Jarvis 的首批真实任务：微信自动回复、网易云音乐播放、高德导航和从微信地址到高德的跨 App 流程。
+**Goal:** 交付小猪搭手的首批真实任务：微信自动回复、网易云音乐播放、高德导航和从微信地址到高德的跨 App 流程。
 
 **Architecture:** 每个技能声明包名、支持版本、前置条件、动作、验证和降级。通用 Agent 只负责选择和组合技能；App 特定选择器保存在技能目录。所有外部副作用动作使用幂等键并在执行前重新观察。
 

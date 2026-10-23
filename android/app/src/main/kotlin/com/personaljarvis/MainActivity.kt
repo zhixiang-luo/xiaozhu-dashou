@@ -1,13 +1,17 @@
 package com.personaljarvis
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,11 +32,23 @@ import androidx.compose.ui.unit.dp
 import com.personaljarvis.execute.ShizukuUserServiceBridge
 import com.personaljarvis.observe.AccessibilityObserver
 import com.personaljarvis.policy.PageKind
+import com.personaljarvis.ui.FloatingBubbleService
 import rikka.shizuku.Shizuku
 
 class MainActivity : ComponentActivity() {
     private lateinit var shizukuBridge: ShizukuUserServiceBridge
     private var shizukuStatus by mutableStateOf("")
+    private var bubbleStatus by mutableStateOf("")
+
+    private val bubblePermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { grants ->
+        if (grants[Manifest.permission.RECORD_AUDIO] == false) {
+            bubbleStatus = getString(R.string.bubble_microphone_denied)
+        } else {
+            startBubbleService()
+        }
+    }
 
     private val permissionListener =
         Shizuku.OnRequestPermissionResultListener { _, grantResult ->
@@ -47,6 +63,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         shizukuStatus = getString(R.string.shizuku_not_connected)
+        bubbleStatus = getString(R.string.bubble_ready)
         shizukuBridge = ShizukuUserServiceBridge(this) { available ->
             shizukuStatus = if (available) {
                 getString(R.string.shizuku_authorized)
@@ -63,7 +80,9 @@ class MainActivity : ComponentActivity() {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     PersonalJarvisScreen(
                         shizukuStatus = shizukuStatus,
-                        requestShizukuAccess = ::requestShizukuAccess
+                        bubbleStatus = bubbleStatus,
+                        requestShizukuAccess = ::requestShizukuAccess,
+                        enableFloatingBubble = ::enableFloatingBubble
                     )
                 }
             }
@@ -101,12 +120,58 @@ class MainActivity : ComponentActivity() {
             Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
         }.getOrDefault(false)
     }
+
+    private fun enableFloatingBubble() {
+        if (!Settings.canDrawOverlays(this)) {
+            bubbleStatus = getString(R.string.bubble_overlay_permission_needed)
+            runCatching {
+                startActivity(
+                    Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:$packageName")
+                    )
+                )
+            }.onFailure {
+                bubbleStatus = getString(R.string.bubble_permission_open_failed)
+            }
+            return
+        }
+
+        val missingPermissions = buildList {
+            if (
+                checkSelfPermission(Manifest.permission.RECORD_AUDIO) !=
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                add(Manifest.permission.RECORD_AUDIO)
+            }
+            if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        if (missingPermissions.isEmpty()) {
+            startBubbleService()
+        } else {
+            bubblePermissionsLauncher.launch(missingPermissions.toTypedArray())
+        }
+    }
+
+    private fun startBubbleService() {
+        startForegroundService(Intent(this, FloatingBubbleService::class.java))
+        bubbleStatus = getString(R.string.bubble_started)
+    }
 }
 
 @Composable
 fun PersonalJarvisScreen(
     shizukuStatus: String,
-    requestShizukuAccess: () -> Unit
+    bubbleStatus: String,
+    requestShizukuAccess: () -> Unit,
+    enableFloatingBubble: () -> Unit
 ) {
     val context = LocalContext.current
     var taskActive by remember { mutableStateOf(false) }
@@ -172,6 +237,10 @@ fun PersonalJarvisScreen(
             Text(stringResource(R.string.action_authorize_shizuku))
         }
         Text(text = shizukuStatus)
+        Button(onClick = enableFloatingBubble) {
+            Text(stringResource(R.string.action_enable_bubble))
+        }
+        Text(text = bubbleStatus)
     }
 }
 

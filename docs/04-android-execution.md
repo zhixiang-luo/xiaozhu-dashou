@@ -45,6 +45,8 @@ interface ExecutionDriver {
 - `AccessibilityObserver` 只提供前台 UI 树、短期 node ID 和页面哈希。
 - `PolicyGate` 在动作进入驱动前阻止登录、支付、验证码、权限和未知安全页面。
 - `SafeExecutionRunner` 在取消后递增任务代次，拒绝所有迟到动作。
+- `FloatingBubbleService` 提供中文悬浮球；长按 450ms 启动系统语音识别，松手后显示识别文本。
+- 当前只验证语音转文字，尚未把识别结果提交给云端任务服务。
 
 ## 权限与启动
 
