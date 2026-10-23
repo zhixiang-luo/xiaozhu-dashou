@@ -149,6 +149,7 @@ pnpm check
 
 ```dotenv
 DEVICE_TOKEN=replace-with-a-random-development-token
+ASSISTANT_TIME_ZONE=Asia/Shanghai
 VOLCENGINE_ASR_API_KEY=your_volcengine_key
 VOLCENGINE_ASR_RESOURCE_ID=volc.seedasr.sauc.duration
 DEEPSEEK_API_KEY=your_deepseek_key

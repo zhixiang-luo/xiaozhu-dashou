@@ -28,7 +28,8 @@ export class DeepSeekTaskPlanner implements TaskPlanner {
     private readonly catalog: SkillCatalog,
     fallback?: TaskPlanner,
     private readonly options: IntentTranslationOptions = {
-      allowWechatAutoSend: false
+      allowWechatAutoSend: false,
+      timeZone: "Asia/Shanghai"
     }
   ) {
     this.fallback = fallback ?? new DevTaskPlanner({
@@ -39,9 +40,7 @@ export class DeepSeekTaskPlanner implements TaskPlanner {
   async plan(task: TaskRecord): Promise<AssistantAction[]> {
     try {
       const nowMillis = Date.now();
-      const timeZone =
-        Intl.DateTimeFormat().resolvedOptions().timeZone ||
-        "Asia/Shanghai";
+      const timeZone = this.options.timeZone ?? "Asia/Shanghai";
       const context = {
         now: new Date(nowMillis).toISOString(),
         timeZone

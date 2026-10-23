@@ -55,7 +55,8 @@ export function buildServer(options: BuildServerOptions = {}) {
   const plannerOptions = {
     allowWechatAutoSend:
       options.allowWechatAutoSend ??
-      process.env.ALLOW_WECHAT_AUTOSEND === "true"
+      process.env.ALLOW_WECHAT_AUTOSEND === "true",
+    timeZone: process.env.ASSISTANT_TIME_ZONE ?? "Asia/Shanghai"
   };
   const planner =
     options.planner ??

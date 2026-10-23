@@ -23,7 +23,8 @@ export async function translateIntent(
   intent: AssistantIntent,
   catalog: SkillCatalog,
   options: IntentTranslationOptions = {
-    allowWechatAutoSend: false
+    allowWechatAutoSend: false,
+    timeZone: "Asia/Shanghai"
   }
 ): Promise<AssistantAction[]> {
   if (intent.kind === "clarify") {
