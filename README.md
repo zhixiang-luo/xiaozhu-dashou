@@ -59,7 +59,7 @@ ANDROID_HOME=/opt/homebrew/share/android-commandlinetools \
 ## 计划中的仓库结构
 
 ```text
-personal-jarvis/
+xiaozhu-dashou/
 ├── AGENTS.md
 ├── packages/contracts/       共享协议与类型
 ├── services/orchestrator/    云端编排服务
