@@ -10,7 +10,7 @@
 
 **Spec:** `docs/01-prd.md`, `docs/guides/adding-app-skill.md`, `docs/06-testing-and-evaluation.md`
 
-> Implementation status: Platform-neutral manifest schema and validator completed. Android loader and App skills remain pending.
+> Implementation status: Structured workflow schema, validator, recording tool, and four initial manifest drafts are complete. Real-device selector calibration and Android skill interpreter remain pending.
 
 ## Global Constraints
 

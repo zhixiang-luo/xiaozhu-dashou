@@ -6,6 +6,8 @@
 
 App 技能把高频、可验证的手机流程从通用模型的自由点击变成可测试、可版本化的确定性流程。
 
+通用观察、点击、输入和验证能力只需要实现一次；App 技能通常只添加结构化清单。只有 MediaSession、官方 Deep Link 或特殊系统能力才需要额外 Kotlin adapter。详见 [App 技能架构](../14-app-skill-architecture.md)。
+
 ## 适用条件
 
 - 用例高频，且能定义清楚的开始和结束状态；
@@ -33,22 +35,61 @@ skills/<skill-id>/
 ```yaml
 id: wechat.send-message
 version: 0.1.0
+displayName: 微信发送普通消息
 appPackages:
   - com.tencent.mm
-platforms:
-  - android
+supportedVersions:
+  - 8.0.79
 prerequisites:
-  - wechat_foreground
+  - wechat.foreground
 capabilities:
   - accessibility
   - shizuku
 risk:
-  auto_send: unique_recipient_and_low_risk_text
+  sideEffect: external_communication
+  autoSend: unique_recipient
+  handoffOn:
+    - payment
+    - otp
+inputs:
+  contactName:
+    type: text
+    required: false
+  message:
+    type: text
+    required: true
 verification:
+  - intended_conversation_visible
   - sent_message_visible
+steps:
+  - id: open-wechat
+    action: open_app
+    package: com.tencent.mm
+  - id: send-message
+    action: send
+    target:
+      text: 发送
 ```
 
-域字段最终以共享 schema 为准。
+字段以 `@personal-jarvis/skills` 和 `skills/schema/skill-manifest.schema.json` 为准。
+
+## 通用能力与 App 代码
+
+以下通常只需要 manifest：
+
+- 打开 App；
+- 按文本、描述、resource ID 或角色点击；
+- 输入参数；
+- 提取页面文字；
+- 等待和验证；
+- 调用其他 App 技能组成跨 App 流程。
+
+以下需要额外 adapter：
+
+- MediaSession 播放控制；
+- 官方 Deep Link 参数构造；
+- 特殊输入法或复杂文件选择；
+- App 专门的安全页面识别。
 
 ## 流程要求
 
@@ -73,6 +114,16 @@ verification:
 6. 视觉坐标。
 
 坐标是最后手段，必须记录屏幕比例并重新映射；不能把一次截图像素写死。
+
+## 录制现有流程
+
+运行：
+
+```bash
+./scripts/capture-skill-session.sh wechat.send-message
+```
+
+按 [录制 App 技能](recording-app-skill.md) 的步骤操作。录制完成后由控制器生成或更新 manifest，再进行回放校准。
 
 ## 安全要求
 

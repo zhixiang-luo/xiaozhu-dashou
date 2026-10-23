@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" role="img" aria-labelledby="title desc">
+  <title id="title">小猪搭手横向品牌组合</title>
+  <desc id="desc">暖科技任务猪标记、小猪搭手字标与品牌主张</desc>
+  <g transform="translate(56 40) scale(.625)">
+    <circle cx="256" cy="256" r="228" fill="#FFF9EF" stroke="#20262B" stroke-width="8"/>
+    <circle cx="256" cy="256" r="198" fill="none" stroke="#20262B" stroke-width="4" opacity=".13"/>
+    <path d="M87 304C66 239 83 168 130 115" fill="none" stroke="#64DDC3" stroke-width="11" stroke-linecap="round"/>
+    <path d="M367 409C402 385 429 347 443 301" fill="none" stroke="#20262B" stroke-width="8" stroke-linecap="round" opacity=".25"/>
+    <circle cx="443" cy="299" r="7" fill="#64DDC3"/>
+    <rect x="447" y="256" width="7" height="24" rx="3.5" fill="#20262B"/>
+    <rect x="436" y="226" width="7" height="24" rx="3.5" fill="#20262B" opacity=".55"/>
+    <rect x="421" y="200" width="7" height="18" rx="3.5" fill="#20262B" opacity=".28"/>
+    <path d="M155 172C126 151 117 107 145 91C173 75 205 104 222 147" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M357 172C386 151 395 107 367 91C339 75 307 104 290 147" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M156 147C143 132 141 111 153 104C168 96 184 114 193 135" fill="#A75258" opacity=".22"/>
+    <path d="M356 147C369 132 371 111 359 104C344 96 328 114 319 135" fill="#A75258" opacity=".22"/>
+    <path d="M142 235C142 174 187 138 256 138C325 138 370 174 370 235L370 286C370 346 323 383 256 383C189 383 142 346 142 286Z" fill="#FFF9EF" stroke="#20262B" stroke-width="11" stroke-linejoin="round"/>
+    <ellipse cx="182" cy="286" rx="23" ry="12" fill="#E89A96" opacity=".45"/>
+    <ellipse cx="330" cy="286" rx="23" ry="12" fill="#E89A96" opacity=".45"/>
+    <ellipse cx="200" cy="225" rx="15" ry="21" fill="#20262B"/>
+    <ellipse cx="312" cy="225" rx="15" ry="21" fill="#20262B"/>
+    <circle cx="195" cy="217" r="4.5" fill="#64DDC3"/>
+    <circle cx="307" cy="217" r="4.5" fill="#64DDC3"/>
+    <rect x="206" y="250" width="100" height="72" rx="36" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+    <ellipse cx="238" cy="286" rx="8" ry="13" fill="#20262B"/>
+    <ellipse cx="274" cy="286" rx="8" ry="13" fill="#20262B"/>
+    <path d="M386 266H401M391 282H401M384 298H400" fill="none" stroke="#0B695D" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <text x="430" y="176" fill="#20262B" font-family="PingFang SC, Noto Sans CJK SC, sans-serif" font-size="120" font-weight="650" letter-spacing="5">小猪搭手</text>
+  <text x="436" y="247" fill="#626A6D" font-family="PingFang SC, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="500" letter-spacing="4">说一句，帮你做。</text>
+  <rect x="436" y="281" width="214" height="43" rx="21.5" fill="#E89A96"/>
+  <text x="458" y="311" fill="#20262B" font-family="PingFang SC, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="600" letter-spacing="2">猪哥 · 暖科技任务猪</text>
+</svg>

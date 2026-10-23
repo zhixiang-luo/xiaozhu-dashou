@@ -1,0 +1,57 @@
+id: wechat.send-message
+version: 0.1.0
+displayName: 微信发送普通消息
+appPackages:
+  - com.tencent.mm
+supportedVersions:
+  - 8.0.79
+prerequisites:
+  - wechat.foreground
+capabilities:
+  - accessibility
+  - shizuku
+risk:
+  sideEffect: external_communication
+  autoSend: unique_recipient
+  handoffOn:
+    - payment
+    - otp
+    - account_security
+inputs:
+  contactName:
+    type: text
+    required: false
+    description: 留空时回复当前会话
+  message:
+    type: text
+    required: true
+verification:
+  - intended_conversation_visible
+  - sent_message_visible
+steps:
+  - id: open-wechat
+    action: open_app
+    package: com.tencent.mm
+  - id: require-wechat
+    action: require_foreground
+    package: com.tencent.mm
+  - id: search-contact
+    action: tap
+    target:
+      contentDescription: 搜索
+  - id: select-contact
+    action: tap
+    target:
+      text: "{{contactName}}"
+  - id: input-message
+    action: input_text
+    target:
+      text: 输入
+    inputKey: message
+  - id: send-message
+    action: send
+    target:
+      text: 发送
+  - id: verify-sent
+    action: verify
+    predicate: sent_message_visible

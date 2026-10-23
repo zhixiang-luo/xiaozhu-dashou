@@ -1,0 +1,41 @@
+id: cross.wechat-to-amap-navigate
+version: 0.1.0
+displayName: 从微信地址开始高德导航
+appPackages:
+  - com.tencent.mm
+  - com.autonavi.minimap
+supportedVersions:
+  - wechat:8.0.79
+  - amap:17.01.0.2012
+prerequisites:
+  - wechat.foreground
+capabilities:
+  - accessibility
+  - shizuku
+  - deep_link
+risk:
+  sideEffect: read
+  handoffOn:
+    - ambiguous_address
+    - account_login
+inputs:
+  conversation:
+    type: text
+    required: false
+verification:
+  - address_matches_source
+  - navigation_started
+steps:
+  - id: require-wechat
+    action: require_foreground
+    package: com.tencent.mm
+  - id: extract-address
+    action: extract_text
+    target:
+      role: TextView
+    outputKey: destination
+  - id: navigate
+    action: invoke_skill
+    skill: amap.navigate
+    inputs:
+      destination: "{{destination}}"

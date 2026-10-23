@@ -1,0 +1,52 @@
+id: amap.navigate
+version: 0.1.0
+displayName: 高德地图开始导航
+appPackages:
+  - com.autonavi.minimap
+supportedVersions:
+  - 17.01.0.2012
+prerequisites:
+  - amap.foreground
+capabilities:
+  - accessibility
+  - shizuku
+  - deep_link
+risk:
+  sideEffect: read
+  handoffOn:
+    - account_login
+    - payment
+inputs:
+  destination:
+    type: text
+    required: true
+verification:
+  - destination_matches_input
+  - navigation_started
+steps:
+  - id: open-amap
+    action: open_app
+    package: com.autonavi.minimap
+  - id: require-amap
+    action: require_foreground
+    package: com.autonavi.minimap
+  - id: open-search
+    action: tap
+    target:
+      contentDescription: 搜索
+  - id: input-destination
+    action: input_text
+    target:
+      role: EditText
+    inputKey: destination
+  - id: choose-destination
+    action: tap
+    target:
+      text: "{{destination}}"
+  - id: start-navigation
+    action: tap
+    target:
+      text: 开始导航
+  - id: verify-navigation
+    action: verify
+    predicate: navigation_started

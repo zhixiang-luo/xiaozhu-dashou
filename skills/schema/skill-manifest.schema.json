@@ -23,12 +23,23 @@
       "type": "string",
       "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$"
     },
+    "displayName": {
+      "type": "string",
+      "minLength": 1
+    },
     "appPackages": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "string",
         "pattern": "^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$"
+      }
+    },
+    "supportedVersions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
       }
     },
     "prerequisites": {
@@ -53,10 +64,39 @@
     "risk": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["autoSend"],
       "properties": {
+        "sideEffect": {
+          "enum": ["none", "read", "external_communication", "payment"]
+        },
         "autoSend": {
           "enum": ["unique_recipient", "confirm", "never"]
+        },
+        "handoffOn": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type", "required"],
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "enum": ["text", "number", "boolean"]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     },
@@ -72,8 +112,101 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "type": "string",
-        "minLength": 1
+        "oneOf": [
+          {
+            "type": "string",
+            "minLength": 1
+          },
+          {
+            "type": "object",
+            "required": ["id", "action"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "action": {
+                "enum": [
+                  "open_app",
+                  "require_foreground",
+                  "tap",
+                  "input_text",
+                  "send",
+                  "extract_text",
+                  "verify",
+                  "media_control",
+                  "invoke_skill",
+                  "wait"
+                ]
+              },
+              "package": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$"
+              },
+              "target": {
+                "$ref": "#/$defs/target"
+              },
+              "unique": {
+                "type": "boolean"
+              },
+              "inputKey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "outputKey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "predicate": {
+                "type": "string",
+                "minLength": 1
+              },
+              "command": {
+                "enum": ["play", "pause", "next", "previous"]
+              },
+              "skill": {
+                "type": "string",
+                "minLength": 1
+              },
+              "inputs": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "durationMs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 30000
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contentDescription": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resourceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     }
   }

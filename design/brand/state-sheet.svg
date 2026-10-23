@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 980" role="img" aria-labelledby="title desc">
+  <title id="title">猪哥六种交互状态</title>
+  <desc id="desc">待命、已唤醒、聆听、执行中、等待接管和完成的暖科技任务猪状态设计</desc>
+  <rect width="1800" height="980" fill="#F7F2E8"/>
+
+  <defs>
+    <g id="faceBase">
+      <path d="M155 172C126 151 117 107 145 91C173 75 205 104 222 147" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M357 172C386 151 395 107 367 91C339 75 307 104 290 147" fill="#E89A96" stroke="#20262B" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M156 147C143 132 141 111 153 104C168 96 184 114 193 135" fill="#A75258" opacity=".22"/>
+      <path d="M356 147C369 132 371 111 359 104C344 96 328 114 319 135" fill="#A75258" opacity=".22"/>
+      <path d="M142 235C142 174 187 138 256 138C325 138 370 174 370 235L370 286C370 346 323 383 256 383C189 383 142 346 142 286Z" fill="#FFF9EF" stroke="#20262B" stroke-width="11" stroke-linejoin="round"/>
+      <ellipse cx="182" cy="286" rx="23" ry="12" fill="#E89A96" opacity=".45"/>
+      <ellipse cx="330" cy="286" rx="23" ry="12" fill="#E89A96" opacity=".45"/>
+      <rect x="206" y="250" width="100" height="72" rx="36" fill="#E89A96" stroke="#20262B" stroke-width="10"/>
+      <ellipse cx="238" cy="286" rx="8" ry="13" fill="#20262B"/>
+      <ellipse cx="274" cy="286" rx="8" ry="13" fill="#20262B"/>
+    </g>
+  </defs>
+
+  <g font-family="PingFang SC, Noto Sans CJK SC, sans-serif">
+    <circle cx="114" cy="92" r="34" fill="#E89A96"/>
+    <path d="M100 93H128M105 82H123M108 104H126" fill="none" stroke="#20262B" stroke-width="5" stroke-linecap="round"/>
+    <text x="170" y="83" fill="#20262B" font-size="42" font-weight="700" letter-spacing="3">猪哥</text>
+    <text x="171" y="121" fill="#626A6D" font-size="18" font-weight="500" letter-spacing="2">暖科技任务猪 · 六态交互</text>
+
+    <rect x="1390" y="56" width="350" height="56" rx="28" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".12"/>
+    <circle cx="1422" cy="84" r="7" fill="#64DDC3"/>
+    <text x="1444" y="91" fill="#20262B" font-size="19" font-weight="600">状态只随任务变化，不循环表演</text>
+
+    <!-- 01 待命 -->
+    <g transform="translate(60 178)">
+      <rect width="540" height="300" rx="28" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <text x="28" y="42" fill="#A75258" font-size="17" font-weight="700" letter-spacing="2">01 / 待命</text>
+      <use href="#faceBase" transform="translate(37 48) scale(.39)"/>
+      <path d="M104 134Q116 127 128 134" fill="none" stroke="#20262B" stroke-width="7" stroke-linecap="round"/>
+      <path d="M148 134Q160 127 172 134" fill="none" stroke="#20262B" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="125" cy="153" r="89" fill="none" stroke="#20262B" stroke-width="5" stroke-dasharray="34 20" opacity=".16"/>
+      <text x="286" y="88" fill="#20262B" font-size="30" font-weight="700">安静待命</text>
+      <text x="286" y="126" fill="#626A6D" font-size="18">半闭眼，轨道静止</text>
+      <rect x="286" y="156" width="86" height="34" rx="17" fill="#F7F2E8"/>
+      <text x="303" y="179" fill="#626A6D" font-size="15" font-weight="600">不打扰</text>
+      <text x="286" y="228" fill="#626A6D" font-size="15">60–64dp 常驻侧边，可拖动</text>
+    </g>
+
+    <!-- 02 已唤醒 -->
+    <g transform="translate(630 178)">
+      <rect width="540" height="300" rx="28" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <text x="28" y="42" fill="#0B695D" font-size="17" font-weight="700" letter-spacing="2">02 / 已唤醒</text>
+      <use href="#faceBase" transform="translate(37 48) scale(.39)"/>
+      <ellipse cx="116" cy="136" rx="11" ry="15" fill="#20262B"/>
+      <ellipse cx="160" cy="136" rx="11" ry="15" fill="#20262B"/>
+      <circle cx="112" cy="131" r="3.5" fill="#64DDC3"/>
+      <circle cx="156" cy="131" r="3.5" fill="#64DDC3"/>
+      <path d="M56 205C35 167 40 118 70 85" fill="none" stroke="#64DDC3" stroke-width="8" stroke-linecap="round"/>
+      <path d="M201 213C216 196 226 174 231 150" fill="none" stroke="#64DDC3" stroke-width="8" stroke-linecap="round" opacity=".48"/>
+      <circle cx="231" cy="148" r="6" fill="#64DDC3"/>
+      <text x="286" y="88" fill="#20262B" font-size="30" font-weight="700">我听见了</text>
+      <text x="286" y="126" fill="#626A6D" font-size="18">睁眼，轨道亮起一次</text>
+      <rect x="286" y="156" width="94" height="34" rx="17" fill="#D9F8F0"/>
+      <text x="303" y="179" fill="#0B695D" font-size="15" font-weight="600">已唤醒</text>
+      <text x="286" y="228" fill="#626A6D" font-size="15">180ms 放大 + 短触感</text>
+    </g>
+
+    <!-- 03 聆听 -->
+    <g transform="translate(1200 178)">
+      <rect width="540" height="300" rx="28" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <text x="28" y="42" fill="#0B695D" font-size="17" font-weight="700" letter-spacing="2">03 / 聆听</text>
+      <use href="#faceBase" transform="translate(55 48) scale(.39)"/>
+      <ellipse cx="134" cy="136" rx="11" ry="15" fill="#20262B"/>
+      <ellipse cx="178" cy="136" rx="11" ry="15" fill="#20262B"/>
+      <circle cx="130" cy="131" r="3.5" fill="#64DDC3"/>
+      <circle cx="174" cy="131" r="3.5" fill="#64DDC3"/>
+      <rect x="31" y="130" width="8" height="26" rx="4" fill="#64DDC3"/>
+      <rect x="17" y="118" width="8" height="50" rx="4" fill="#64DDC3" opacity=".72"/>
+      <rect x="3" y="140" width="8" height="14" rx="4" fill="#64DDC3" opacity=".44"/>
+      <path d="M76 217C58 197 49 173 49 147M218 214C231 199 239 181 243 161" fill="none" stroke="#0B695D" stroke-width="5" stroke-linecap="round" opacity=".28"/>
+      <text x="286" y="88" fill="#20262B" font-size="30" font-weight="700">正在听…</text>
+      <text x="286" y="126" fill="#626A6D" font-size="18">声波随音量变化，不随机跳动</text>
+      <rect x="286" y="156" width="130" height="34" rx="17" fill="#D9F8F0"/>
+      <text x="303" y="179" fill="#0B695D" font-size="15" font-weight="600">展开 164dp</text>
+      <text x="286" y="228" fill="#626A6D" font-size="15">实时转写，松手后等待最终结果</text>
+    </g>
+
+    <!-- 04 执行中 -->
+    <g transform="translate(60 518)">
+      <rect width="540" height="300" rx="28" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <text x="28" y="42" fill="#0B695D" font-size="17" font-weight="700" letter-spacing="2">04 / 执行中</text>
+      <use href="#faceBase" transform="translate(51 50) scale(.39)"/>
+      <rect x="111" y="129" width="22" height="11" rx="5.5" fill="#20262B"/>
+      <rect x="155" y="129" width="22" height="11" rx="5.5" fill="#20262B"/>
+      <circle cx="163" cy="169" r="82" fill="none" stroke="#20262B" stroke-width="5" opacity=".12"/>
+      <path d="M82 173A82 82 0 0 1 154 91" fill="none" stroke="#64DDC3" stroke-width="9" stroke-linecap="round"/>
+      <path d="M164 91A82 82 0 0 1 238 154" fill="none" stroke="#64DDC3" stroke-width="9" stroke-linecap="round" opacity=".35"/>
+      <circle cx="164" cy="169" r="82" fill="none" stroke="#FFF9EF" stroke-width="15" stroke-dasharray="4 29" opacity=".8"/>
+      <text x="286" y="88" fill="#20262B" font-size="30" font-weight="700">三段轨道推进</text>
+      <text x="286" y="126" fill="#626A6D" font-size="18">只显示当前具体动作</text>
+      <rect x="286" y="156" width="156" height="34" rx="17" fill="#D9F8F0"/>
+      <text x="303" y="179" fill="#0B695D" font-size="15" font-weight="600">正在打开微信</text>
+      <text x="286" y="228" fill="#626A6D" font-size="15">240ms 扫过一次，步骤变化才推进</text>
+    </g>
+
+    <!-- 05 等待接管 -->
+    <g transform="translate(630 518)">
+      <rect width="540" height="300" rx="28" fill="#FFF9EF" stroke="#E9A94F" stroke-width="2"/>
+      <text x="28" y="42" fill="#876123" font-size="17" font-weight="700" letter-spacing="2">05 / 等待接管</text>
+      <use href="#faceBase" transform="translate(37 48) scale(.39)"/>
+      <ellipse cx="116" cy="132" rx="11" ry="15" fill="#20262B"/>
+      <ellipse cx="160" cy="128" rx="11" ry="15" fill="#20262B"/>
+      <circle cx="119" cy="126" r="3.5" fill="#E9A94F"/>
+      <circle cx="163" cy="122" r="3.5" fill="#E9A94F"/>
+      <circle cx="138" cy="147" r="88" fill="none" stroke="#E9A94F" stroke-width="9" stroke-linecap="round" stroke-dasharray="168 28"/>
+      <circle cx="203" cy="93" r="7" fill="#E9A94F"/>
+      <text x="286" y="88" fill="#20262B" font-size="30" font-weight="700">这一步你来</text>
+      <text x="286" y="126" fill="#626A6D" font-size="18">停止动作，角色视线向上</text>
+      <rect x="286" y="156" width="104" height="34" rx="17" fill="#F8E8C9"/>
+      <text x="303" y="179" fill="#876123" font-size="15" font-weight="600">等待接管</text>
+      <text x="286" y="228" fill="#626A6D" font-size="15">支付、验证码、安全页或目标不确定</text>
+    </g>
+
+    <!-- 06 完成 -->
+    <g transform="translate(1200 518)">
+      <rect width="540" height="300" rx="28" fill="#FFF9EF" stroke="#20262B" stroke-opacity=".10"/>
+      <text x="28" y="42" fill="#0B695D" font-size="17" font-weight="700" letter-spacing="2">06 / 完成</text>
+      <use href="#faceBase" transform="translate(37 48) scale(.39)"/>
+      <path d="M103 135Q116 145 129 135" fill="none" stroke="#20262B" stroke-width="7" stroke-linecap="round"/>
+      <path d="M147 135Q160 145 173 135" fill="none" stroke="#20262B" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="138" cy="147" r="89" fill="none" stroke="#64DDC3" stroke-width="9"/>
+      <path d="M210 88L218 99L232 73" fill="none" stroke="#0B695D" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="286" y="88" fill="#20262B" font-size="30" font-weight="700">弄好了</text>
+      <text x="286" y="126" fill="#626A6D" font-size="18">轨道闭合一次，短暂眨眼</text>
+      <rect x="286" y="156" width="86" height="34" rx="17" fill="#D9F8F0"/>
+      <text x="303" y="179" fill="#0B695D" font-size="15" font-weight="600">已完成</text>
+      <text x="286" y="228" fill="#626A6D" font-size="15">420ms 后回到待命，不索取下一次任务</text>
+    </g>
+
+    <line x1="60" y1="865" x2="1740" y2="865" stroke="#20262B" stroke-opacity=".12"/>
+    <text x="60" y="910" fill="#626A6D" font-size="17">动效可中断 · 减少动态效果时使用静态切换 · 唤醒不重复弹出确认</text>
+    <text x="1475" y="910" fill="#A75258" font-size="17" font-weight="600">小猪搭手 / 猪哥</text>
+  </g>
+</svg>

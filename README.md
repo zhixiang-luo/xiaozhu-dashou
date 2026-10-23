@@ -1,12 +1,16 @@
 # 小猪搭手
 
+<p align="center">
+  <img src="design/brand/exports/brand-lockup.png" alt="小猪搭手：猪哥，暖科技任务猪" width="760" />
+</p>
+
 小猪搭手是一个运行在开发者专用 Android 手机上的个人 Agent。用户通过持续语音或悬浮入口发起任务，小猪搭手观察屏幕、通知和个人上下文，规划并执行日常操作；账号、支付、验证码和身份验证由本人完成。
 
 > 项目正式名称：小猪搭手。开发期 Android 包名暂时保留 `com.personaljarvis`，正式发布前再决定最终包名。
 
 ## 当前状态
 
-项目已正式成立，当前进入 **首个 Android 垂直切片阶段**。共享协议、云端编排和可编译 Android App 已经建立；尚未连接专用真机验证系统权限和真实 App 操作。
+项目已正式成立，当前进入 **首批真实 App 技能开发阶段**。共享协议、云端编排和 Android App 已经建立；“语音 → 任务服务 → 本机打开系统设置”开发版闭环已在 Redmi K60 / HyperOS 真机通过验收。常驻唤醒、正式 TTS 和微信/网易云等第三方 App 自动化尚未接入。
 
 当前可以运行共享合约和云端编排测试：
 
@@ -53,6 +57,8 @@ ANDROID_HOME=/opt/homebrew/share/android-commandlinetools \
 - [验收记录](docs/10-acceptance-record.md)
 - [专用设备配置](docs/11-device-setup.md)
 - [产品命名提案](docs/12-naming-proposal.md)
+- [App 技能架构](docs/14-app-skill-architecture.md)
+- [角色、唤醒与声音设计](docs/13-brand-character-and-voice.md)
 - [当前交接状态](docs/HANDOFF.md)
 - [Agent 角色说明](docs/agents/README.md)
 
@@ -65,6 +71,7 @@ xiaozhu-dashou/
 ├── services/orchestrator/    云端编排服务
 ├── android/                  Kotlin Android 客户端
 ├── skills/                   App 操作技能
+├── design/                   品牌角色、状态稿和导出资源
 ├── docs/                     产品、架构、ADR 与协作文档
 └── .github/                  PR 与 Issue 模板
 ```
@@ -75,13 +82,14 @@ xiaozhu-dashou/
 
 - [新增模型供应商](docs/guides/adding-model-provider.md)
 - [新增 App 技能](docs/guides/adding-app-skill.md)
+- [录制 App 技能](docs/guides/recording-app-skill.md)
 - [多 Agent 与团队协作](docs/guides/agent-collaboration.md)
 
 ## 当前已验证
 
 - 共享合约通过 5 项 Vitest 测试和 TypeScript 严格类型检查。
 - 云端编排通过 14 项 Vitest 测试和 TypeScript 严格类型检查，包含开发版任务规划器。
-- 技能 manifest 包通过 4 项测试和 TypeScript 严格类型检查。
+- 技能 manifest 包通过 7 项测试和 TypeScript 严格类型检查，覆盖结构化步骤、输入、风险和 4 个随仓技能清单。
 - Android 24 项 JVM 测试通过，Debug APK 构建成功，路径为 `android/app/build/outputs/apk/debug/app-debug.apk`。
 - 已接入 AccessibilityService、页面风险门禁、取消代次和 Shizuku UserService。
 - Redmi K60 / Android 15 / HyperOS OS3.0 真机已验证安装、无障碍读取与 Shizuku 授权。
@@ -89,9 +97,10 @@ xiaozhu-dashou/
 - 悬浮球已启动；短按可打开主界面，长按可启动语音识别会话。
 - 按住时悬浮球会展开为“正在听…”，带脉冲和触感；未开口不会提前报错，松手后才等待最终识别结果。
 - 语音文字已接入 `/v1/tasks`；“打开设置/微信/网易云/高德”可由开发版规划器返回并执行 `open_app` 动作。
+- 已建立微信、网易云、高德及跨 App 的结构化技能清单；真实选择器仍需按设备录制校准。
 - 真机已确认端到端链路可用：长按说“打开设置”后，任务服务返回动作并由本机自动打开系统设置。
 - 文档、链接和 YAML 结构检查通过。
-- 尚未执行微信、网易云、高德等真实 App 自动化任务。
+- 尚未执行微信、网易云、高德等真实 App 自动化任务，结构化清单仍需真机校准。
 
 ## 许可证
 

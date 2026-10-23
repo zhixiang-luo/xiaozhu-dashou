@@ -1,0 +1,52 @@
+id: netease-music.play-song
+version: 0.1.0
+displayName: 网易云音乐播放歌曲
+appPackages:
+  - com.netease.cloudmusic
+supportedVersions:
+  - 9.6.08
+prerequisites:
+  - netease-music.foreground
+capabilities:
+  - accessibility
+  - shizuku
+  - media_session
+risk:
+  sideEffect: read
+  handoffOn:
+    - login
+    - purchase
+inputs:
+  query:
+    type: text
+    required: true
+verification:
+  - now_playing_matches_query
+  - playback_is_active
+steps:
+  - id: open-music
+    action: open_app
+    package: com.netease.cloudmusic
+  - id: require-music
+    action: require_foreground
+    package: com.netease.cloudmusic
+  - id: open-search
+    action: tap
+    target:
+      contentDescription: 搜索
+  - id: input-query
+    action: input_text
+    target:
+      role: EditText
+    inputKey: query
+  - id: search
+    action: tap
+    target:
+      text: 搜索
+  - id: select-song
+    action: tap
+    target:
+      text: "{{query}}"
+  - id: verify-playing
+    action: verify
+    predicate: playback_is_active

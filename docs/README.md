@@ -27,6 +27,8 @@
 | [10-acceptance-record.md](10-acceptance-record.md) | 真机、App 版本和发布验收记录 | QA |
 | [11-device-setup.md](11-device-setup.md) | 专用手机、ADB 和 Shizuku 配置 | Android |
 | [12-naming-proposal.md](12-naming-proposal.md) | 正式产品名称候选和改名清单 | Product |
+| [14-app-skill-architecture.md](14-app-skill-architecture.md) | 通用能力与具体 App 技能的分层 | Agent Runtime + Android |
+| [13-brand-character-and-voice.md](13-brand-character-and-voice.md) | 猪哥形象、悬浮状态、唤醒词和 TTS 声音方向 | Product + Design |
 | [HANDOFF.md](HANDOFF.md) | 最近交付、验证和下一步 | 当次主 Agent/开发者 |
 | [model-compatibility.md](model-compatibility.md) | 已接入模型、能力和评测状态 | 模型负责人 |
 
@@ -35,6 +37,7 @@
 - `adr/`：不可轻易推翻的架构与产品决策。
 - `guides/`：新增模型、App 技能、团队协作和发布流程。
 - `superpowers/plans/`：按子系统拆分的可执行开发计划。
+- `../design/brand/`：品牌角色、Android 图标和六态交互源文件。
 - [agents/](agents/README.md)：按角色拆分的 Agent 任务说明；实际启动时仍需引用本页和模块规则。
 
 ## 文档状态

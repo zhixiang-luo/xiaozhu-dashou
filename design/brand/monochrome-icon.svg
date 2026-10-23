@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title">
+  <title id="title">小猪搭手 Android 单色图标</title>
+  <g transform="translate(188 188) scale(1.265625)" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="256" cy="256" r="210" stroke-width="24"/>
+    <path d="M130 115C83 168 66 239 87 304" stroke-width="28"/>
+    <path d="M155 172C126 151 117 107 145 91C173 75 205 104 222 147" stroke-width="20"/>
+    <path d="M357 172C386 151 395 107 367 91C339 75 307 104 290 147" stroke-width="20"/>
+    <path d="M142 235C142 174 187 138 256 138C325 138 370 174 370 235L370 286C370 346 323 383 256 383C189 383 142 346 142 286Z" stroke-width="22"/>
+    <path d="M200 204V235" stroke-width="24"/>
+    <path d="M312 204V235" stroke-width="24"/>
+    <rect x="206" y="250" width="100" height="72" rx="36" stroke-width="20"/>
+    <path d="M238 274V298M274 274V298" stroke-width="18"/>
+  </g>
+</svg>
