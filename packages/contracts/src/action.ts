@@ -78,6 +78,11 @@ export const ActionSchema = z.discriminatedUnion("type", [
     timeZone: z.string().min(1).max(64)
   }),
   ActionEnvelope.extend({
+    type: z.literal("wechat_reply_current"),
+    conversationTitle: z.string().trim().min(1).max(100),
+    message: z.string().trim().min(1).max(2_000)
+  }),
+  ActionEnvelope.extend({
     type: z.literal("ask_user"),
     question: z.string().min(1)
   }),

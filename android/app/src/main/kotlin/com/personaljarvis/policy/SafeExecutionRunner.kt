@@ -18,12 +18,21 @@ class SafeExecutionRunner(
         }
 
         return when (val decision = policy.evaluate(action, observation)) {
-            RiskDecision.Allow -> when (val result = driver.execute(action)) {
-                DriverResult.Success -> ActionResult.Completed()
-                is DriverResult.SuccessWithMessage ->
-                    ActionResult.Completed(result.message)
-                is DriverResult.Failure -> ActionResult.Failed(result.reason)
-                is DriverResult.Unsupported -> ActionResult.Failed(result.reason)
+            RiskDecision.Allow -> {
+                val driverResult = runCatching {
+                    driver.execute(action)
+                }.getOrElse {
+                    DriverResult.Failure("driver_exception")
+                }
+                when (driverResult) {
+                    DriverResult.Success -> ActionResult.Completed()
+                    is DriverResult.SuccessWithMessage ->
+                        ActionResult.Completed(driverResult.message)
+                    is DriverResult.Failure ->
+                        ActionResult.Failed(driverResult.reason)
+                    is DriverResult.Unsupported ->
+                        ActionResult.Failed(driverResult.reason)
+                }
             }
             is RiskDecision.Confirm ->
                 ActionResult.NeedsConfirmation(decision.reason)

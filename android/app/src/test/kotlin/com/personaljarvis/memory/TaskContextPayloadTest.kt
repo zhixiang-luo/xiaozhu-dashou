@@ -46,4 +46,40 @@ class TaskContextPayloadTest {
                 .getString("summary")
         )
     }
+
+    @Test
+    fun serializesCurrentWechatConversation() {
+        val payload = TaskContextPayload(
+            currentTime = "2026-10-23T06:30:00.000Z",
+            timeZone = "Asia/Shanghai",
+            currentPackage = "com.tencent.mm",
+            currentConversation = CurrentConversationPayload(
+                title = "文件传输助手",
+                appPackage = "com.tencent.mm",
+                recentMessages = listOf(
+                    WechatMessagePayload(
+                        direction = "incoming",
+                        text = "你好"
+                    )
+                ),
+                capturedAt = "2026-10-23T06:30:00.000Z"
+            ),
+            upcomingEvents = emptyList(),
+            recentTasks = emptyList(),
+            relevantMemory = emptyList(),
+            contacts = emptyList(),
+            preferences = emptyList()
+        )
+
+        val conversation = JSONObject(payload.toJson())
+            .getJSONObject("currentConversation")
+
+        assertEquals("文件传输助手", conversation.getString("title"))
+        assertEquals(
+            "你好",
+            conversation.getJSONArray("recentMessages")
+                .getJSONObject(0)
+                .getString("text")
+        )
+    }
 }

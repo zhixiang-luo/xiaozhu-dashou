@@ -41,6 +41,7 @@ class AccessibilityDriver(
             RuntimeActionType.CALENDAR_LIST_EVENTS,
             RuntimeActionType.CALENDAR_UPDATE_EVENT,
             RuntimeActionType.CALENDAR_DELETE_EVENT,
+            RuntimeActionType.WECHAT_REPLY_CURRENT,
             RuntimeActionType.MEDIA_CONTROL ->
                 DriverResult.Unsupported("action_requires_specialized_adapter")
         }
