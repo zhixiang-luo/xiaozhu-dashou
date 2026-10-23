@@ -22,6 +22,24 @@ export const TaskContextSchema = z
     timeZone: z.string().min(1).max(64),
     currentPackage: z.string().min(1).max(255).optional(),
     screenSummary: z.string().min(1).max(500).optional(),
+    currentConversation: z
+      .object({
+        title: z.string().min(1).max(100),
+        appPackage: z.string().min(1).max(255),
+        recentMessages: z
+          .array(
+            z
+              .object({
+                direction: z.enum(["incoming", "outgoing", "unknown"]),
+                text: z.string().min(1).max(500)
+              })
+              .strict()
+          )
+          .max(20),
+        capturedAt: ContextTimeSchema
+      })
+      .strict()
+      .optional(),
     upcomingEvents: z
       .array(
         z

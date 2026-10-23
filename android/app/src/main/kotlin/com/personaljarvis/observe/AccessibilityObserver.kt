@@ -1,19 +1,31 @@
 package com.personaljarvis.observe
 
 import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.GestureDescription
+import android.graphics.Bitmap
 import android.graphics.Rect
+import android.graphics.Path
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.view.Display
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityWindowInfo
+import com.personaljarvis.BuildConfig
 import com.personaljarvis.policy.DriverResult
 import com.personaljarvis.policy.ObservationSnapshot
 import com.personaljarvis.policy.PageClassifier
 import com.personaljarvis.policy.RecipientResolution
 import java.security.MessageDigest
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 class AccessibilityObserver : AccessibilityService() {
     private val compactor = UiTreeCompactor()
     private val nodesById = mutableMapOf<String, AccessibilityNodeInfo>()
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     override fun onServiceConnected() {
         instance = this
@@ -32,7 +44,7 @@ class AccessibilityObserver : AccessibilityService() {
     }
 
     fun snapshot(): ObservationSnapshot? {
-        val root = rootInActiveWindow ?: return null
+        val root = applicationRoot() ?: return null
         val packageName = root.packageName?.toString() ?: return null
         val collected = mutableListOf<Pair<RawUiNode, AccessibilityNodeInfo>>()
         collect(root, collected)
@@ -94,6 +106,108 @@ class AccessibilityObserver : AccessibilityService() {
         }
     }
 
+    fun performCoordinateTap(normalizedX: Float, normalizedY: Float): DriverResult {
+        return performCoordinateGesture(
+            normalizedX = normalizedX,
+            normalizedY = normalizedY,
+            durationMs = TAP_DURATION_MS
+        )
+    }
+
+    fun performCoordinateLongPress(
+        normalizedX: Float,
+        normalizedY: Float
+    ): DriverResult {
+        return performCoordinateGesture(
+            normalizedX = normalizedX,
+            normalizedY = normalizedY,
+            durationMs = LONG_PRESS_DURATION_MS
+        )
+    }
+
+    private fun performCoordinateGesture(
+        normalizedX: Float,
+        normalizedY: Float,
+        durationMs: Long
+    ): DriverResult {
+        val metrics = resources.displayMetrics
+        val x = normalizedX.coerceIn(0f, 1f) * metrics.widthPixels
+        val y = normalizedY.coerceIn(0f, 1f) * metrics.heightPixels
+        val path = Path().apply {
+            moveTo(x, y)
+        }
+        val gesture = GestureDescription.Builder()
+            .addStroke(
+                GestureDescription.StrokeDescription(path, 0L, durationMs)
+            )
+            .build()
+        val latch = CountDownLatch(1)
+        var completed = false
+        mainHandler.post {
+            dispatchGesture(
+                gesture,
+                object : GestureResultCallback() {
+                    override fun onCompleted(gestureDescription: GestureDescription?) {
+                        completed = true
+                        latch.countDown()
+                    }
+
+                    override fun onCancelled(gestureDescription: GestureDescription?) {
+                        latch.countDown()
+                    }
+                },
+                null
+            )
+        }
+        return if (latch.await(GESTURE_TIMEOUT_MS, TimeUnit.MILLISECONDS) && completed) {
+            DriverResult.Success
+        } else {
+            DriverResult.Failure("accessibility_gesture_failed")
+        }
+    }
+
+    fun captureScreenshot(): Bitmap? {
+        val latch = CountDownLatch(1)
+        var bitmap: Bitmap? = null
+        val posted = mainHandler.post {
+            takeScreenshot(
+                Display.DEFAULT_DISPLAY,
+                mainExecutor,
+                object : TakeScreenshotCallback {
+                    override fun onSuccess(result: ScreenshotResult) {
+                        val buffer = result.hardwareBuffer
+                        bitmap = runCatching {
+                            Bitmap.wrapHardwareBuffer(buffer, result.colorSpace)
+                                ?.copy(Bitmap.Config.ARGB_8888, false)
+                        }.getOrNull()
+                        buffer.close()
+                        if (BuildConfig.DEBUG) {
+                            Log.d(
+                                DEBUG_LOG_TAG,
+                                "wechat_screenshot_ready=${bitmap != null}"
+                            )
+                        }
+                        latch.countDown()
+                    }
+
+                    override fun onFailure(errorCode: Int) {
+                        if (BuildConfig.DEBUG) {
+                            Log.d(
+                                DEBUG_LOG_TAG,
+                                "wechat_screenshot_failed=$errorCode"
+                            )
+                        }
+                        latch.countDown()
+                    }
+                }
+            )
+        }
+        if (!posted || !latch.await(SCREENSHOT_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+            return null
+        }
+        return bitmap
+    }
+
     private fun collect(
         node: AccessibilityNodeInfo,
         output: MutableList<Pair<RawUiNode, AccessibilityNodeInfo>>
@@ -139,6 +253,13 @@ class AccessibilityObserver : AccessibilityService() {
         }
     }
 
+    private fun applicationRoot(): AccessibilityNodeInfo? {
+        val applicationWindow = windows.firstOrNull {
+            it.type == AccessibilityWindowInfo.TYPE_APPLICATION
+        }
+        return applicationWindow?.root ?: rootInActiveWindow
+    }
+
     private fun hashSnapshot(
         packageName: String,
         nodes: List<UiNodeSnapshot>
@@ -159,6 +280,12 @@ class AccessibilityObserver : AccessibilityService() {
     }
 
     companion object {
+        private const val TAP_DURATION_MS = 80L
+        private const val LONG_PRESS_DURATION_MS = 900L
+        private const val GESTURE_TIMEOUT_MS = 2_000L
+        private const val SCREENSHOT_TIMEOUT_MS = 5_000L
+        private const val DEBUG_LOG_TAG = "XiaozhuDashou"
+
         @Volatile
         var instance: AccessibilityObserver? = null
             private set

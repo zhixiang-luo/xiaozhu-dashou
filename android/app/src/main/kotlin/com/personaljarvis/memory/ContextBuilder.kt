@@ -5,13 +5,16 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.provider.CalendarContract
 import com.personaljarvis.observe.AccessibilityObserver
+import com.personaljarvis.wechat.WechatConversationReader
+import com.personaljarvis.wechat.WechatMessageDirection
 import java.time.Instant
 import java.time.ZoneId
 
 class ContextBuilder(
     private val context: Context,
-    private val memoryStore: MemoryStore
-) {
+    private val memoryStore: MemoryStore,
+    private val wechatReader: WechatConversationReader = WechatConversationReader()
+) : AutoCloseable {
     fun build(): TaskContextPayload {
         val now = System.currentTimeMillis()
         val observation = AccessibilityObserver.instance?.snapshot()
@@ -25,12 +28,41 @@ class ContextBuilder(
             kinds = setOf("commitment", "message_summary", "page_summary"),
             limit = 10
         )
+        val currentConversation = if (
+            observation?.foregroundPackage == WECHAT_PACKAGE
+        ) {
+            runCatching { wechatReader.read() }
+                .getOrNull()
+                ?.let { state ->
+                    CurrentConversationPayload(
+                        title = state.title,
+                        appPackage = WECHAT_PACKAGE,
+                        recentMessages = state.recentMessages.map { message ->
+                            WechatMessagePayload(
+                                direction = when (message.direction) {
+                                    WechatMessageDirection.INCOMING ->
+                                        "incoming"
+                                    WechatMessageDirection.OUTGOING ->
+                                        "outgoing"
+                                    WechatMessageDirection.UNKNOWN ->
+                                        "unknown"
+                                },
+                                text = message.text
+                            )
+                        },
+                        capturedAt = Instant.ofEpochMilli(now).toString()
+                    )
+                }
+        } else {
+            null
+        }
 
         return TaskContextPayload(
             currentTime = Instant.ofEpochMilli(now).toString(),
             timeZone = ZoneId.systemDefault().id,
             currentPackage = observation?.foregroundPackage,
             screenSummary = observation?.pageTitle,
+            currentConversation = currentConversation,
             upcomingEvents = upcomingEvents(now),
             recentTasks = recentTasks.map {
                 RecentTaskContext(
@@ -132,6 +164,10 @@ class ContextBuilder(
             .take(20)
     }
 
+    override fun close() {
+        wechatReader.close()
+    }
+
     private fun writableCalendars(): List<Long> {
         val projection = arrayOf(
             CalendarContract.Calendars._ID,
@@ -164,5 +200,9 @@ class ContextBuilder(
             }
             calendars.sortedByDescending { it.second }.map { it.first }
         }.getOrDefault(emptyList())
+    }
+
+    private companion object {
+        const val WECHAT_PACKAGE = "com.tencent.mm"
     }
 }

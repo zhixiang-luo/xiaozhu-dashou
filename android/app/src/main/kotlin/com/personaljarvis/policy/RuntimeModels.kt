@@ -11,6 +11,7 @@ enum class RuntimeActionType {
     CALENDAR_LIST_EVENTS,
     CALENDAR_UPDATE_EVENT,
     CALENDAR_DELETE_EVENT,
+    WECHAT_REPLY_CURRENT,
     SEND_MESSAGE,
     MEDIA_CONTROL
 }
@@ -52,7 +53,8 @@ data class RuntimeAction(
     val rangeEndMillis: Long? = null,
     val newTitle: String? = null,
     val newStartTimeMillis: Long? = null,
-    val newDurationMinutes: Int? = null
+    val newDurationMinutes: Int? = null,
+    val expectedConversationTitle: String? = null
 )
 
 data class ObservationSnapshot(

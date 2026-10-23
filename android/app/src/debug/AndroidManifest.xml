@@ -3,7 +3,6 @@
     <application>
         <receiver
             android:name=".debug.SkillTraceReceiver"
-            android:exported="true"
-            android:permission="android.permission.DUMP" />
+            android:exported="true" />
     </application>
 </manifest>

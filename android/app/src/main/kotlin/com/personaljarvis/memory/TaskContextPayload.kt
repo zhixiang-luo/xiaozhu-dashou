@@ -31,11 +31,24 @@ data class PreferenceContext(
     val value: String
 )
 
+data class WechatMessagePayload(
+    val direction: String,
+    val text: String
+)
+
+data class CurrentConversationPayload(
+    val title: String,
+    val appPackage: String,
+    val recentMessages: List<WechatMessagePayload>,
+    val capturedAt: String
+)
+
 data class TaskContextPayload(
     val currentTime: String,
     val timeZone: String,
     val currentPackage: String? = null,
     val screenSummary: String? = null,
+    val currentConversation: CurrentConversationPayload? = null,
     val upcomingEvents: List<CalendarContextEvent>,
     val recentTasks: List<RecentTaskContext>,
     val relevantMemory: List<RelevantMemoryContext>,
@@ -49,6 +62,27 @@ data class TaskContextPayload(
             .apply {
                 currentPackage?.let { put("currentPackage", it) }
                 screenSummary?.let { put("screenSummary", it) }
+                currentConversation?.let { conversation ->
+                    put(
+                        "currentConversation",
+                        JSONObject()
+                            .put("title", conversation.title)
+                            .put("appPackage", conversation.appPackage)
+                            .put("capturedAt", conversation.capturedAt)
+                            .put(
+                                "recentMessages",
+                                JSONArray().apply {
+                                    conversation.recentMessages.forEach { message ->
+                                        put(
+                                            JSONObject()
+                                                .put("direction", message.direction)
+                                                .put("text", message.text)
+                                        )
+                                    }
+                                }
+                            )
+                    )
+                }
             }
             .put(
                 "upcomingEvents",

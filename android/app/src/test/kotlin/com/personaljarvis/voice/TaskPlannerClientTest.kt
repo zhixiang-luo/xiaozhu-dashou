@@ -118,6 +118,39 @@ class TaskPlannerClientTest {
         assertEquals(context, receivedContext)
     }
 
+    @Test
+    fun parsesAWechatReplyAction() {
+        val client = TaskPlannerClient {
+            """
+            {
+              "actions": [{
+                "type":"wechat_reply_current",
+                "actionId":"a1",
+                "taskId":"task-1",
+                "taskGeneration":0,
+                "expectedState":"wechat.message_sent",
+                "timeoutMs":15000,
+                "conversationTitle":"文件传输助手",
+                "message":"文件我收到了，晚点回复你。"
+              }]
+            }
+            """.trimIndent()
+        }
+
+        val result = client.submit("帮我回一下")
+
+        require(result is PlannerResult.Plan)
+        assertEquals("wechat_reply_current", result.actions.single().type)
+        assertEquals(
+            "文件传输助手",
+            result.actions.single().conversationTitle
+        )
+        assertEquals(
+            "文件我收到了，晚点回复你。",
+            result.actions.single().message
+        )
+    }
+
     private fun taskContext() = TaskContextPayload(
         currentTime = "2026-10-23T05:00:00.000Z",
         timeZone = "Asia/Shanghai",

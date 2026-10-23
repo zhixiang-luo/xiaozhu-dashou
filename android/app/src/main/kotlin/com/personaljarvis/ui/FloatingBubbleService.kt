@@ -14,6 +14,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -32,6 +33,8 @@ import com.personaljarvis.execute.FallbackExecutionDriver
 import com.personaljarvis.execute.RoutedExecutionDriver
 import com.personaljarvis.execute.ShizukuDriver
 import com.personaljarvis.execute.ShizukuUserServiceBridge
+import com.personaljarvis.execute.WechatAccessibilityUi
+import com.personaljarvis.execute.WechatReplyDriver
 import com.personaljarvis.memory.ContextBuilder
 import com.personaljarvis.memory.MemoryStore
 import com.personaljarvis.observe.AccessibilityObserver
@@ -49,6 +52,7 @@ import com.personaljarvis.voice.RealtimeVoiceSession
 import com.personaljarvis.voice.TaskPlannerClient
 import com.personaljarvis.voice.VoiceSessionScheduler
 import com.personaljarvis.voice.VoiceSessionController
+import com.personaljarvis.wechat.WechatConversationReader
 import kotlin.math.min
 import kotlin.math.abs
 
@@ -58,6 +62,7 @@ class FloatingBubbleService : Service() {
     private val mainHandler = Handler(Looper.getMainLooper())
     private val taskPlannerClient = TaskPlannerClient()
     private lateinit var memoryStore: MemoryStore
+    private lateinit var wechatReader: WechatConversationReader
     private lateinit var contextBuilder: ContextBuilder
     private var bubble: TextView? = null
     private var layoutParams: WindowManager.LayoutParams? = null
@@ -108,7 +113,8 @@ class FloatingBubbleService : Service() {
         super.onCreate()
         windowManager = getSystemService(WindowManager::class.java)
         memoryStore = MemoryStore(this)
-        contextBuilder = ContextBuilder(this, memoryStore)
+        wechatReader = WechatConversationReader()
+        contextBuilder = ContextBuilder(this, memoryStore, wechatReader)
         shizukuBridge = ShizukuUserServiceBridge(this)
         shizukuBridge.connect()
         createNotificationChannel()
@@ -147,6 +153,7 @@ class FloatingBubbleService : Service() {
         bubble = null
         realtimeSession?.cancel()
         realtimeSession = null
+        contextBuilder.close()
         memoryStore.close()
         super.onDestroy()
     }
@@ -325,10 +332,33 @@ class FloatingBubbleService : Service() {
     }
 
     private fun submitToPlanner(instruction: String) {
+        if (BuildConfig.DEBUG) {
+            Log.d(DEBUG_LOG_TAG, "planner_submit_started")
+        }
         Toast.makeText(this, "正在理解任务…", Toast.LENGTH_SHORT).show()
         Thread {
             val context = runCatching { contextBuilder.build() }.getOrNull()
+            if (BuildConfig.DEBUG) {
+                Log.d(
+                    DEBUG_LOG_TAG,
+                    "planner_context_ready=${context != null} " +
+                        "package=${context?.currentPackage} " +
+                        "wechat_context=${context?.currentConversation != null}"
+                )
+            }
             val result = taskPlannerClient.submit(instruction, context)
+            if (BuildConfig.DEBUG) {
+                Log.d(
+                    DEBUG_LOG_TAG,
+                    "planner_result=${result::class.simpleName}"
+                )
+                if (result is PlannerResult.Message) {
+                    Log.d(
+                        DEBUG_LOG_TAG,
+                        "planner_message=${result.text}"
+                    )
+                }
+            }
             if (result is PlannerResult.Plan) {
                 runCatching {
                     memoryStore.recordEvent(
@@ -371,6 +401,17 @@ class FloatingBubbleService : Service() {
             general = FallbackExecutionDriver(
                 ShizukuDriver(shizukuBridge),
                 AccessibilityDriver(this)
+            ),
+            wechat = WechatReplyDriver(
+                WechatAccessibilityUi(
+                    context = this,
+                    reader = wechatReader,
+                ),
+                debug = { message ->
+                    if (BuildConfig.DEBUG) {
+                        Log.d(DEBUG_LOG_TAG, message)
+                    }
+                }
             )
         )
         val runner = SafeExecutionRunner(
@@ -472,6 +513,14 @@ class FloatingBubbleService : Service() {
                     rangeStartMillis = planned.rangeStartMillis,
                     rangeEndMillis = planned.rangeEndMillis
                 )
+                "wechat_reply_current" -> RuntimeAction(
+                    actionId = planned.actionId,
+                    taskId = planned.taskId,
+                    taskGeneration = planned.taskGeneration,
+                    type = RuntimeActionType.WECHAT_REPLY_CURRENT,
+                    text = planned.message,
+                    expectedConversationTitle = planned.conversationTitle
+                )
                 else -> null
             }
 
@@ -492,39 +541,63 @@ class FloatingBubbleService : Service() {
                     recipientResolution = RecipientResolution.NONE,
                     nodes = emptyList()
                 )
-            when (val result = runner.execute(runtimeAction, observation)) {
-                is ActionResult.Completed -> {
-                    if (!result.message.isNullOrBlank()) {
-                        completionMessage = result.message
-                    }
-                    bubble?.postDelayed(
-                        { executeAt(index + 1) },
-                        if (runtimeAction.type == RuntimeActionType.OPEN_APP) {
-                            OPEN_APP_DELAY_MS
-                        } else if (runtimeAction.type == RuntimeActionType.RESTART_APP) {
-                            RESTART_APP_DELAY_MS
-                        } else {
-                            ACTION_DELAY_MS
-                        }
-                    )
-                }
-                is ActionResult.Rejected -> {
-                    Toast.makeText(this, "任务已取消或过期", Toast.LENGTH_LONG).show()
-                }
-                is ActionResult.NeedsConfirmation -> {
-                    Toast.makeText(this, "需要你确认后继续", Toast.LENGTH_LONG).show()
-                }
-                is ActionResult.Blocked -> {
-                    Toast.makeText(this, "当前页面需要你本人处理", Toast.LENGTH_LONG).show()
-                }
-                is ActionResult.Failed -> {
-                    Toast.makeText(
-                        this,
-                        "执行失败：${result.reason}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+            if (runtimeAction.type == RuntimeActionType.WECHAT_REPLY_CURRENT) {
+                moveBubbleAwayFromWechatControls()
             }
+            Thread {
+                val result = runner.execute(runtimeAction, observation)
+                mainHandler.post {
+                    when (result) {
+                        is ActionResult.Completed -> {
+                            if (!result.message.isNullOrBlank()) {
+                                completionMessage = result.message
+                            }
+                            bubble?.postDelayed(
+                                { executeAt(index + 1) },
+                                when (runtimeAction.type) {
+                                    RuntimeActionType.OPEN_APP ->
+                                        OPEN_APP_DELAY_MS
+                                    RuntimeActionType.RESTART_APP ->
+                                        RESTART_APP_DELAY_MS
+                                    else -> ACTION_DELAY_MS
+                                }
+                            )
+                        }
+                        is ActionResult.Rejected -> {
+                            logDebugOutcome("rejected:${result.reason}")
+                            Toast.makeText(
+                                this,
+                                "任务已取消或过期",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        is ActionResult.NeedsConfirmation -> {
+                            logDebugOutcome("confirmation:${result.reason}")
+                            Toast.makeText(
+                                this,
+                                "需要你确认后继续",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        is ActionResult.Blocked -> {
+                            logDebugOutcome("blocked:${result.reason}")
+                            Toast.makeText(
+                                this,
+                                "当前页面需要你本人处理",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        is ActionResult.Failed -> {
+                            logDebugOutcome("failed:${result.reason}")
+                            Toast.makeText(
+                                this,
+                                "执行失败：${result.reason}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }
+            }.start()
         }
 
         executeAt(0)
@@ -603,6 +676,14 @@ class FloatingBubbleService : Service() {
         windowManager.updateViewLayout(view, params)
     }
 
+    private fun moveBubbleAwayFromWechatControls() {
+        val view = bubble ?: return
+        val params = layoutParams ?: return
+        params.x = resources.displayMetrics.widthPixels - params.width - dp(16)
+        params.y = dp(300)
+        windowManager.updateViewLayout(view, params)
+    }
+
     private fun bubbleBackground(
         cornerRadiusDp: Int,
         strokeDp: Int
@@ -655,10 +736,17 @@ class FloatingBubbleService : Service() {
         return (value * resources.displayMetrics.density).toInt()
     }
 
+    private fun logDebugOutcome(outcome: String) {
+        if (BuildConfig.DEBUG) {
+            Log.d(DEBUG_LOG_TAG, "task_outcome=$outcome")
+        }
+    }
+
     companion object {
         const val ACTION_RUN_INSTRUCTION =
             "com.personaljarvis.DEBUG_RUN_INSTRUCTION"
         const val EXTRA_INSTRUCTION = "instruction"
+        private const val DEBUG_LOG_TAG = "XiaozhuDashou"
         private const val CHANNEL_ID = "xiaozhu_dashou_bubble"
         private const val NOTIFICATION_ID = 2026
         private const val LONG_PRESS_MS = 450L

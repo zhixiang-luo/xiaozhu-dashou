@@ -50,4 +50,33 @@ describe("TaskContextSchema", () => {
       })
     ).toThrow();
   });
+
+  it("accepts the current WeChat conversation and messages", () => {
+    const context = TaskContextSchema.parse({
+      currentTime: "2026-10-23T06:30:00.000Z",
+      timeZone: "Asia/Shanghai",
+      currentPackage: "com.tencent.mm",
+      currentConversation: {
+        title: "文件传输助手",
+        appPackage: "com.tencent.mm",
+        capturedAt: "2026-10-23T06:30:00.000Z",
+        recentMessages: [
+          {
+            direction: "incoming",
+            text: "明天记得把文件发我"
+          }
+        ]
+      },
+      upcomingEvents: [],
+      recentTasks: [],
+      relevantMemory: [],
+      contacts: [],
+      preferences: []
+    });
+
+    expect(context.currentConversation?.title).toBe("文件传输助手");
+    expect(
+      context.currentConversation?.recentMessages[0]?.text
+    ).toBe("明天记得把文件发我");
+  });
 });

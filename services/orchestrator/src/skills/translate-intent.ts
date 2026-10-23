@@ -66,6 +66,45 @@ export async function translateIntent(
 
   const contactName = stringArgument(argumentsValue.contactName);
   const message = stringArgument(argumentsValue.message).trim();
+  const currentConversation = task.context?.currentConversation;
+  const matchesCurrentConversation =
+    currentConversation?.appPackage === "com.tencent.mm" &&
+    normalizeConversationTitle(contactName) ===
+      normalizeConversationTitle(currentConversation.title);
+
+  if (
+    currentConversation &&
+    matchesCurrentConversation &&
+    isExplicitReplyRequest(task.instruction)
+  ) {
+    if (!message) {
+      return [askUser(task, "你想回复什么内容？")];
+    }
+    if (message.length > 2_000) {
+      return [askUser(task, "这条消息太长，请缩短到 2000 字以内。")];
+    }
+    if (containsSensitiveContent(message)) {
+      return [askUser(task, "这条回复可能包含敏感信息，需要你本人发送。")];
+    }
+    if (!options.allowWechatAutoSend) {
+      return [
+        askUser(
+          task,
+          "微信自动发送默认关闭。请由开发者在本地明确开启后再执行。"
+        )
+      ];
+    }
+    return [
+      action(task, {
+        type: "wechat_reply_current",
+        expectedState: "wechat.message_sent",
+        timeoutMs: 15_000,
+        conversationTitle: currentConversation.title,
+        message
+      })
+    ];
+  }
+
   if (!isFileTransferAssistant(contactName)) {
     return [
       askUser(
@@ -389,6 +428,18 @@ function runCatchingTimeZone(value: string): boolean {
 function isFileTransferAssistant(value: string): boolean {
   const normalized = value.replace(/[\s，。,.、"'“”‘’]/g, "");
   return normalized === "文件传输助手" || normalized === "文件助手";
+}
+
+function normalizeConversationTitle(value: string): string {
+  return value.replace(/[\s，。,.、"'“”‘’：:]/g, "");
+}
+
+function isExplicitReplyRequest(value: string): boolean {
+  return (
+    /不知道怎么回/.test(value) ||
+    /(?:帮我|替我|直接).{0,8}(?:回|回复)/.test(value) ||
+    /回一下(?:这段|这条|他|她|当前)?/.test(value)
+  );
 }
 
 function containsSensitiveContent(value: string): boolean {

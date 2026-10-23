@@ -27,7 +27,9 @@ data class PlannedAction(
     val rangeEndMillis: Long? = null,
     val newTitle: String? = null,
     val newStartTimeMillis: Long? = null,
-    val newDurationMinutes: Int? = null
+    val newDurationMinutes: Int? = null,
+    val conversationTitle: String? = null,
+    val message: String? = null
 )
 
 sealed interface PlannerResult {
@@ -127,7 +129,10 @@ class TaskPlannerClient private constructor(
             newStartTimeMillis = action.optLong("newStartTimeMillis")
                 .takeUnless { it <= 0 },
             newDurationMinutes = action.optInt("newDurationMinutes")
-                .takeUnless { it <= 0 }
+                .takeUnless { it <= 0 },
+            conversationTitle = action.optString("conversationTitle")
+                .ifBlank { null },
+            message = action.optString("message").ifBlank { null }
         )
     }
 }

@@ -51,11 +51,7 @@ public final class ShizukuActionService extends IShizukuActionService.Stub {
 
     @Override
     public boolean pasteText() throws RemoteException {
-        return runInput(
-                "keycombination",
-                "KEYCODE_CTRL_LEFT",
-                "KEYCODE_V"
-        );
+        return runInput("keyevent", "KEYCODE_PASTE");
     }
 
     @Override

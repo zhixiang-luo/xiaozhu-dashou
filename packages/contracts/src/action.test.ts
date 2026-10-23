@@ -86,6 +86,21 @@ describe("ActionSchema", () => {
     ).toBe("calendar_delete_event");
   });
 
+  it("accepts a guarded current-conversation reply", () => {
+    const result = ActionSchema.parse({
+      type: "wechat_reply_current",
+      actionId: "a1",
+      taskId: "t1",
+      taskGeneration: 1,
+      expectedState: "wechat.message_sent",
+      timeoutMs: 15000,
+      conversationTitle: "文件传输助手",
+      message: "文件我收到了，晚点回复你。"
+    });
+
+    expect(result.type).toBe("wechat_reply_current");
+  });
+
   it("rejects unsupported tools", () => {
     expect(() =>
       ActionSchema.parse({

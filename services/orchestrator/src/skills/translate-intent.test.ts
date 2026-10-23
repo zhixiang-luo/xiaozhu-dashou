@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { TaskContext } from "@personal-jarvis/contracts";
 import type { TaskRecord } from "../tasks/coordinator.js";
 import { loadDefaultSkillCatalog } from "./catalog.js";
 import { translateIntent } from "./translate-intent.js";
@@ -73,6 +74,64 @@ describe("translateIntent", () => {
       { allowWechatAutoSend: true }
     );
 
+    expect(actions[0]).toMatchObject({ type: "ask_user" });
+  });
+
+  it("builds an explicit current-conversation reply", async () => {
+    const actions = await translateIntent(
+      {
+        ...task,
+        instruction: "我不知道怎么回，帮我直接回一下这段对话",
+        context: wechatContext()
+      },
+      {
+        kind: "execute",
+        skillId: "wechat.send-message",
+        arguments: {
+          contactName: "文件传输助手",
+          message: "这份文件我看到了，晚点给你回复。"
+        }
+      },
+      loadDefaultSkillCatalog(),
+      { allowWechatAutoSend: true }
+    );
+
+    expect(actions).toEqual([
+      expect.objectContaining({
+        type: "wechat_reply_current",
+        conversationTitle: "文件传输助手",
+        message: "这份文件我看到了，晚点给你回复。"
+      })
+    ]);
+  });
+
+  it("does not use the reply path without explicit reply language", async () => {
+    const context = wechatContext();
+    const actions = await translateIntent(
+      {
+        ...task,
+        instruction: "帮我发一句测试",
+        context: {
+          ...context,
+          currentConversation: {
+            ...context.currentConversation!,
+            title: "张三"
+          }
+        }
+      },
+      {
+        kind: "execute",
+        skillId: "wechat.send-message",
+        arguments: {
+          contactName: "张三",
+          message: "测试"
+        }
+      },
+      loadDefaultSkillCatalog(),
+      { allowWechatAutoSend: true }
+    );
+
+    expect(actions).toHaveLength(1);
     expect(actions[0]).toMatchObject({ type: "ask_user" });
   });
 
@@ -232,3 +291,27 @@ describe("translateIntent", () => {
     });
   });
 });
+
+function wechatContext(): TaskContext {
+  return {
+    currentTime: "2026-10-23T06:30:00.000Z",
+    timeZone: "Asia/Shanghai",
+    currentPackage: "com.tencent.mm",
+    currentConversation: {
+      title: "文件传输助手",
+      appPackage: "com.tencent.mm",
+      capturedAt: "2026-10-23T06:30:00.000Z",
+      recentMessages: [
+        {
+          direction: "incoming",
+          text: "明天记得把文件发我"
+        }
+      ]
+    },
+    upcomingEvents: [],
+    recentTasks: [],
+    relevantMemory: [],
+    contacts: [],
+    preferences: []
+  };
+}

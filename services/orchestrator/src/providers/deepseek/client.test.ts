@@ -50,6 +50,17 @@ describe("DeepSeekIntentClient", () => {
         appContext: {
           currentTime: "2026-10-23T05:00:00.000Z",
           timeZone: "Asia/Shanghai",
+          currentConversation: {
+            title: "文件传输助手",
+            appPackage: "com.tencent.mm",
+            capturedAt: "2026-10-23T05:00:00.000Z",
+            recentMessages: [
+              {
+                direction: "incoming",
+                text: "明天记得把文件发我"
+              }
+            ]
+          },
           upcomingEvents: [
             {
               title: "和猪哥开会",
@@ -90,6 +101,10 @@ describe("DeepSeekIntentClient", () => {
     expect(body.messages[0].content).toContain(
       "titleQuery 使用上下文里的实际标题"
     );
+    expect(body.messages[0].content).toContain(
+      "生成最终回复正文"
+    );
+    expect(body.messages[0].content).toContain("明天记得把文件发我");
   });
 
   it("rejects malformed model JSON", async () => {

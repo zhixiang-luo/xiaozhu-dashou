@@ -1,5 +1,9 @@
 # 小猪搭手
 
+> **实验分支提示：** 此分支保存 2026-10-23 的微信截图 OCR 自动回复实验，未合并到
+> `main`，不应部署到日常手机。实验已因微信界面 OCR 不稳定而暂停，原因和已跑通部分见
+> [实验失败记录](docs/superpowers/experiments/2026-10-23-wechat-explicit-reply-failure.md)。
+
 <p align="center">
   <img src="design/ip/v0.3/exports/hero-board-preview.png" alt="小猪搭手：猪哥，暖科技任务猪" width="960" />
 </p>
@@ -197,9 +201,9 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 设备配置和权限步骤见 [专用设备配置](docs/11-device-setup.md)。
 
-Debug APK 还包含一个受 `android.permission.DUMP` 保护、只用于真机回归的文本入口。它会
-跳过语音转写，但仍经过同一套 `ContextBuilder`、DeepSeek、动作校验和本地执行器；正式
-发布包不包含该入口：
+Debug APK 还包含一个只存在于调试包、用于真机回归的显式文本入口。它会跳过语音转写，
+但仍经过同一套 `ContextBuilder`、DeepSeek、动作校验和本地执行器；正式发布包不包含
+该入口：
 
 ```bash
 adb shell am broadcast \
