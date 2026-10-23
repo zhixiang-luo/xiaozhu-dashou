@@ -10,20 +10,22 @@
 - Commit: workspace before final integration commit
 - Device: not connected
 - Android / HyperOS: unavailable
-- Shizuku: not tested
+- Shizuku: API and UserService compiled; permission flow not device-tested
 - WeChat: not tested
 - NetEase Cloud Music: not tested
-- Driver mode: not implemented
+- Driver mode: accessibility and Shizuku abstractions implemented
 
 ### Passed
 
 - `:app:testDebugUnitTest`
 - `:app:assembleDebug`
+- 14 JVM tests passed, including UI compaction, page classification, policy blocking, cancellation, and driver fallback.
 - Debug APK produced at `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 ### Failed
 
 - No attached ADB device; installation and runtime checks were not possible.
+- Shizuku UserService cannot be validated without a running Shizuku server.
 
 ### Release decision
 

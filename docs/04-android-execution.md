@@ -26,6 +26,7 @@ interface ExecutionDriver {
 ### ShizukuDriver
 
 - 通过 Shizuku 获取受限的 shell 级能力，用于稳定的点击、滑动、按键和输入。
+- 实际执行代码运行在 Shizuku UserService 中；只接受结构化参数，不开放任意 shell 接口。
 - 所有参数必须由结构化动作生成，禁止拼接用户文本为 shell 命令。
 - 调用前校验任务代次、动作 ID、前台 App 和动作时效。
 - 用户取消、Shizuku 断开或权限撤销后立即停止新动作。
@@ -36,6 +37,14 @@ interface ExecutionDriver {
 - 优先按节点 ID、文本、描述和可操作角色执行。
 - 节点不可用时可使用截图定位的归一化坐标，但必须重新映射屏幕尺寸。
 - Shizuku 不可用时作为降级路径，并明确告知用户能力可能受限。
+
+### 当前实现
+
+- `FallbackExecutionDriver` 在 Shizuku 不可用时自动选择无障碍驱动。
+- `ShizukuUserServiceBridge` 通过 AIDL 执行点击、滑动、文本输入、按键和打开 App。
+- `AccessibilityObserver` 只提供前台 UI 树、短期 node ID 和页面哈希。
+- `PolicyGate` 在动作进入驱动前阻止登录、支付、验证码、权限和未知安全页面。
+- `SafeExecutionRunner` 在取消后递增任务代次，拒绝所有迟到动作。
 
 ## 权限与启动
 

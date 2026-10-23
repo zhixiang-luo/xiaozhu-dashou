@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Personal Jarvis</string>
+    <string name="accessibility_service_description">Read the active app screen and perform approved actions for Personal Jarvis.</string>
 </resources>

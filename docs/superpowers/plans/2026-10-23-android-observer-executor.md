@@ -10,7 +10,7 @@
 
 **Spec:** `docs/04-android-execution.md`, `docs/05-security-privacy.md`
 
-> Implementation status: Task 1 completed and APK built. Runtime observation and execution tasks remain pending.
+> Implementation status: Tasks 1–3 implemented and unit verified. Physical-device validation and Task 4 remain pending.
 
 ## Global Constraints
 

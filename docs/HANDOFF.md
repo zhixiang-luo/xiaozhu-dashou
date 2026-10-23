@@ -4,7 +4,7 @@
 
 ## Current State
 
-项目已正式命名为 Personal Jarvis，定位为开发者专用 Android Agent 设备。共享合约、云端编排、技能 schema 和可编译 Android App 已落地；当前进入无障碍观察与执行驱动开发。
+项目已正式命名为 Personal Jarvis，定位为开发者专用 Android Agent 设备。共享合约、云端编排、技能 schema、UI 观察、风险门禁和 Shizuku UserService 已落地；当前进入真机权限验证与语音/悬浮入口开发。
 
 ## Completed
 
@@ -21,13 +21,15 @@
 - 增加 WebSocket 任务事件、确认接口和 Android CI。
 - 建立技能 manifest 的 JSON Schema 与 Zod 校验包。
 - 建立 Compose App 骨架并生成 Debug APK。
+- 接入 AccessibilityService、页面风险分类、取消代次门禁和无障碍执行驱动。
+- 接入 Shizuku Provider、AIDL UserService 和 Shizuku/无障碍自动回退。
 
 ## Verified
 
 - 共享合约：5 项 Vitest 测试通过，TypeScript 严格类型检查通过。
 - 云端编排：12 项 Vitest 测试通过，TypeScript 严格类型检查通过。
 - 技能 schema：4 项 Vitest 测试通过，TypeScript 严格类型检查通过。
-- Android：2 项 JVM 单元测试通过，`assembleDebug` 成功。
+- Android：14 项 JVM 单元测试通过，`assembleDebug` 成功。
 - `node scripts/check-docs.mjs` 通过：相对链接可解析、代码块闭合、无空文档和尾随空格。
 - GitHub Actions 和 Issue 模板的 3 个 YAML 文件解析通过。
 - 未发现常见密钥格式内容。
@@ -50,4 +52,4 @@
 
 ## Next Smallest Task
 
-实现 AccessibilityObserver、ExecutionDriver 和 PolicyGate，完成“启动 App → 读取前台 UI → 安全取消”的下一个 Kotlin 测试切片；再连接专用真机进行安装和权限验收。
+连接专用 Redmi/HyperOS 真机，安装 APK，开启无障碍和 Shizuku，验证页面读取、点击、输入、授权拒绝和取消屏障；真机可用后实现悬浮入口与按住说话。

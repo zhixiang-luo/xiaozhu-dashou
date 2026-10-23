@@ -81,9 +81,10 @@ personal-jarvis/
 - 共享合约通过 5 项 Vitest 测试和 TypeScript 严格类型检查。
 - 云端编排通过 12 项 Vitest 测试和 TypeScript 严格类型检查，包含 WebSocket 事件流和确认绑定。
 - 技能 manifest 包通过 4 项测试和 TypeScript 严格类型检查。
-- Android Debug APK 已构建，路径为 `android/app/build/outputs/apk/debug/app-debug.apk`。
+- Android 14 项 JVM 测试通过，Debug APK 构建成功，路径为 `android/app/build/outputs/apk/debug/app-debug.apk`。
+- 已接入 AccessibilityService、页面风险门禁、取消代次和 Shizuku UserService。
 - 文档、链接和 YAML 结构检查通过。
-- 当前没有连接 Android 真机，尚未验证安装、无障碍、Shizuku 或真实 App。
+- 当前没有连接 Android 真机，尚未验证安装、无障碍权限、Shizuku 授权或真实 App。
 
 ## 许可证
 

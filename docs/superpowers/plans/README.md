@@ -19,5 +19,5 @@ Personal Jarvis V1 按可独立验收的子系统拆分。执行顺序如下：
 | --- | --- |
 | Contracts Foundation | Implemented and verified |
 | Orchestrator and Model Gateway | Core, model adapter, REST and WebSocket implemented |
-| Android Observer and Executor | Task 1 scaffold implemented and APK built; observation/executor pending |
+| Android Observer and Executor | Tasks 1–3 implemented and unit verified; device validation and voice/overlay pending |
 | First App Skills | Platform-neutral manifest schema implemented; Android loader pending |

@@ -9,6 +9,7 @@
   "scripts": {
     "check:docs": "node scripts/check-docs.mjs",
     "check": "pnpm check:docs && pnpm typecheck && pnpm test",
+    "android:verify": "cd android && ./gradlew :app:testDebugUnitTest :app:assembleDebug",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck"
   },

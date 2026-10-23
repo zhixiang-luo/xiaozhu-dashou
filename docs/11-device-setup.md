@@ -4,7 +4,7 @@
 > Owner: Android
 > Last reviewed: 2026-10-23
 
-本文用于配置 Personal Jarvis Developer Edition 的独立测试手机。当前 App 尚未可安装，本清单是后续真机验收的前置环境。
+本文用于配置 Personal Jarvis Developer Edition 的独立测试手机。APK 已可构建，本清单是安装和真机验收的前置环境。
 
 ## 设备原则
 
@@ -25,7 +25,7 @@
 - Node.js 22.6+
 - pnpm 11.25
 
-当前 Mac 缺少 Java 和 Android SDK，需先完成安装。安装后验证：
+当前开发机已经安装 JDK 17、Android SDK、Build Tools 和 Gradle Wrapper。换到其他机器时先验证：
 
 ```bash
 java -version
