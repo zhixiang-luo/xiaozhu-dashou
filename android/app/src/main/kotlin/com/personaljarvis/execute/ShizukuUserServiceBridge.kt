@@ -101,6 +101,7 @@ class ShizukuUserServiceBridge(
                 }
             }
             RuntimeActionType.MEDIA_CONTROL,
+            RuntimeActionType.CALENDAR_CREATE_EVENT,
             RuntimeActionType.SEND_MESSAGE ->
                 return DriverResult.Unsupported("specialized_adapter_required")
         }

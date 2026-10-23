@@ -37,6 +37,7 @@ class AccessibilityDriver(
                 observer.performText(nodeId, text)
             }
             RuntimeActionType.SEND_MESSAGE,
+            RuntimeActionType.CALENDAR_CREATE_EVENT,
             RuntimeActionType.MEDIA_CONTROL ->
                 DriverResult.Unsupported("action_requires_specialized_adapter")
         }

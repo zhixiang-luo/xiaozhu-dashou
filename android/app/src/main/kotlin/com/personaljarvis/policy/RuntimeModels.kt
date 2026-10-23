@@ -7,6 +7,7 @@ enum class RuntimeActionType {
     RESTART_APP,
     TAP,
     INPUT_TEXT,
+    CALENDAR_CREATE_EVENT,
     SEND_MESSAGE,
     MEDIA_CONTROL
 }
@@ -38,7 +39,11 @@ data class RuntimeAction(
     val targetNodeId: String? = null,
     val targetX: Float? = null,
     val targetY: Float? = null,
-    val keyCode: Int? = null
+    val keyCode: Int? = null,
+    val eventTitle: String? = null,
+    val startTimeMillis: Long? = null,
+    val endTimeMillis: Long? = null,
+    val timeZone: String? = null
 )
 
 data class ObservationSnapshot(

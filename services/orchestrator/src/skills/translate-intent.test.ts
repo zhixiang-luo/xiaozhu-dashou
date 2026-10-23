@@ -94,4 +94,58 @@ describe("translateIntent", () => {
     expect(actions).toHaveLength(1);
     expect(actions[0]).toMatchObject({ type: "ask_user" });
   });
+
+  it("turns natural-language calendar arguments into epoch milliseconds", async () => {
+    const actions = await translateIntent(
+      {
+        ...task,
+        instruction: "明天下午三点帮我创建一个和朱哥开会的日程"
+      },
+      {
+        kind: "execute",
+        skillId: "calendar.create-event",
+        arguments: {
+          title: "和朱哥开会",
+          startTime: "2026-10-24T15:00:00+08:00",
+          durationMinutes: 60,
+          timeZone: "Asia/Shanghai"
+        }
+      },
+      loadDefaultSkillCatalog(),
+      {
+        allowWechatAutoSend: false,
+        nowMillis: Date.parse("2026-10-23T08:00:00+08:00")
+      }
+    );
+
+    expect(actions).toEqual([
+      expect.objectContaining({
+        type: "calendar_create_event",
+        title: "和朱哥开会",
+        startTimeMillis: Date.parse("2026-10-24T15:00:00+08:00"),
+        endTimeMillis: Date.parse("2026-10-24T16:00:00+08:00"),
+        timeZone: "Asia/Shanghai"
+      })
+    ]);
+  });
+
+  it("rejects an invalid calendar duration", async () => {
+    const actions = await translateIntent(
+      task,
+      {
+        kind: "execute",
+        skillId: "calendar.create-event",
+        arguments: {
+          title: "超长会议",
+          startTime: "2099-10-24T15:00:00+08:00",
+          durationMinutes: 1_500,
+          timeZone: "Asia/Shanghai"
+        }
+      },
+      loadDefaultSkillCatalog(),
+      { allowWechatAutoSend: false }
+    );
+
+    expect(actions[0]).toMatchObject({ type: "ask_user" });
+  });
 });

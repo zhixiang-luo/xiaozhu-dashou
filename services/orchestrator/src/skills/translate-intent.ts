@@ -14,6 +14,8 @@ type ActionDraft = DistributiveOmit<AssistantAction, EnvelopeField>;
 
 export interface IntentTranslationOptions {
   allowWechatAutoSend: boolean;
+  nowMillis?: number | undefined;
+  timeZone?: string | undefined;
 }
 
 export async function translateIntent(
@@ -46,6 +48,10 @@ export async function translateIntent(
           : "当前不能安全执行这个请求。"
       )
     ];
+  }
+
+  if (intent.skillId === "calendar.create-event") {
+    return translateCalendarEvent(task, argumentsValue, options);
   }
 
   if (intent.skillId !== "wechat.send-message") {
@@ -124,8 +130,91 @@ export async function translateIntent(
   ];
 }
 
+function translateCalendarEvent(
+  task: TaskRecord,
+  argumentsValue: Record<string, string | number | boolean>,
+  options: IntentTranslationOptions
+): AssistantAction[] {
+  const title = stringArgument(argumentsValue.title).trim();
+  const startTime = stringArgument(argumentsValue.startTime).trim();
+  const timeZone =
+    stringArgument(argumentsValue.timeZone).trim() ||
+    options.timeZone ||
+    "Asia/Shanghai";
+  const durationMinutes =
+    numberArgument(argumentsValue.durationMinutes) ?? 60;
+  const startTimeMillis = parseOffsetDateTime(startTime);
+  const nowMillis = options.nowMillis ?? Date.now();
+
+  if (!title || title.length > 200) {
+    return [askUser(task, "请告诉我一个 200 字以内的日程标题。")];
+  }
+  if (startTimeMillis === null) {
+    return [
+      askUser(
+        task,
+        "我没能确定带时区的开始时间，请再说一次具体日期和时间。"
+      )
+    ];
+  }
+  if (startTimeMillis <= nowMillis) {
+    return [askUser(task, "这个开始时间已经过去了，请给出未来的时间。")];
+  }
+  if (
+    !Number.isInteger(durationMinutes) ||
+    durationMinutes < 1 ||
+    durationMinutes > 1_440
+  ) {
+    return [askUser(task, "日程时长需要在 1 分钟到 24 小时之间。")];
+  }
+  if (!isValidTimeZone(timeZone)) {
+    return [askUser(task, "日程时区无法识别，请确认所在时区。")];
+  }
+
+  return [
+    action(task, {
+      type: "calendar_create_event",
+      expectedState: "calendar.event_created",
+      timeoutMs: 10_000,
+      title,
+      startTimeMillis,
+      endTimeMillis: startTimeMillis + durationMinutes * 60_000,
+      timeZone
+    })
+  ];
+}
+
 function stringArgument(value: string | number | boolean | undefined): string {
   return typeof value === "string" ? value : "";
+}
+
+function numberArgument(
+  value: string | number | boolean | undefined
+): number | undefined {
+  return typeof value === "number" && Number.isFinite(value)
+    ? value
+    : undefined;
+}
+
+function parseOffsetDateTime(value: string): number | null {
+  if (!/(?:Z|[+-]\d{2}:\d{2})$/.test(value)) {
+    return null;
+  }
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function isValidTimeZone(value: string): boolean {
+  return runCatchingTimeZone(value);
+}
+
+function runCatchingTimeZone(value: string): boolean {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: value }).format();
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function isFileTransferAssistant(value: string): boolean {

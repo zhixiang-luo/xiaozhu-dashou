@@ -51,6 +51,12 @@
 - Debug APK produced at `android/app/build/outputs/apk/debug/app-debug.apk`.
 - DeepSeek planning and realtime voice APK SHA-256:
   `306455bdcec379722e2c71073950477dcf299bedd58358fd294c23964e3592cc`.
+- Calendar-enabled APK SHA-256:
+  `67e0033889c82302a896e6133ad4215ac9e0685f7bf4552a0911c81284e09523`.
+- Real DeepSeek parsed “明天下午三点帮我创建一个和朱哥开会的日程” into
+  `2026-10-24 15:00–16:00 Asia/Shanghai` and one `calendar_create_event` action.
+- CalendarContract unit/build verification passed; physical calendar write is pending because
+  the Redmi device was disconnected.
 
 ### Failed
 

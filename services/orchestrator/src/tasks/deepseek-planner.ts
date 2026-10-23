@@ -1,6 +1,9 @@
 import type { AssistantAction } from "@personal-jarvis/contracts";
 import type { AssistantIntent } from "../model/intent.js";
-import type { SkillPromptEntry } from "../model/intent.js";
+import type {
+  IntentPlanningContext,
+  SkillPromptEntry
+} from "../model/intent.js";
 import type { SkillCatalog } from "../skills/catalog.js";
 import {
   translateIntent,
@@ -12,7 +15,8 @@ import { DevTaskPlanner, type TaskPlanner } from "./planner.js";
 export interface IntentClient {
   infer(
     instruction: string,
-    catalog: SkillPromptEntry[]
+    catalog: SkillPromptEntry[],
+    context: IntentPlanningContext
   ): Promise<AssistantIntent>;
 }
 
@@ -34,9 +38,18 @@ export class DeepSeekTaskPlanner implements TaskPlanner {
 
   async plan(task: TaskRecord): Promise<AssistantAction[]> {
     try {
+      const nowMillis = Date.now();
+      const timeZone =
+        Intl.DateTimeFormat().resolvedOptions().timeZone ||
+        "Asia/Shanghai";
+      const context = {
+        now: new Date(nowMillis).toISOString(),
+        timeZone
+      };
       const intent = await this.client.infer(
         task.instruction,
-        this.catalog.promptEntries()
+        this.catalog.promptEntries(),
+        context
       );
       if (intent.kind === "unsupported") {
         return this.fallback.plan(task);
@@ -45,7 +58,11 @@ export class DeepSeekTaskPlanner implements TaskPlanner {
         task,
         intent,
         this.catalog,
-        this.options
+        {
+          ...this.options,
+          nowMillis,
+          timeZone
+        }
       );
     } catch {
       return this.fallback.plan(task);

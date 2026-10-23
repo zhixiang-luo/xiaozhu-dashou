@@ -60,6 +60,26 @@ steps:
     });
   });
 
+  it("accepts a system provider capability", () => {
+    const manifest = parseSkillYaml(`
+id: calendar.create-event
+version: 0.1.0
+appPackages: [com.android.providers.calendar]
+prerequisites: [calendar.permission]
+capabilities: [system_provider]
+risk: { sideEffect: none }
+verification: [event_read_back]
+steps:
+  - id: create
+    action: create_calendar_event
+    titleKey: title
+    startTimeKey: startTime
+    durationKey: durationMinutes
+`);
+
+    expect(manifest.capabilities).toContain("system_provider");
+  });
+
   it("rejects unknown step actions", () => {
     expect(() =>
       parseSkillYaml(

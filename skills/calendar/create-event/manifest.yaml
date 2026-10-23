@@ -1,0 +1,41 @@
+id: calendar.create-event
+version: 0.1.0
+displayName: 创建系统日历日程
+appPackages:
+  - com.android.providers.calendar
+supportedVersions:
+  - Android 11+
+prerequisites:
+  - calendar.permission_granted
+capabilities:
+  - system_provider
+risk:
+  sideEffect: none
+  handoffOn:
+    - account_login
+inputs:
+  title:
+    type: text
+    required: true
+    description: 日程标题
+  startTime:
+    type: text
+    required: true
+    description: 带时区的 ISO 8601 开始时间
+  durationMinutes:
+    type: number
+    required: false
+    description: 时长，默认 60 分钟
+  timeZone:
+    type: text
+    required: false
+    description: IANA 时区，默认 Asia/Shanghai
+verification:
+  - calendar_event_read_back
+steps:
+  - id: create-event
+    action: create_calendar_event
+    titleKey: title
+    startTimeKey: startTime
+    durationKey: durationMinutes
+    timeZoneKey: timeZone

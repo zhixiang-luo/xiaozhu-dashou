@@ -1,6 +1,7 @@
 import {
   AssistantIntentSchema,
   type AssistantIntent,
+  type IntentPlanningContext,
   type SkillPromptEntry
 } from "../../model/intent.js";
 import { ProviderError } from "../../model/provider.js";
@@ -32,7 +33,8 @@ export class DeepSeekIntentClient {
 
   async infer(
     instruction: string,
-    catalog: SkillPromptEntry[]
+    catalog: SkillPromptEntry[],
+    context?: IntentPlanningContext
   ): Promise<AssistantIntent> {
     let response: Response;
     try {
@@ -57,6 +59,10 @@ export class DeepSeekIntentClient {
                   "输出一个 JSON 对象，kind 只能是 execute、clarify、unsupported。",
                   "execute 必须包含 skillId 和 arguments。",
                   "缺少必要信息或存在歧义时使用 clarify。",
+                  context
+                    ? `当前时间：${context.now}\n当前时区：${context.timeZone}`
+                    : "当前时间未知，涉及相对日期时必须使用 clarify。",
+                  "calendar.create-event 的 startTime 必须是带时区偏移的 ISO 8601。",
                   "技能目录：",
                   JSON.stringify(catalog)
                 ].join("\n")

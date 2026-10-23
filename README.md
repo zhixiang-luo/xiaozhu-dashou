@@ -1,7 +1,7 @@
 # 小猪搭手
 
 <p align="center">
-  <img src="design/brand/exports/brand-lockup.png" alt="小猪搭手：猪哥，暖科技任务猪" width="760" />
+  <img src="design/ip/v0.3/exports/hero-board-preview.png" alt="小猪搭手：猪哥，暖科技任务猪" width="960" />
 </p>
 
 <p align="center">
@@ -72,6 +72,7 @@ App、几百个按钮。
 | 火山双向流式 ASR | 可用 | 16 kHz PCM，边听边识别，松手后提交累计文本 |
 | DeepSeek 意图拆解 | 可用 | 把自然语言转成受 Schema 约束的技能调用 |
 | 系统设置 | 可用 | 语音打开设置已在 Redmi K60 真机验证 |
+| 系统日历创建 | Beta | 已接入 CalendarContract，等待目标设备最终写入验收 |
 | 微信文件传输助手 | Beta | 已录制坐标和验证点，支持自然语言指定消息正文 |
 | 微信任意联系人 | 计划中 | 需要唯一收件人、搜索页和视觉验证校准 |
 | 网易云音乐 / 高德 | 计划中 | 已有技能清单，等待真机回放 |
@@ -121,6 +122,7 @@ flowchart LR
 - 因此微信发送仍标记为 Beta，只应在专用测试设备启用。
 - 设备 Token 是本地开发认证，不是面向互联网的产品级账号体系。
 - DeepSeek 会接收用户文字，火山会接收语音；默认部署仅监听本机回环地址。
+- 日历创建需要 `READ_CALENDAR` / `WRITE_CALENDAR`，首版只创建个人日程，不邀请他人。
 
 ## 5 分钟开始
 

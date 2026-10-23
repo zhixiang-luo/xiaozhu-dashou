@@ -39,6 +39,19 @@ steps:
 
 技能通常只需要清单和数据，不需要单独写 Android 代码。只有当 App 提供特殊系统能力或官方 Deep Link 时才添加专用 adapter。
 
+系统日历使用 `system_provider` 能力，直接走 Android `CalendarContract`。这仍然由
+技能声明输入和验证点，但执行层不进行坐标点击：
+
+```yaml
+id: calendar.create-event
+capabilities: [system_provider]
+steps:
+  - action: create_calendar_event
+    titleKey: title
+    startTimeKey: startTime
+    durationKey: durationMinutes
+```
+
 ### 跨 App 技能
 
 跨 App 工作流通过 `invoke_skill` 组合已有技能：

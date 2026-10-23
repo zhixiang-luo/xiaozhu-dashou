@@ -1,6 +1,6 @@
 # App Skills
 
-这里将存放微信、网易云音乐等 App 的可版本化操作技能。当前尚未实现技能，格式和验收规范见：
+这里存放微信、系统日历、网易云音乐和高德等 App/系统能力的可版本化技能。格式和验收规范见：
 
 - [新增 App 技能](../docs/guides/adding-app-skill.md)
 - [Android 执行层](../docs/04-android-execution.md)

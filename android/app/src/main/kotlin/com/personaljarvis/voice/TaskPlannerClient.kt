@@ -16,7 +16,11 @@ data class PlannedAction(
     val targetX: Double? = null,
     val targetY: Double? = null,
     val text: String? = null,
-    val question: String? = null
+    val question: String? = null,
+    val eventTitle: String? = null,
+    val startTimeMillis: Long? = null,
+    val endTimeMillis: Long? = null,
+    val timeZone: String? = null
 )
 
 sealed interface PlannerResult {
@@ -78,7 +82,13 @@ class TaskPlannerClient(
             targetX = target?.optDouble("x")?.takeUnless { it.isNaN() },
             targetY = target?.optDouble("y")?.takeUnless { it.isNaN() },
             text = action.optString("text").ifBlank { null },
-            question = action.optString("question").ifBlank { null }
+            question = action.optString("question").ifBlank { null },
+            eventTitle = action.optString("title").ifBlank { null },
+            startTimeMillis = action.optLong("startTimeMillis")
+                .takeUnless { it <= 0 },
+            endTimeMillis = action.optLong("endTimeMillis")
+                .takeUnless { it <= 0 },
+            timeZone = action.optString("timeZone").ifBlank { null }
         )
     }
 }

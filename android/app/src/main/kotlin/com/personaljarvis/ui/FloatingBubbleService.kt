@@ -27,7 +27,9 @@ import com.personaljarvis.BuildConfig
 import com.personaljarvis.MainActivity
 import com.personaljarvis.R
 import com.personaljarvis.execute.AccessibilityDriver
+import com.personaljarvis.execute.CalendarEventWriter
 import com.personaljarvis.execute.FallbackExecutionDriver
+import com.personaljarvis.execute.RoutedExecutionDriver
 import com.personaljarvis.execute.ShizukuDriver
 import com.personaljarvis.execute.ShizukuUserServiceBridge
 import com.personaljarvis.observe.AccessibilityObserver
@@ -336,9 +338,12 @@ class FloatingBubbleService : Service() {
             return
         }
 
-        val driver = FallbackExecutionDriver(
-            ShizukuDriver(shizukuBridge),
-            AccessibilityDriver(this)
+        val driver = RoutedExecutionDriver(
+            calendar = CalendarEventWriter(this),
+            general = FallbackExecutionDriver(
+                ShizukuDriver(shizukuBridge),
+                AccessibilityDriver(this)
+            )
         )
         val runner = SafeExecutionRunner(
             driver = driver,
@@ -390,6 +395,17 @@ class FloatingBubbleService : Service() {
                     type = RuntimeActionType.INPUT_TEXT,
                     text = planned.text,
                     requiredPackage = planned.expectedPackage
+                )
+                "calendar_create_event" -> RuntimeAction(
+                    actionId = planned.actionId,
+                    taskId = planned.taskId,
+                    taskGeneration = planned.taskGeneration,
+                    type = RuntimeActionType.CALENDAR_CREATE_EVENT,
+                    text = null,
+                    eventTitle = planned.eventTitle,
+                    startTimeMillis = planned.startTimeMillis,
+                    endTimeMillis = planned.endTimeMillis,
+                    timeZone = planned.timeZone
                 )
                 else -> null
             }

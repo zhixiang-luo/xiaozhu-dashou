@@ -43,7 +43,11 @@ describe("DeepSeekIntentClient", () => {
             message: { type: "text", required: true }
           }
         }
-      ]
+      ],
+      {
+        now: "2026-10-23T05:00:00.000Z",
+        timeZone: "Asia/Shanghai"
+      }
     );
 
     expect(intent).toEqual({
@@ -62,6 +66,10 @@ describe("DeepSeekIntentClient", () => {
       temperature: 0,
       response_format: { type: "json_object" }
     });
+    expect(body.messages[0].content).toContain(
+      "2026-10-23T05:00:00.000Z"
+    );
+    expect(body.messages[0].content).toContain("Asia/Shanghai");
   });
 
   it("rejects malformed model JSON", async () => {

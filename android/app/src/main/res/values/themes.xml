@@ -3,7 +3,7 @@
     <style name="Theme.PersonalJarvis" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">sans</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">#F6F3EC</item>
-        <item name="android:statusBarColor">#F6F3EC</item>
+        <item name="android:navigationBarColor">#F7F2E8</item>
+        <item name="android:statusBarColor">#F7F2E8</item>
     </style>
 </resources>

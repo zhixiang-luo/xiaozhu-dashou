@@ -85,6 +85,13 @@ const SkillStepSchema = z.discriminatedUnion("action", [
     command: z.enum(["play", "pause", "next", "previous"])
   }).strict(),
   StepEnvelope.extend({
+    action: z.literal("create_calendar_event"),
+    titleKey: z.string().min(1),
+    startTimeKey: z.string().min(1),
+    durationKey: z.string().min(1),
+    timeZoneKey: z.string().min(1).optional()
+  }).strict(),
+  StepEnvelope.extend({
     action: z.literal("invoke_skill"),
     skill: z.string().min(1),
     inputs: z.record(z.string(), z.string()).default({})
@@ -113,7 +120,8 @@ export const SkillManifestSchema = z
           "accessibility",
           "shizuku",
           "media_session",
-          "deep_link"
+          "deep_link",
+          "system_provider"
         ])
       )
       .min(1),

@@ -39,6 +39,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var shizukuBridge: ShizukuUserServiceBridge
     private var shizukuStatus by mutableStateOf("")
     private var bubbleStatus by mutableStateOf("")
+    private var calendarStatus by mutableStateOf("")
 
     private val bubblePermissionsLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -48,6 +49,12 @@ class MainActivity : ComponentActivity() {
         } else {
             startBubbleService()
         }
+    }
+
+    private val calendarPermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) {
+        updateCalendarStatus()
     }
 
     private val permissionListener =
@@ -64,6 +71,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         shizukuStatus = getString(R.string.shizuku_not_connected)
         bubbleStatus = getString(R.string.bubble_ready)
+        updateCalendarStatus()
         shizukuBridge = ShizukuUserServiceBridge(this) { available ->
             shizukuStatus = if (available) {
                 getString(R.string.shizuku_authorized)
@@ -81,8 +89,10 @@ class MainActivity : ComponentActivity() {
                     PersonalJarvisScreen(
                         shizukuStatus = shizukuStatus,
                         bubbleStatus = bubbleStatus,
+                        calendarStatus = calendarStatus,
                         requestShizukuAccess = ::requestShizukuAccess,
-                        enableFloatingBubble = ::enableFloatingBubble
+                        enableFloatingBubble = ::enableFloatingBubble,
+                        requestCalendarAccess = ::requestCalendarAccess
                     )
                 }
             }
@@ -95,6 +105,11 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         Shizuku.removeRequestPermissionResultListener(permissionListener)
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateCalendarStatus()
     }
 
     private fun requestShizukuAccess() {
@@ -160,6 +175,36 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun requestCalendarAccess() {
+        if (hasCalendarPermission()) {
+            updateCalendarStatus()
+            return
+        }
+        calendarPermissionsLauncher.launch(
+            arrayOf(
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.WRITE_CALENDAR
+            )
+        )
+    }
+
+    private fun hasCalendarPermission(): Boolean {
+        return checkSelfPermission(Manifest.permission.READ_CALENDAR) ==
+            PackageManager.PERMISSION_GRANTED &&
+            checkSelfPermission(Manifest.permission.WRITE_CALENDAR) ==
+            PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun updateCalendarStatus() {
+        calendarStatus = getString(
+            if (hasCalendarPermission()) {
+                R.string.calendar_authorized
+            } else {
+                R.string.calendar_permission_missing
+            }
+        )
+    }
+
     private fun startBubbleService() {
         startForegroundService(Intent(this, FloatingBubbleService::class.java))
         bubbleStatus = getString(R.string.bubble_started)
@@ -170,8 +215,10 @@ class MainActivity : ComponentActivity() {
 fun PersonalJarvisScreen(
     shizukuStatus: String,
     bubbleStatus: String,
+    calendarStatus: String,
     requestShizukuAccess: () -> Unit,
-    enableFloatingBubble: () -> Unit
+    enableFloatingBubble: () -> Unit,
+    requestCalendarAccess: () -> Unit
 ) {
     val context = LocalContext.current
     var taskActive by remember { mutableStateOf(false) }
@@ -237,6 +284,10 @@ fun PersonalJarvisScreen(
             Text(stringResource(R.string.action_authorize_shizuku))
         }
         Text(text = shizukuStatus)
+        Button(onClick = requestCalendarAccess) {
+            Text(stringResource(R.string.action_authorize_calendar))
+        }
+        Text(text = calendarStatus)
         Button(onClick = enableFloatingBubble) {
             Text(stringResource(R.string.action_enable_bubble))
         }

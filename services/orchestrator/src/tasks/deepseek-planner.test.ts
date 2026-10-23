@@ -71,4 +71,24 @@ describe("DeepSeekTaskPlanner", () => {
       packageName: "com.android.settings"
     });
   });
+
+  it("passes the current date and timezone to the intent model", async () => {
+    let context:
+      | { now: string; timeZone: string }
+      | undefined;
+    const planner = new DeepSeekTaskPlanner({
+      infer: async (_instruction, _catalog, received) => {
+        context = received;
+        return {
+          kind: "clarify",
+          question: "请告诉我具体时间"
+        };
+      }
+    }, loadDefaultSkillCatalog());
+
+    await planner.plan(task("创建一个会议"));
+
+    expect(context?.timeZone).toBe("Asia/Shanghai");
+    expect(Date.parse(context?.now ?? "")).not.toBeNaN();
+  });
 });

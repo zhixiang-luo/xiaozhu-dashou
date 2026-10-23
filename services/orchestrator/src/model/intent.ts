@@ -42,3 +42,8 @@ export interface SkillPromptEntry {
     }
   >;
 }
+
+export interface IntentPlanningContext {
+  now: string;
+  timeZone: string;
+}

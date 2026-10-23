@@ -27,6 +27,8 @@
 - 增加 DeepSeek 意图规划器，可从自然语言抽取微信收件人和任意普通消息正文。
 - 增加 App 技能录制、OCR 辅助、中文剪贴板输入和微信文件传输助手动作链。
 - 增加公开仓库许可证、品牌边界、行为准则、支持渠道、Dependabot 和 Issue Forms。
+- 增加系统日历创建技能，DeepSeek 可结合当前时间解析“明天下午三点”等相对日期，
+  Android 通过 CalendarContract 写入并回读验证。
 
 ### Changed
 

@@ -46,6 +46,14 @@ export const ActionSchema = z.discriminatedUnion("type", [
     command: z.enum(["play", "pause", "next", "previous"])
   }),
   ActionEnvelope.extend({
+    type: z.literal("calendar_create_event"),
+    title: z.string().trim().min(1).max(200),
+    startTimeMillis: z.number().int().positive(),
+    endTimeMillis: z.number().int().positive(),
+    timeZone: z.string().min(1).max(64),
+    description: z.string().max(4_000).optional()
+  }),
+  ActionEnvelope.extend({
     type: z.literal("ask_user"),
     question: z.string().min(1)
   }),
